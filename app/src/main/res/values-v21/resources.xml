@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="money_spinner">
+        <item>form1</item>
+        <item>form2</item>
+        <item>from3</item>
+    </string-array>
+
+    <string-array name="memo_spinner">
+        <item>none</item>
+        <item>daily</item>
+        <item>weekly</item>
+        <item>monthly</item>
+        <item>annual</item>
+    </string-array>
+</resources>
