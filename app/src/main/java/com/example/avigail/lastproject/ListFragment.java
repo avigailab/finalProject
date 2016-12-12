@@ -110,8 +110,11 @@ public class ListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.e("---","click "+i);
-                Intent layoutIntent= new Intent(getActivity(),LayoutActivity.class);
+                /*Intent layoutIntent= new Intent(getActivity(),LayoutActivity.class);
+                startActivity(layoutIntent);*/
+                Intent layoutIntent= new Intent(getActivity(),AudioRecordActivity.class);
                 startActivity(layoutIntent);
+
 
 
             }
