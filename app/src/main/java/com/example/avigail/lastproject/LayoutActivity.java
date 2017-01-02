@@ -134,7 +134,11 @@ public class LayoutActivity extends Activity {
                                         Handler handler = new Handler();
                                         handler.postDelayed(new Runnable() {
                                             public void run() {
-                                                startSpeechToText(view.getId());
+                                                //startSpeechToText(view.getId());
+                                               /* Intent layoutIntent= new Intent(view.getContext(),AudioRecordActivity.class);
+                                                startActivity(layoutIntent);*/
+                                                Intent intent = new Intent(view.getContext(), AudioRecordService.class);
+                                                startService(intent);
                                             }
                                         }, 5000);
 
@@ -235,6 +239,7 @@ public class LayoutActivity extends Activity {
                     Toast.LENGTH_SHORT).show();
         }
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 

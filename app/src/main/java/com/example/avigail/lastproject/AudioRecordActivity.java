@@ -71,9 +71,9 @@ public class AudioRecordActivity extends AppCompatActivity
 
         random = new Random();
 
-        buttonStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        //buttonStart.setOnClickListener(new View.OnClickListener() {
+          //  @Override
+            //public void onClick(View view) {
                 int bufferSizeInBytes = AudioRecord.getMinBufferSize( RECORDER_SAMPLERATE,
                         RECORDER_CHANNELS,
                         RECORDER_AUDIO_ENCODING
@@ -131,14 +131,14 @@ public class AudioRecordActivity extends AppCompatActivity
                         recording = true;
                     }
 
-                    if( (temp >= 0 && temp <= 350) && recording == true )
-                    //if(temp>1140)
+                    //if( (temp >= 0 && temp <= 350) && recording == true )
+                    if(temp>1140)
                     {
                         Log.i("TAG", "Save audio to file.");
 
                         // Save audio to file.
-                        String filepath = Environment.getExternalStoragePublicDirectory("/audio").getPath();
-                       // String filepath=getApplicationContext().getFilesDir()+"";
+                        //String filepath = Environment.getExternalStoragePublicDirectory("/audio").getPath();
+                       String filepath=getApplicationContext().getFilesDir()+"";
                                 File file = new File(filepath,"AudioRecorder");
                         if( !file.exists() )
                             file.mkdirs();
@@ -261,8 +261,8 @@ public class AudioRecordActivity extends AppCompatActivity
                     requestPermission();
                 }
 */
-            }
-        });
+            //}
+        //});
 
         buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
