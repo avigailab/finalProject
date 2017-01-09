@@ -75,7 +75,7 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
     }
     private void speak(String str) {
         mTts.speak(str,
-                TextToSpeech.QUEUE_FLUSH,
+                TextToSpeech.QUEUE_ADD,
                 null);
     }
 
