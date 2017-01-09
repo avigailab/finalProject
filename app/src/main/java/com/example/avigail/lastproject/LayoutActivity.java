@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,9 @@ public class LayoutActivity extends Activity {
     AppAdapter appAdapter;
     LinearLayout linearLayout;
     TextView layoutTitle;
+    RelativeLayout layout;
+    TextView leftMessage;
+    TextView rightMessage;
 
 
 
@@ -55,8 +59,17 @@ public class LayoutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout);
         appAdapter=new AppAdapter();
-        linearLayout=(LinearLayout)findViewById(R.id.fieldsList);
+        //linearLayout=(LinearLayout)findViewById(R.id.fieldsList);
         layoutTitle = (TextView) findViewById(R.id.layoutTitle);
+        layout = (RelativeLayout) findViewById(R.id.messages);
+        leftMessage = (TextView) findViewById(R.id.leftMessage);
+        rightMessage = (TextView) findViewById(R.id.rightMessage);
+        /*for (int j = 0; j < 30; j++) {
+            if(j%2==0)
+                makeLeftMessage(j + "!!!!!!!!!!!!!",j);
+            else
+                makeRightMessage(j + "!!!!!!!!!!!!!",j);
+        }*/
         getLayoutForUser();
     }
     private void getLayoutForUser() {
@@ -78,51 +91,27 @@ public class LayoutActivity extends Activity {
                             layoutTitle.setText(arrayOfLayouts.get(i).layoutName);
                             ArrayList<Field> currentFileds = arrayOfLayouts.get(i).fileds;
                             //display
-                            for (int j = 0; j < currentFileds.size(); j++) {
-
+                            for (int j = 0,k=0; j < currentFileds.size() && k< currentFileds.size()*2; j++,k+=2) {
                                 final String currentFiledName = currentFileds.get(j).filedName;
-                                final TextView rowTextView = new TextView(getApplicationContext());
-                                //final TextView rowTextView = (TextView) findViewById(R.id.text3);
+                                Toast.makeText(getApplicationContext(), currentFiledName,Toast.LENGTH_SHORT).show();
+                                makeLeftMessage(currentFiledName,k);
+                                makeRightMessage("!!!!",k+1);
+                                Intent myIntent = new Intent(LayoutActivity.this, SpeechService.class);
+                                myIntent.putExtra("WORD", currentFiledName);
+                                startService(myIntent);
 
-                                // set some properties of rowTextView or something
-                                rowTextView.setText(currentFiledName);
-                                rowTextView.setId(j);
-                                rowTextView.setTextAppearance(getApplicationContext(),R.style.leftField);
-                                rowTextView.setPadding(50, 10, 50, 10);
+                               /* Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        //startSpeechToText(view.getId());
 
-                                // Gets linearlayout
-                                LinearLayout layout = (LinearLayout)findViewById(R.id.myLayout);
-                                // Gets the layout params that will allow you to resize the layout
-                                ViewGroup.LayoutParams params = layout.getLayoutParams();
-
-                                // Changes the height and width to the specified *pixels*
-                                /*params.height = 100;
-                                params.width = 100;*/
-                                //params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                                layout.setLayoutParams(params);
-                                rowTextView.setY(30*j);
-                                GradientDrawable gd = new GradientDrawable();
-                                gd.setColor(Color.parseColor("#39B57B")); // Changes this drawbale to use a single color instead of a gradient
-                                gd.setCornerRadius(5);
-                                gd.setStroke(1, 0xFF000000);
-                                rowTextView.setBackgroundDrawable(gd);
+                                                Intent intent = new Intent(LayoutActivity.this, AudioRecordService.class);
+                                                startService(intent);
+                                            }
+                                        }, 5000);*/
 
 
-                                //for answer
-                                /*final TextView answerTextView = new TextView(getApplicationContext());
-                                //final TextView rowTextView = (TextView) findViewById(R.id.text3);
-
-                                // set some properties of rowTextView or something
-                                answerTextView.setId(j+100);
-                                answerTextView.setTextAppearance(getApplicationContext(),R.style.leftField);
-                                answerTextView.setPadding(50, 10, 50, 10);
-                                answerTextView.setY(30*j);
-                                GradientDrawable ansGd = new GradientDrawable();
-                                ansGd.setColor(Color.parseColor("#64BD68")); // Changes this drawbale to use a single color instead of a gradient
-                                ansGd.setCornerRadius(5);
-                                ansGd.setStroke(1, 0xFF000000);
-                                answerTextView.setBackgroundDrawable(ansGd);
-*/
+                            /*
                                 rowTextView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(final View view) {
@@ -136,7 +125,7 @@ public class LayoutActivity extends Activity {
                                             public void run() {
                                                 //startSpeechToText(view.getId());
                                                /* Intent layoutIntent= new Intent(view.getContext(),AudioRecordActivity.class);
-                                                startActivity(layoutIntent);*/
+                                                startActivity(layoutIntent);
                                                 Intent intent = new Intent(view.getContext(), AudioRecordService.class);
                                                 startService(intent);
                                             }
@@ -147,7 +136,7 @@ public class LayoutActivity extends Activity {
                                 // add the textview to the linearlayout
                                 linearLayout.addView(rowTextView);
                               //  linearLayout.addView(answerTextView);
-
+                            */
                             }
                         }
                     }
@@ -175,8 +164,7 @@ public class LayoutActivity extends Activity {
                             public void onClick(View view) {
                                 //read field name
                                 Log.d(TAG,"on click event");
-                                Toast.makeText(getApplicationContext(), currentFiled,Toast.LENGTH_SHORT).show();
-                                textToSpeech.speak(currentFiled, TextToSpeech.QUEUE_FLUSH, null);
+
                                 //record from user
                                 startSpeechToText();
 
@@ -194,32 +182,6 @@ public class LayoutActivity extends Activity {
         });
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
-        /*final TextView mTextView = (TextView) findViewById(R.id.text);
-        mTextView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                //read field name
-                Log.d(TAG,"on click event");
-
-
-
-
-               /* Intent myIntent = new Intent(MainActivity.this, TTSActivity.class);
-                myIntent.putExtra("key", "Please Enter Name"); //Optional parameters
-                MainActivity.this.startActivity(myIntent);*/
-
-        //  TTSActivity tts = new TTSActivity();
-        // tts.speak("Please Enter Name");
-        //textToSpeech.speak("Please Enter Name", TextToSpeech.QUEUE_ADD, null);
-
-        //textToSpeech.speak("Name",1,null,null);
-        //record from user
-
-        //       }
-        // });
-
     }
     private void startSpeechToText(int id) {
 
@@ -310,6 +272,41 @@ public class LayoutActivity extends Activity {
             }
 
         }
+    }
+    public void makeLeftMessage(String body,int id){
+        TextView rowTextView = new TextView(getApplicationContext());
+        // set some properties of rowTextView or something
+        rowTextView.setText(body);
+        rowTextView.setId(id);
+        rowTextView.setPadding(50, 35, 50, 10);
+        rowTextView.setY(150 * id);
+        rowTextView.setTextColor(Color.parseColor("#000000"));
+        GradientDrawable gd = new GradientDrawable();
+        gd.setCornerRadius(100);
+        //gd.setStroke(3, 0xFF000000);
+        gd.setColor(Color.parseColor("#39B57B")); // Changes this drawbale to use a single color instead of a gradient
+        rowTextView.setBackgroundDrawable(gd);
+        rowTextView.setTextSize(22);
+        rowTextView.setLayoutParams(leftMessage.getLayoutParams());
+        layout.addView(rowTextView);
+
+    }
+    public void makeRightMessage(String body,int id){
+        TextView rowTextView = new TextView(getApplicationContext());
+        // set some properties of rowTextView or something
+        rowTextView.setText(body);
+        rowTextView.setId(id);
+        rowTextView.setPadding(50, 35, 50, 10);
+        rowTextView.setY(150 * id);
+        rowTextView.setTextColor(Color.parseColor("#000000"));
+        GradientDrawable gd = new GradientDrawable();
+        gd.setCornerRadius(100);
+        gd.setColor(Color.parseColor("#E7E7E4")); // Changes this drawbale to use a single color instead of a gradient
+        rowTextView.setBackgroundDrawable(gd);
+        rowTextView.setTextSize(22);
+        rowTextView.setLayoutParams(rightMessage.getLayoutParams());
+        layout.addView(rowTextView);
+
     }
 
 
