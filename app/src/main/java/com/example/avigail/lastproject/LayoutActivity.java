@@ -280,35 +280,43 @@ public class LayoutActivity extends Activity {
         rowTextView.setId(id);
         rowTextView.setPadding(50, 35, 50, 10);
         rowTextView.setY(150 * id);
-        rowTextView.setTextColor(Color.parseColor("#000000"));
         GradientDrawable gd = new GradientDrawable();
         gd.setCornerRadius(100);
         //gd.setStroke(3, 0xFF000000);
         gd.setColor(Color.parseColor("#39B57B")); // Changes this drawbale to use a single color instead of a gradient
         rowTextView.setBackgroundDrawable(gd);
         rowTextView.setTextSize(22);
-        rowTextView.setLayoutParams(leftMessage.getLayoutParams());
-        layout.addView(rowTextView);
+        rowTextView.setMinimumWidth(300);
+        //add wrap content property and align to text view
+        RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        relativeLayoutParams.setMargins(30,0,0,0);
+        layout.addView(rowTextView,relativeLayoutParams);
 
     }
-    public void makeRightMessage(String body,int id){
+    public void makeRightMessage(CharSequence body, int id){
         TextView rowTextView = new TextView(getApplicationContext());
-        // set some properties of rowTextView or something
+        // set some properties of rowTextView
         rowTextView.setText(body);
         rowTextView.setId(id);
         rowTextView.setPadding(50, 35, 50, 10);
         rowTextView.setY(150 * id);
-        rowTextView.setTextColor(Color.parseColor("#000000"));
         GradientDrawable gd = new GradientDrawable();
         gd.setCornerRadius(100);
         gd.setColor(Color.parseColor("#E7E7E4")); // Changes this drawbale to use a single color instead of a gradient
         rowTextView.setBackgroundDrawable(gd);
         rowTextView.setTextSize(22);
-        rowTextView.setLayoutParams(rightMessage.getLayoutParams());
-        layout.addView(rowTextView);
+        //rowTextView.setGravity(Gravity.LEFT);
+        //add wrap content property and align to text view
+        RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        relativeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        relativeLayoutParams.setMargins(0,0,30,0);
+        layout.addView(rowTextView,relativeLayoutParams);
 
     }
-
 
 
 
