@@ -71,9 +71,9 @@ public class AudioRecordActivity extends AppCompatActivity
 
         random = new Random();
 
-        //buttonStart.setOnClickListener(new View.OnClickListener() {
-          //  @Override
-            //public void onClick(View view) {
+        buttonStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 int bufferSizeInBytes = AudioRecord.getMinBufferSize( RECORDER_SAMPLERATE,
                         RECORDER_CHANNELS,
                         RECORDER_AUDIO_ENCODING
@@ -143,7 +143,7 @@ public class AudioRecordActivity extends AppCompatActivity
                         if( !file.exists() )
                             file.mkdirs();
 
-                        String fn = file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".wav";
+                        String fn = file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".flac";
 
                         long totalAudioLen  = 0;
                         long totalDataLen   = totalAudioLen + 36;
@@ -261,8 +261,8 @@ public class AudioRecordActivity extends AppCompatActivity
                     requestPermission();
                 }
 */
-            //}
-        //});
+            }
+        });
 
         buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override

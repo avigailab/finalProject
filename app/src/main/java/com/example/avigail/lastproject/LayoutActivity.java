@@ -125,7 +125,7 @@ public class LayoutActivity extends Activity {
                                         handler.postDelayed(new Runnable() {
                                             public void run() {
                                                 //startSpeechToText(view.getId());
-                                               /* Intent layoutIntent= new Intent(view.getContext(),AudioRecordActivity.class);
+                                                Intent layoutIntent= new Intent(view.getContext(),AudioRecordActivity.class);
                                                 startActivity(layoutIntent);
                                                 Intent intent = new Intent(view.getContext(), AudioRecordService.class);
                                                 startService(intent);
