@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.widget.LinearLayout;
 import android.os.Environment;
 import android.view.ViewGroup;
@@ -19,7 +20,9 @@ import android.util.Log;
 import android.media.MediaRecorder;
 import android.media.MediaPlayer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -71,9 +74,9 @@ public class AudioRecordActivity extends AppCompatActivity
 
         random = new Random();
 
-        //buttonStart.setOnClickListener(new View.OnClickListener() {
-          //  @Override
-            //public void onClick(View view) {
+        buttonStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 int bufferSizeInBytes = AudioRecord.getMinBufferSize( RECORDER_SAMPLERATE,
                         RECORDER_CHANNELS,
                         RECORDER_AUDIO_ENCODING
@@ -132,7 +135,7 @@ public class AudioRecordActivity extends AppCompatActivity
                     }
 
                     //if( (temp >= 0 && temp <= 350) && recording == true )
-                    if(temp>1140)
+                    if(temp>3140)
                     {
                         Log.i("TAG", "Save audio to file.");
 
@@ -143,8 +146,8 @@ public class AudioRecordActivity extends AppCompatActivity
                         if( !file.exists() )
                             file.mkdirs();
 
-                        String fn = file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".wav";
-
+                        String fn = file.getAbsolutePath() + "/aa.flac";
+                        //String fn = file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".flac";
                         long totalAudioLen  = 0;
                         long totalDataLen   = totalAudioLen + 36;
                         long longSampleRate = RECORDER_SAMPLERATE;
@@ -260,9 +263,11 @@ public class AudioRecordActivity extends AppCompatActivity
                 } else {
                     requestPermission();
                 }
-*/
-            //}
-        //});
+*/              String encodeFile = encodeAudio(getApplicationContext().getFilesDir()+"AudioRecorder/aa.flac");
+                Log.d("ENCODE FILE",encodeFile);
+
+            }
+        });
 
         buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,7 +373,7 @@ public class AudioRecordActivity extends AppCompatActivity
                 break;
         }
     }
-public boolean checkPermission() {
+    public boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(),
                 WRITE_EXTERNAL_STORAGE);
         int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
@@ -376,5 +381,39 @@ public boolean checkPermission() {
         return result == PackageManager.PERMISSION_GRANTED &&
                 result1 == PackageManager.PERMISSION_GRANTED;
     }
-}
 
+    private String encodeAudio(String selectedPath) {
+
+        byte[] audioBytes;
+        try {
+
+            // Just to check file size.. Its is correct i-e; Not Zero
+            //File audioFile = new File(selectedPath);
+            //long fileSize = audioFile.length();
+            String filepath=getApplicationContext().getFilesDir()+"";
+            File file = new File(filepath,"AudioRecorder");
+            //if( !file.exists() )
+              //  file.mkdirs();
+
+            String fn = file.getAbsolutePath() + "/aa.flac";
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            FileInputStream fis = new FileInputStream(new File(fn));
+            byte[] buf = new byte[1024];
+            int n;
+            while (-1 != (n = fis.read(buf)))
+                baos.write(buf, 0, n);
+            audioBytes = baos.toByteArray();
+
+            // Here goes the Base64 string
+            String _audioBase64 = Base64.encodeToString(audioBytes, Base64.DEFAULT);
+            return _audioBase64;
+
+        } catch (Exception e) {
+            Log.e("audio encode execption","");
+            //DiagnosticHelper.writeException(e);
+        }
+        return "nofile";
+    }
+
+}
