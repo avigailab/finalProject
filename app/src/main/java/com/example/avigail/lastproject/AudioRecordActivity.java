@@ -30,15 +30,23 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -277,6 +285,7 @@ public class AudioRecordActivity extends AppCompatActivity
                 }
 */              String encodeFile = encodeAudio(getApplicationContext().getFilesDir()+"AudioRecorder/aa.flac");
                 Log.d("ENCODE FILE",encodeFile);
+                sendRecordToApi(encodeFile);
 
 
             }
@@ -429,7 +438,7 @@ public class AudioRecordActivity extends AppCompatActivity
         return "nofile";
     }
 
-    private void sendRecordtoApi(String encodeFile) {
+    private void sendRecordToApi(String encodeFile) {
         Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
                 Toast.LENGTH_LONG).show();
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -442,8 +451,19 @@ public class AudioRecordActivity extends AppCompatActivity
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio?fieldName=date&fieldType=FreeTextNumeric&language=en&possibleValues=string&possibleValues=string&audio="+afterDecode+"&clientId=68174861&serviceId=58469251";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
+        JSONObject params = new JSONObject();
+        try {
+            params.put("audio",afterDecode);
+            params.put("fieldName","date");
+            params.put("fieldType","Any");
+            params.put("language","en");
+            params.put("clientId","68174861");
+            params.put("serviceId","58469251");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+       /* StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -460,7 +480,34 @@ public class AudioRecordActivity extends AppCompatActivity
             }
         });
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        queue.add(stringRequest);*/
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                URL, params,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+                        //pDialog.hide();
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+               // pDialog.hide();
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+        queue.add(jsonObjReq);
     }
 
 }
