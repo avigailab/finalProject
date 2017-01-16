@@ -1,4 +1,5 @@
 package com.example.avigail.lastproject;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -26,8 +27,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -266,6 +276,7 @@ public class AudioRecordActivity extends AppCompatActivity
 */              String encodeFile = encodeAudio(getApplicationContext().getFilesDir()+"AudioRecorder/aa.flac");
                 Log.d("ENCODE FILE",encodeFile);
 
+
             }
         });
 
@@ -414,6 +425,34 @@ public class AudioRecordActivity extends AppCompatActivity
             //DiagnosticHelper.writeException(e);
         }
         return "nofile";
+    }
+
+    private void sendRecordtoApi(String encodeFile) {
+        Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
+                Toast.LENGTH_LONG).show();
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // final ListView listView = (ListView) findViewById(R.id.layoutsList);
+
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/GetLayoutsForUser?tukLogin=orayrs@gmail.com&serviceId=58469251&clientId=68174861";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+
+                    }
+
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // mTextView.setText("That didn't work!");
+                Log.e("Error","");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
 }
