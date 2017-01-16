@@ -4,6 +4,7 @@ import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.os.Build;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,27 +22,28 @@ import android.util.Log;
 import android.media.MediaRecorder;
 import android.media.MediaPlayer;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -451,19 +453,15 @@ public class AudioRecordActivity extends AppCompatActivity
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
+        afterDecode="BwMnwUhAST5Jvf%2B%2BpgBVgW5BUUC2fuI%2BPH3L%2Fkx%2FUT%2BKv4Y%2FRH%2Byfy%2B%2B8D8%0Ad";
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio?fieldName=date&fieldType=FreeTextNumeric&language=en&audio="+afterDecode+"&clientId=68174861&serviceId=58469251";
         JSONObject params = new JSONObject();
         try {
             params.put("audio",afterDecode);
-            params.put("fieldName","date");
-            params.put("fieldType","Any");
-            params.put("language","en");
-            params.put("clientId","68174861");
-            params.put("serviceId","58469251");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-       /* StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -480,34 +478,91 @@ public class AudioRecordActivity extends AppCompatActivity
             }
         });
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);*/
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                URL, params,
-                new Response.Listener<JSONObject>() {
+       // queue.add(stringRequest);
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        //pDialog.hide();
+        //----------//
+        String soapUrl= "http://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
+                JSONObject soapParams = new JSONObject();
+                try {
+                    soapParams.put("audio",afterDecode);
+                    soapParams.put("fieldName","date");
+                    soapParams.put("fieldType","Any");
+                    soapParams.put("language","en");
+                    soapParams.put("clientId","68174861");
+                    soapParams.put("serviceId","58469251");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+        setSoapMsg(soapUrl,soapParams.toString());
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-               // pDialog.hide();
+
+    }
+    public String setSoapMsg(String targetURL, String urlParameters) {
+
+        URL url;
+        HttpURLConnection connection = null;
+        try {
+            //Create connection
+            url = new URL(targetURL);
+
+            // for not trusted site (https)
+            // _FakeX509TrustManager.allowAllSSL();
+            // System.setProperty("javax.net.debug","all");
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+
+
+            connection.setRequestProperty("SOAPAction", "**** SOAP ACTION VALUE HERE ****");
+
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+
+            //Send request
+            DataOutputStream wr = new DataOutputStream(
+                    connection.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+
+            //Get Response
+            InputStream is;
+            Log.i("response", "code=" + connection.getResponseCode());
+            if (connection.getResponseCode() <= 400) {
+                is = connection.getInputStream();
+            } else {
+              /* error from server */
+                is = connection.getErrorStream();
             }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
+            // is= connection.getInputStream();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            String line;
+            StringBuffer response = new StringBuffer();
+            while ((line = rd.readLine()) != null) {
+                response.append(line);
+                response.append('\r');
             }
+            rd.close();
+            Log.i("response", "" + response.toString());
+            return response.toString();
 
-        };
-        queue.add(jsonObjReq);
+        } catch (Exception e) {
+
+            Log.e("error https", "", e);
+            return null;
+
+        } finally {
+
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 
 }
