@@ -99,7 +99,8 @@ public class LayoutActivity extends Activity {
                                 Intent myIntent = new Intent(LayoutActivity.this, SpeechService.class);
                                 myIntent.putExtra("WORD", currentFiledName);
                                 startService(myIntent);
-
+                               /* Intent intent = new Intent(LayoutActivity.this, AudioRecordService.class);
+                                startService(intent);*/
                                /* Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     public void run() {

@@ -61,8 +61,6 @@ public class AppAdapter {
                 fieldsArray.add(i,field);
             }
             currentLayout.setFileds(fieldsArray);
-            Log.e("layout name----", currentLayout.layoutName);
-            Log.e("field----", currentLayout.fileds.get(0).filedName);
             arrayOfLayouts.add(0,currentLayout);
             /*user.setLayouts(arrayOfLayouts);
             Log.e("user name----", user.userEmail);
