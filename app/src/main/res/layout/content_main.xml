@@ -12,6 +12,15 @@
     tools:context="com.example.avigail.lastproject.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_centerVertical="true"
+        android:src="@drawable/logo"/>
+
+
+
     <android.support.v4.view.ViewPager
         android:id="@+id/vpPager"
         android:layout_width="match_parent"
