@@ -27,6 +27,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Random;
 import android.widget.Toast;
@@ -433,13 +435,19 @@ public class AudioRecordActivity extends AppCompatActivity
         RequestQueue queue = Volley.newRequestQueue(this);
 
         // final ListView listView = (ListView) findViewById(R.id.layoutsList);
+        String afterDecode="";
 
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/GetLayoutsForUser?tukLogin=orayrs@gmail.com&serviceId=58469251&clientId=68174861";
+        try {
+            afterDecode = URLEncoder.encode(encodeFile, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio?fieldName=date&fieldType=FreeTextNumeric&language=en&possibleValues=string&possibleValues=string&audio="+afterDecode+"&clientId=68174861&serviceId=58469251";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        Log.d("RESPONSE-----",response);
 
                     }
 
