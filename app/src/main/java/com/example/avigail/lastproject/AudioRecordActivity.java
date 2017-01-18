@@ -1,8 +1,10 @@
 package com.example.avigail.lastproject;
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -49,11 +51,15 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
-
 
 public class AudioRecordActivity extends AppCompatActivity
 {
@@ -75,6 +81,10 @@ public class AudioRecordActivity extends AppCompatActivity
     private boolean permissionToWriteAccepted = false;
     private String [] permissions = {"android.permission.RECORD_AUDIO", "android.permission.WRITE_EXTERNAL_STORAGE"};
     MediaPlayer mediaPlayer ;
+    private final String NAMESPACE = "https://wili.tukuoro.com/tukwebservice/";
+    private final String URL = "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx";
+    private final String SOAP_ACTION = "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
+    private final String METHOD_NAME = "ParseImmidiateSingleFromAudio";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -479,90 +489,73 @@ public class AudioRecordActivity extends AppCompatActivity
         });
         // Add the request to the RequestQueue.
        // queue.add(stringRequest);
-
-        //----------//
-        String soapUrl= "http://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
-                JSONObject soapParams = new JSONObject();
-                try {
-                    soapParams.put("audio",afterDecode);
-                    soapParams.put("fieldName","date");
-                    soapParams.put("fieldType","Any");
-                    soapParams.put("language","en");
-                    soapParams.put("clientId","68174861");
-                    soapParams.put("serviceId","58469251");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-        setSoapMsg(soapUrl,soapParams.toString());
+        //Create instance for AsyncCallWS
+        AsyncCallWS task = new AsyncCallWS();
+        //Call execute
+        task.execute();
 
 
     }
-    public String setSoapMsg(String targetURL, String urlParameters) {
+    public void call()
+    {
 
-        URL url;
-        HttpURLConnection connection = null;
+        //Create request
+        SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
+       /* params.put("audio",afterDecode);
+        +            params.put("fieldName","date");
+        +            params.put("fieldType","Any");
+        +            params.put("language","en");
+        +            params.put("clientId","68174861");
+        +            params.put("serviceId","58469251");*/
+        //Add the property to request object
+        request.addProperty("fieldName","date");
+        //Create envelope
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+                SoapEnvelope.VER11);
+        envelope.dotNet = true;
+        //Set output SOAP object
+        envelope.setOutputSoapObject(request);
+        //Create HTTP call object
+        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+
         try {
-            //Create connection
-            url = new URL(targetURL);
-
-            // for not trusted site (https)
-            // _FakeX509TrustManager.allowAllSSL();
-            // System.setProperty("javax.net.debug","all");
-
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-
-
-            connection.setRequestProperty("SOAPAction", "**** SOAP ACTION VALUE HERE ****");
-
-            connection.setUseCaches(false);
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-
-
-            //Send request
-            DataOutputStream wr = new DataOutputStream(
-                    connection.getOutputStream());
-            wr.writeBytes(urlParameters);
-            wr.flush();
-            wr.close();
-
-            //Get Response
-            InputStream is;
-            Log.i("response", "code=" + connection.getResponseCode());
-            if (connection.getResponseCode() <= 400) {
-                is = connection.getInputStream();
-            } else {
-              /* error from server */
-                is = connection.getErrorStream();
-            }
-            // is= connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            String line;
-            StringBuffer response = new StringBuffer();
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
-            }
-            rd.close();
-            Log.i("response", "" + response.toString());
-            return response.toString();
+            //Invole web service
+            androidHttpTransport.call(SOAP_ACTION, envelope);
+            //Get the response
+            SoapPrimitive response = (SoapPrimitive) envelope.getResponse();
+            //Assign it to fahren static variable
+            Log.e("re",response.toString());
 
         } catch (Exception e) {
-
-            Log.e("error https", "", e);
-            return null;
-
-        } finally {
-
-            if (connection != null) {
-                connection.disconnect();
-            }
+            e.printStackTrace();
         }
+
     }
+    private class AsyncCallWS extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            Log.i(TAG, "doInBackground");
+            call();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            Log.i(TAG, "onPostExecute");
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Log.i(TAG, "onPreExecute");
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            Log.i(TAG, "onProgressUpdate");
+        }
+
+    }
+
+
 
 }
