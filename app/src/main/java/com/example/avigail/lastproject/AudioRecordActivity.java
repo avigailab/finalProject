@@ -1,12 +1,9 @@
 package com.example.avigail.lastproject;
 import android.content.Intent;
-
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,42 +21,37 @@ import android.util.Log;
 import android.media.MediaRecorder;
 import android.media.MediaPlayer;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.PropertyInfo;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapPrimitive;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+
 
 public class AudioRecordActivity extends AppCompatActivity
 {
@@ -81,10 +73,6 @@ public class AudioRecordActivity extends AppCompatActivity
     private boolean permissionToWriteAccepted = false;
     private String [] permissions = {"android.permission.RECORD_AUDIO", "android.permission.WRITE_EXTERNAL_STORAGE"};
     MediaPlayer mediaPlayer ;
-    private final String NAMESPACE = "https://wili.tukuoro.com/tukwebservice/";
-    private final String URL = "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx";
-    private final String SOAP_ACTION = "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
-    private final String METHOD_NAME = "ParseImmidiateSingleFromAudio";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -463,15 +451,21 @@ public class AudioRecordActivity extends AppCompatActivity
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        afterDecode="BwMnwUhAST5Jvf%2B%2BpgBVgW5BUUC2fuI%2BPH3L%2Fkx%2FUT%2BKv4Y%2FRH%2Byfy%2B%2B8D8%0Ad";
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio?fieldName=date&fieldType=FreeTextNumeric&language=en&audio="+afterDecode+"&clientId=68174861&serviceId=58469251";
+
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
+        afterDecode="ZkxhQw==";
         JSONObject params = new JSONObject();
         try {
             params.put("audio",afterDecode);
+            params.put("fieldName","date");
+            params.put("fieldType","Any");
+            params.put("language","en");
+            params.put("clientId","68174861");
+            params.put("serviceId","58469251");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL,
+       /* StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -488,74 +482,34 @@ public class AudioRecordActivity extends AppCompatActivity
             }
         });
         // Add the request to the RequestQueue.
-       // queue.add(stringRequest);
-        //Create instance for AsyncCallWS
-        AsyncCallWS task = new AsyncCallWS();
-        //Call execute
-        task.execute();
+        queue.add(stringRequest);*/
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                URL, params,
+                new Response.Listener<JSONObject>() {
 
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+                        //pDialog.hide();
+                    }
+                }, new Response.ErrorListener() {
 
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+               // pDialog.hide();
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+        queue.add(jsonObjReq);
     }
-    public void call()
-    {
-
-        //Create request
-        SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
-       /* params.put("audio",afterDecode);
-        +            params.put("fieldName","date");
-        +            params.put("fieldType","Any");
-        +            params.put("language","en");
-        +            params.put("clientId","68174861");
-        +            params.put("serviceId","58469251");*/
-        //Add the property to request object
-        request.addProperty("fieldName","date");
-        //Create envelope
-        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
-                SoapEnvelope.VER11);
-        envelope.dotNet = true;
-        //Set output SOAP object
-        envelope.setOutputSoapObject(request);
-        //Create HTTP call object
-        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
-
-        try {
-            //Invole web service
-            androidHttpTransport.call(SOAP_ACTION, envelope);
-            //Get the response
-            SoapPrimitive response = (SoapPrimitive) envelope.getResponse();
-            //Assign it to fahren static variable
-            Log.e("re",response.toString());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-    private class AsyncCallWS extends AsyncTask<String, Void, Void> {
-        @Override
-        protected Void doInBackground(String... params) {
-            Log.i(TAG, "doInBackground");
-            call();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            Log.i(TAG, "onPostExecute");
-        }
-
-        @Override
-        protected void onPreExecute() {
-            Log.i(TAG, "onPreExecute");
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            Log.i(TAG, "onProgressUpdate");
-        }
-
-    }
-
-
 
 }
