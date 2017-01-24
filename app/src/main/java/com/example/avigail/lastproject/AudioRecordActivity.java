@@ -1,6 +1,7 @@
 package com.example.avigail.lastproject;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.os.Build;
@@ -27,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -420,10 +422,13 @@ public class AudioRecordActivity extends AppCompatActivity
             String fn = file.getAbsolutePath() + "/aa.flac";
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            InputStream ins = getResources().openRawResource(
+                    getResources().getIdentifier("no",
+                            "raw", getPackageName()));
             FileInputStream fis = new FileInputStream(new File(fn));
             byte[] buf = new byte[1024];
             int n;
-            while (-1 != (n = fis.read(buf)))
+            while (-1 != (n = ins.read(buf)))
                 baos.write(buf, 0, n);
             audioBytes = baos.toByteArray();
 
@@ -452,64 +457,55 @@ public class AudioRecordActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
-        afterDecode="ZkxhQw==";
-        JSONObject params = new JSONObject();
-        try {
-            params.put("audio",afterDecode);
-            params.put("fieldName","date");
-            params.put("fieldType","Any");
-            params.put("language","en");
-            params.put("clientId","68174861");
-            params.put("serviceId","58469251");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-       /* StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                new Response.Listener<String>() {
+        String url= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("RESPONSE-----",response);
-
+                        Log.d("Response", response);
                     }
-
-
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // mTextView.setText("That didn't work!");
-                Log.e("Error","");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);*/
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                URL, params,
-                new Response.Listener<JSONObject>() {
-
+                },
+                new Response.ErrorListener()
+                {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        //pDialog.hide();
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("ERROR","error => "+error.toString());
                     }
-                }, new Response.ErrorListener() {
-
+                }
+        ) {
+            // this is the relevant method
             @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-               // pDialog.hide();
-            }
-        }) {
+            public byte[] getBody() throws AuthFailureError {
+                //start read from audio file
+                String audioString="";
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
+                try {
+                    Resources res = getResources();
+                    InputStream in_s = res.openRawResource(R.raw.audio);
 
+                    byte[] b = new byte[in_s.available()];
+                    in_s.read(b);
+                    audioString=new String(b);
+                } catch (Exception e) {
+                    // e.printStackTrace();
+                    audioString="Error: can't show help.";
+                }
+
+                String httpPostBody="fieldName=field1&fieldType=FreeText&language=en-US&serviceId=58469251&audio="+audioString;
+                Log.e("====>postBody",httpPostBody);
+                // usually you'd have a field with some values you'd want to escape, you need to do it yourself if overriding getBody. here's how you do it
+                try {
+                    httpPostBody=httpPostBody+"&randomFieldFilledWithAwkwardCharacters="+URLEncoder.encode("{{%stuffToBe Escaped/","UTF-8");
+                } catch (UnsupportedEncodingException exception) {
+                    Log.e("ERROR", "exception", exception);
+                    // return null and don't pass any POST string if you encounter encoding error
+                    return null;
+                }
+                return httpPostBody.getBytes();
+            }
         };
-        queue.add(jsonObjReq);
+        queue.add(postRequest);
     }
 
 }
