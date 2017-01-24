@@ -492,7 +492,30 @@ public class AudioRecordActivity extends AppCompatActivity
                     audioString="Error: can't show help.";
                 }
 
-                String httpPostBody="fieldName=field1&fieldType=FreeText&language=en-US&serviceId=58469251&audio="+audioString;
+                String httpPostBody= null;
+               /* try {
+                   httpPostBody = URLEncoder.encode("fieldName", "UTF-8")
+                            + "=" + URLEncoder.encode("field1", "UTF-8")
+
+                            + "&" + URLEncoder.encode("fieldType", "UTF-8")
+                            + "=" +URLEncoder.encode("FreeText", "UTF-8")
+
+                            + "&" + URLEncoder.encode("language", "UTF-8")
+                            + "=" +URLEncoder.encode("en-US", "UTF-8")
+
+                            + "&" + URLEncoder.encode("serviceId", "UTF-8")
+                            + "=" +URLEncoder.encode("58469251", "UTF-8")
+
+                            + "&" + URLEncoder.encode("clientId", "UTF-8")
+                            + "=" +URLEncoder.encode("68174861", "UTF-8")
+
+                            + "&" + URLEncoder.encode("audio", "UTF-8")
+                            + "=" +URLEncoder.encode(audioString, "UTF-8");
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }*/
+                httpPostBody= "fieldName=field1&fieldType=FreeText&language=en&clientId=68174861&serviceId=58469251&audio="+audioString;
                 Log.e("====>postBody",httpPostBody);
                 // usually you'd have a field with some values you'd want to escape, you need to do it yourself if overriding getBody. here's how you do it
                 try {
