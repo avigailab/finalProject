@@ -447,6 +447,8 @@ public class AudioRecordActivity extends AppCompatActivity
         Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
                 Toast.LENGTH_LONG).show();
         RequestQueue queue = Volley.newRequestQueue(this);
+        queue.getCache().clear();
+
 
         // final ListView listView = (ListView) findViewById(R.id.layoutsList);
         String afterDecode="";
@@ -458,25 +460,28 @@ public class AudioRecordActivity extends AppCompatActivity
         }
 
         String url= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {
                     @Override
-                    public void onResponse(String response) {
-                        Log.d("Response", response);
+                    public void onResponse(String response)
+                    {
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener()
                 {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("ERROR","error => "+error.toString());
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                     }
-                }
-        ) {
-            // this is the relevant method
+                })
+        {
             @Override
-            public byte[] getBody() throws AuthFailureError {
+            protected Map<String, String> getParams()
+            {
+                Map<String, String> params = new HashMap<String, String>();
                 //start read from audio file
                 String audioString="";
 
@@ -491,44 +496,20 @@ public class AudioRecordActivity extends AppCompatActivity
                     // e.printStackTrace();
                     audioString="Error: can't show help.";
                 }
+                //fieldName=field1&fieldType=FreeText&language=en&clientId=68174861&serviceId=58469251&audio="+audioString;
+                params.put("fieldName", "field1");
+                params.put("fieldType", "FreeText");
+                params.put("language", "en-US");
+                params.put("clientId", "68174861");
+                params.put("serviceId", "58469251");
+                params.put("audio", audioString);
 
-                String httpPostBody= null;
-               /* try {
-                   httpPostBody = URLEncoder.encode("fieldName", "UTF-8")
-                            + "=" + URLEncoder.encode("field1", "UTF-8")
-
-                            + "&" + URLEncoder.encode("fieldType", "UTF-8")
-                            + "=" +URLEncoder.encode("FreeText", "UTF-8")
-
-                            + "&" + URLEncoder.encode("language", "UTF-8")
-                            + "=" +URLEncoder.encode("en-US", "UTF-8")
-
-                            + "&" + URLEncoder.encode("serviceId", "UTF-8")
-                            + "=" +URLEncoder.encode("58469251", "UTF-8")
-
-                            + "&" + URLEncoder.encode("clientId", "UTF-8")
-                            + "=" +URLEncoder.encode("68174861", "UTF-8")
-
-                            + "&" + URLEncoder.encode("audio", "UTF-8")
-                            + "=" +URLEncoder.encode(audioString, "UTF-8");
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }*/
-                httpPostBody= "fieldName=field1&fieldType=FreeText&language=en&clientId=68174861&serviceId=58469251&audio="+audioString;
-                Log.e("====>postBody",httpPostBody);
-                // usually you'd have a field with some values you'd want to escape, you need to do it yourself if overriding getBody. here's how you do it
-                try {
-                    httpPostBody=httpPostBody+"&randomFieldFilledWithAwkwardCharacters="+URLEncoder.encode("{{%stuffToBe Escaped/","UTF-8");
-                } catch (UnsupportedEncodingException exception) {
-                    Log.e("ERROR", "exception", exception);
-                    // return null and don't pass any POST string if you encounter encoding error
-                    return null;
-                }
-                return httpPostBody.getBytes();
+                Log.e("---------",params.toString());
+                return params;
             }
         };
-        queue.add(postRequest);
+
+        queue.add(strRequest);
     }
 
 }
