@@ -1,5 +1,6 @@
 package com.example.avigail.lastproject;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -45,11 +46,12 @@ public class LayoutActivity extends Activity {
     private static final String TAG = "layuot activity";
     private final int SPEECH_RECOGNITION_CODE = 1;
     AppAdapter appAdapter;
-    LinearLayout linearLayout;
     TextView layoutTitle;
     RelativeLayout layout;
     TextView leftMessage;
     TextView rightMessage;
+    String currentFiledName;
+    TextToSpeech t1;
 
 
 
@@ -92,13 +94,21 @@ public class LayoutActivity extends Activity {
                             ArrayList<Field> currentFileds = arrayOfLayouts.get(i).fileds;
                             //display
                             for (int j = 0,k=0; j < currentFileds.size() && k< currentFileds.size()*2; j++,k+=2) {
-                                final String currentFiledName = currentFileds.get(j).filedName;
+                                currentFiledName = currentFileds.get(j).filedName;
                                 Toast.makeText(getApplicationContext(), currentFiledName,Toast.LENGTH_SHORT).show();
                                 makeLeftMessage(currentFiledName,k);
+
+                                //Create instance for AsyncCallWS
+                                AsyncCall task = new AsyncCall();
+                                //Call execute
+                                task.execute();
                                 makeRightMessage("!!!!",k+1);
-                                Intent myIntent = new Intent(LayoutActivity.this, SpeechService.class);
-                                myIntent.putExtra("WORD", currentFiledName);
-                                startService(myIntent);
+
+
+
+                                //Intent myIntent = new Intent(LayoutActivity.this, SpeechService.class);
+                                //myIntent.putExtra("WORD", currentFiledName);
+                               // startService(myIntent);
                                /* Intent intent = new Intent(LayoutActivity.this, AudioRecordService.class);
                                 startService(intent);*/
                                /* Handler handler = new Handler();
@@ -316,6 +326,80 @@ public class LayoutActivity extends Activity {
         relativeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         relativeLayoutParams.setMargins(0,0,30,0);
         layout.addView(rowTextView,relativeLayoutParams);
+
+    }
+    public void callTTS(){
+      /*  t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = t1.setLanguage(Locale.US);
+                }
+            }
+        });
+        t1.speak(currentFiledName, TextToSpeech.QUEUE_FLUSH, null);*/
+        RequestQueue queue = Volley.newRequestQueue(this);
+        //final String URL = "";
+        String afterDecode="";
+
+        try {
+            afterDecode = URLEncoder.encode("hi", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //int fieldId = data.getIntExtra("FIELD_ID",1);
+                    /*Toast.makeText(getApplicationContext(),
+                            " After Algorithm "+fieldId,
+                            Toast.LENGTH_SHORT).show();*/
+
+        //final TextView answer = (TextView) findViewById(getResources().getIdentifier("answer", "id", getPackageName()));
+       // Log.e("===>","!!")
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingle?fieldName=date&fieldType=FreeTextNumeric&possibleValues=string&possibleValues=string&userValues="+afterDecode+"&clientId=68174861&serviceId=58469251";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        Log.e("Response is",response);
+
+                        // mTextView.setText(response);
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("That didn't work!",error.toString());
+                // mTextView.setText("Error");
+            }
+        });
+        queue.add(stringRequest);
+// add the request object to the queue to be executed
+    }
+    class AsyncCall extends AsyncTask<String, Void, Void> {
+        private static final String TAG = "AsyncCall";
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Log.i(TAG, "doInBackground");
+            Log.e("call tts","==");
+            callTTS();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            Log.i(TAG, "onPostExecute");
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Log.i(TAG, "onPreExecute");
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            Log.i(TAG, "onProgressUpdate");
+        }
 
     }
 
