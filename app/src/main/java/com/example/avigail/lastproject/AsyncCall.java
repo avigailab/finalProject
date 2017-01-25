@@ -14,7 +14,6 @@ import android.util.Log;
     protected Void doInBackground(String... params) {
         Log.i(TAG, "doInBackground");
         AppAdapter appAdapter=new AppAdapter();
-        Log.e("call tts",appAdapter.callTTS());
         //getFahrenheit(celcius);
         return null;
     }

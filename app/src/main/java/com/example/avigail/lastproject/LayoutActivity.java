@@ -40,6 +40,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 public class LayoutActivity extends Activity {
 
@@ -52,6 +53,7 @@ public class LayoutActivity extends Activity {
     TextView rightMessage;
     String currentFiledName;
     TextToSpeech t1;
+    int k=0;
 
 
 
@@ -98,11 +100,20 @@ public class LayoutActivity extends Activity {
                                 Toast.makeText(getApplicationContext(), currentFiledName,Toast.LENGTH_SHORT).show();
                                 makeLeftMessage(currentFiledName,k);
 
-                                //Create instance for AsyncCallWS
-                                AsyncCall task = new AsyncCall();
-                                //Call execute
-                                task.execute();
-                                makeRightMessage("!!!!",k+1);
+                                try {
+                                    //Create instance for AsyncCallWS ,execute and wait until it done
+                                    //Log.e("###","before call");
+                                    new AsyncCall().execute().get();
+                                    //Log.e("###","after call");
+
+
+
+
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                }
 
 
 
@@ -380,6 +391,7 @@ public class LayoutActivity extends Activity {
 
         @Override
         protected Void doInBackground(String... params) {
+
             Log.i(TAG, "doInBackground");
             Log.e("call tts","==");
             callTTS();
@@ -389,6 +401,9 @@ public class LayoutActivity extends Activity {
         @Override
         protected void onPostExecute(Void result) {
             Log.i(TAG, "onPostExecute");
+            makeRightMessage("!!!!",k+1);
+            k+=2;
+            Log.e("###","after makeRightMessage");
         }
 
         @Override
