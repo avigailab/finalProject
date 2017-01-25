@@ -53,7 +53,6 @@ public class LayoutActivity extends Activity {
     TextView rightMessage;
     String currentFiledName;
     TextToSpeech t1;
-    int k=0;
 
 
 
@@ -386,6 +385,7 @@ public class LayoutActivity extends Activity {
         queue.add(stringRequest);
 // add the request object to the queue to be executed
     }
+
     class AsyncCall extends AsyncTask<String, Void, Void> {
         private static final String TAG = "AsyncCall";
 
@@ -394,16 +394,13 @@ public class LayoutActivity extends Activity {
 
             Log.i(TAG, "doInBackground");
             Log.e("call tts","==");
-            callTTS();
+            //callTTS();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             Log.i(TAG, "onPostExecute");
-            makeRightMessage("!!!!",k+1);
-            k+=2;
-            Log.e("###","after makeRightMessage");
         }
 
         @Override

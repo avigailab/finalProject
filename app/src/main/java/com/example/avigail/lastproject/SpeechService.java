@@ -27,12 +27,7 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
     @Override
     public void onCreate() {
 
-        mTts = new TextToSpeech(this,
-                this  // OnInitListener
-        );
-        mTts.setSpeechRate(0.5f);
-        Log.v(TAG, "oncreate_service");
-        str =DEFULT_WORD;
+
         super.onCreate();
     }
 
@@ -75,7 +70,7 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
     }
     private void speak(String str) {
         mTts.speak(str,
-                TextToSpeech.QUEUE_FLUSH,
+                TextToSpeech.QUEUE_ADD,
                 null);
     }
 
