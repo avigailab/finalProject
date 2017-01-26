@@ -165,8 +165,8 @@ public class AudioRecordActivity extends AppCompatActivity
                         Log.i("TAG", "Save audio to file.");
 
                         // Save audio to file.
-                       // String filepath = Environment.getExternalStoragePublicDirectory("/audio").getPath();
-                       String filepath=getApplicationContext().getFilesDir()+"";
+                        String filepath = Environment.getExternalStoragePublicDirectory("/audio").getPath();
+                       //String filepath=getApplicationContext().getFilesDir()+"";
                                 File file = new File(filepath,"AudioRecorder");
                         if( !file.exists() )
                             file.mkdirs();

@@ -32,7 +32,9 @@ public class LoginActivity extends AppCompatActivity {
                     password.getText().toString().equals("admin")) {
                 Toast.makeText(getApplicationContext(), "Hello admin!",
                         Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, AudioRecordActivity.class);
+               /* Intent intent = new Intent(this, AudioRecordActivity.class);
+                startActivity(intent);*/
+                 Intent intent = new Intent(this, LayoutActivity.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(getApplicationContext(), "Seems like you 're not admin!",
