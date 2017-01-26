@@ -42,18 +42,18 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-public class LayoutActivity extends Activity {
+public class LayoutActivity extends Activity implements
+        TextToSpeech.OnInitListener{
 
     private static final String TAG = "layuot activity";
     private final int SPEECH_RECOGNITION_CODE = 1;
-    AppAdapter appAdapter;
-    TextView layoutTitle;
-    RelativeLayout layout;
-    TextView leftMessage;
-    TextView rightMessage;
-    String currentFiledName;
-    TextToSpeech t1;
-
+    private AppAdapter appAdapter;
+    private TextView layoutTitle;
+    private RelativeLayout layout;
+    private TextView leftMessage;
+    private  TextView rightMessage;
+    private String currentFiledName;
+    private TextToSpeech textToSpeech;
 
 
     @Override
@@ -67,6 +67,7 @@ public class LayoutActivity extends Activity {
         layout = (RelativeLayout) findViewById(R.id.messages);
         leftMessage = (TextView) findViewById(R.id.leftMessage);
         rightMessage = (TextView) findViewById(R.id.rightMessage);
+        textToSpeech = new TextToSpeech(this, this);
         /*for (int j = 0; j < 30; j++) {
             if(j%2==0)
                 makeLeftMessage(j + "!!!!!!!!!!!!!",j);
@@ -74,6 +75,7 @@ public class LayoutActivity extends Activity {
                 makeRightMessage(j + "!!!!!!!!!!!!!",j);
         }*/
         getLayoutForUser();
+
     }
     private void getLayoutForUser() {
         Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
@@ -385,7 +387,50 @@ public class LayoutActivity extends Activity {
         queue.add(stringRequest);
 // add the request object to the queue to be executed
     }
+    /**
+     * a callback to be invoked indicating the completion of the TextToSpeech
+     * engine initialization.
+     *
+     * @see android.speech.tts.TextToSpeech.OnInitListener#onInit(int)
+     */
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("error", "This Language is not supported");
+            } else {
+                convertTextToSpeech(currentFiledName);
+            }
+        } else {
+            Log.e("error", "Initilization Failed!");
+        }
+    }
 
+    /**
+     * Releases the resources used by the TextToSpeech engine. It is good
+     * practice for instance to call this method in the onDestroy() method of an
+     * Activity so the TextToSpeech engine can be cleanly stopped.
+     *
+     * @see android.app.Activity#onDestroy()
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        textToSpeech.shutdown();
+    }
+
+    /**
+     * Speaks the string using the specified queuing strategy and speech
+     * parameters.
+     */
+    private void convertTextToSpeech(String text) {
+        if (null == text || "".equals(text)) {
+            text = "Please give some input.";
+        }
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
 
     class AsyncCall extends AsyncTask<String, Void, Void> {
         private static final String TAG = "AsyncCall";
@@ -396,6 +441,7 @@ public class LayoutActivity extends Activity {
             Log.i(TAG, "doInBackground");
             Log.e("call tts","==");
             //callTTS();
+            convertTextToSpeech(currentFiledName);
             return null;
         }
 
