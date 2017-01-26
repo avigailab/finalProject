@@ -386,6 +386,7 @@ public class LayoutActivity extends Activity {
 // add the request object to the queue to be executed
     }
 
+
     class AsyncCall extends AsyncTask<String, Void, Void> {
         private static final String TAG = "AsyncCall";
 

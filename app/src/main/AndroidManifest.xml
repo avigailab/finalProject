@@ -36,7 +36,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".PlayerActivity"></activity>
+        <activity android:name=".TextToSpeechActivity"></activity>
     </application>
 
 </manifest>
