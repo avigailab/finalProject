@@ -27,7 +27,7 @@
         </activity>
         <activity android:name=".LayoutActivity" />
 
-        <service android:name=".SpeechService" />
+        <service android:enabled="true" android:name=".SpeechService" />
 
         <activity android:name=".AudioRecordActivity" />
 

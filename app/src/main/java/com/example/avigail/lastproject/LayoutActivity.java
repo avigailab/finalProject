@@ -42,8 +42,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-public class LayoutActivity extends Activity implements
-        TextToSpeech.OnInitListener{
+public class LayoutActivity extends Activity {
 
     private static final String TAG = "layuot activity";
     private final int SPEECH_RECOGNITION_CODE = 1;
@@ -67,14 +66,20 @@ public class LayoutActivity extends Activity implements
         layout = (RelativeLayout) findViewById(R.id.messages);
         leftMessage = (TextView) findViewById(R.id.leftMessage);
         rightMessage = (TextView) findViewById(R.id.rightMessage);
-        textToSpeech = new TextToSpeech(this, this);
-        /*for (int j = 0; j < 30; j++) {
-            if(j%2==0)
-                makeLeftMessage(j + "!!!!!!!!!!!!!",j);
-            else
-                makeRightMessage(j + "!!!!!!!!!!!!!",j);
-        }*/
-        getLayoutForUser();
+        //getLayoutForUser();
+        //callTTSService();
+
+        for(int i=1;i<=5;i++) {
+            try {
+                new AsyncCall().execute().get();
+                Log.e("=====","call number "+i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
     private void getLayoutForUser() {
@@ -106,10 +111,6 @@ public class LayoutActivity extends Activity implements
                                     //Log.e("###","before call");
                                     new AsyncCall().execute().get();
                                     //Log.e("###","after call");
-
-
-
-
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 } catch (ExecutionException e) {
@@ -206,96 +207,6 @@ public class LayoutActivity extends Activity implements
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-    private void startSpeechToText(int id) {
-
-        //Timer
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-       // intent.putExtra("FIELD_ID", id+100);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                "Speak something...");
-        try {
-            startActivityForResult(intent, SPEECH_RECOGNITION_CODE);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(),
-                    "Sorry! Speech recognition is not supported in this device.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case SPEECH_RECOGNITION_CODE: {
-                // SharedPreferences
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = preferences.edit();
-                if (resultCode == RESULT_OK && null != data) {
-
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    String text = result.get(0);
-                    Log.v("------->>>>",result.toString());
-
-                    Toast.makeText(getApplicationContext(),
-                            " After STT "+text,
-                            Toast.LENGTH_SHORT).show();
-                    RequestQueue queue = Volley.newRequestQueue(this);
-                    //final String URL = "";
-                    String afterDecode="";
-
-                    try {
-                        afterDecode = URLEncoder.encode(text, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    //int fieldId = data.getIntExtra("FIELD_ID",1);
-                    /*Toast.makeText(getApplicationContext(),
-                            " After Algorithm "+fieldId,
-                            Toast.LENGTH_SHORT).show();*/
-
-                    final TextView answer = (TextView) findViewById(getResources().getIdentifier("answer", "id", getPackageName()));
-                    answer.setText(text);
-
-                    String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingle?fieldName=date&fieldType=FreeTextNumeric&possibleValues=string&possibleValues=string&userValues="+afterDecode+"&clientId=68174861&serviceId=58469251";
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-
-                                    Log.e("Response is",response);
-
-                                    // mTextView.setText(response);
-
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("That didn't work!",error.toString());
-                            // mTextView.setText("Error");
-                        }
-                    });
-                    queue.add(stringRequest);
-// add the request object to the queue to be executed
-                    //  ApplicationController.getInstance().addToRequestQueue(req);
-
-                    AppAdapter appAdapter= new AppAdapter();
-                    String newWord=appAdapter.bestFive(text);
-
-                    Toast.makeText(getApplicationContext(),
-                            " After Algorithm "+text,
-                            Toast.LENGTH_SHORT).show();
-
-
-                }
-                break;
-            }
-
-        }
-    }
     public void makeLeftMessage(String body,int id){
         TextView rowTextView = new TextView(getApplicationContext());
         // set some properties of rowTextView or something
@@ -341,15 +252,7 @@ public class LayoutActivity extends Activity implements
 
     }
     public void callTTS(){
-      /*  t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    int result = t1.setLanguage(Locale.US);
-                }
-            }
-        });
-        t1.speak(currentFiledName, TextToSpeech.QUEUE_FLUSH, null);*/
+
         RequestQueue queue = Volley.newRequestQueue(this);
         //final String URL = "";
         String afterDecode="";
@@ -387,49 +290,9 @@ public class LayoutActivity extends Activity implements
         queue.add(stringRequest);
 // add the request object to the queue to be executed
     }
-    /**
-     * a callback to be invoked indicating the completion of the TextToSpeech
-     * engine initialization.
-     *
-     * @see android.speech.tts.TextToSpeech.OnInitListener#onInit(int)
-     */
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("error", "This Language is not supported");
-            } else {
-                convertTextToSpeech(currentFiledName);
-            }
-        } else {
-            Log.e("error", "Initilization Failed!");
-        }
-    }
 
-    /**
-     * Releases the resources used by the TextToSpeech engine. It is good
-     * practice for instance to call this method in the onDestroy() method of an
-     * Activity so the TextToSpeech engine can be cleanly stopped.
-     *
-     * @see android.app.Activity#onDestroy()
-     */
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        textToSpeech.shutdown();
-    }
-
-    /**
-     * Speaks the string using the specified queuing strategy and speech
-     * parameters.
-     */
-    private void convertTextToSpeech(String text) {
-        if (null == text || "".equals(text)) {
-            text = "Please give some input.";
-        }
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    public void callTTSService(){
+        this.startService(new Intent(this, SpeechService.class));
     }
 
     class AsyncCall extends AsyncTask<String, Void, Void> {
@@ -440,8 +303,10 @@ public class LayoutActivity extends Activity implements
 
             Log.i(TAG, "doInBackground");
             Log.e("call tts","==");
+            callTTSService();
             //callTTS();
-            convertTextToSpeech(currentFiledName);
+            //convertTextToSpeech(currentFiledName);
+
             return null;
         }
 
