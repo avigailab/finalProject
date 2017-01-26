@@ -1,6 +1,8 @@
 package com.example.avigail.lastproject;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.os.Build;
@@ -31,6 +33,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
 import android.widget.Toast;
@@ -45,8 +48,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.provider.MediaStore;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -154,13 +159,13 @@ public class AudioRecordActivity extends AppCompatActivity
                         recording = true;
                     }
 
-                    //if( (temp >= 0 && temp <= 350) && recording == true )
-                    if(temp>3140)
+                    if( (temp >= 0 && temp <= 350) && recording == true )
+                    //if(temp>140)
                     {
                         Log.i("TAG", "Save audio to file.");
 
                         // Save audio to file.
-                        //String filepath = Environment.getExternalStoragePublicDirectory("/audio").getPath();
+                       // String filepath = Environment.getExternalStoragePublicDirectory("/audio").getPath();
                        String filepath=getApplicationContext().getFilesDir()+"";
                                 File file = new File(filepath,"AudioRecorder");
                         if( !file.exists() )
@@ -283,10 +288,13 @@ public class AudioRecordActivity extends AppCompatActivity
                 } else {
                     requestPermission();
                 }
-*/              String encodeFile = encodeAudio(getApplicationContext().getFilesDir()+"AudioRecorder/aa.flac");
-                Log.d("ENCODE FILE",encodeFile);
-                sendRecordToApi(encodeFile);
 
+*/
+                //Log.d("----","before call encode audio");
+                String encodeFile = encodeAudio(getApplicationContext().getFilesDir()+"AudioRecorder/new.flac");
+               // Log.i("ENCODE FILE",encodeFile.toString()+"");
+                sendRecordToApi(encodeFile);
+                //uploadImage();
 
             }
         });
@@ -405,7 +413,6 @@ public class AudioRecordActivity extends AppCompatActivity
     }
 
     private String encodeAudio(String selectedPath) {
-
         byte[] audioBytes;
         try {
 
@@ -417,51 +424,109 @@ public class AudioRecordActivity extends AppCompatActivity
             //if( !file.exists() )
               //  file.mkdirs();
 
-            String fn = file.getAbsolutePath() + "/aa.flac";
-
+            String fn = file.getAbsolutePath() + "/new.flac";
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             FileInputStream fis = new FileInputStream(new File(fn));
             byte[] buf = new byte[1024];
             int n;
             while (-1 != (n = fis.read(buf)))
                 baos.write(buf, 0, n);
+            baos.close();
             audioBytes = baos.toByteArray();
 
             // Here goes the Base64 string
             String _audioBase64 = Base64.encodeToString(audioBytes, Base64.DEFAULT);
+            Log.d("ENCODE FILE",_audioBase64);
             return _audioBase64;
 
         } catch (Exception e) {
             Log.e("audio encode execption","");
             //DiagnosticHelper.writeException(e);
         }
-        return "nofile";
+        return "";
+    }
+    public String getEncodeFile(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
+    private void uploadImage(){
+        //Showing the progress dialog
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
+        //final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        //Disimissing the progress dialog
+                       // loading.dismiss();
+                        //Showing toast message of the response
+                        Toast.makeText(getApplicationContext(), s , Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        //Dismissing the progress dialog
+                       // loading.dismiss();
+                        Log.d("volley error","error respones");
+                        //Showing toast
+//                        Toast.makeText(getApplicationContext(), volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                //Converting Bitmap to String
+
+
+                //Creating parameters
+                Map<String,String> params = new Hashtable<String, String>();
+                String filepath=getApplicationContext().getFilesDir()+"";
+                File file = new File(filepath,"AudioRecorder");
+                String fn = file.getAbsolutePath() + "/new.flac";
+                String encodeFile = encodeAudio(fn);
+                //Adding parameters
+                params.put("audio",encodeFile);
+                params.put("fieldName","date");
+                params.put("fieldType","Any");
+                params.put("language","en-US");
+                params.put("clientId","68174861");
+                params.put("serviceId","58469251");
+                //returning parameters
+                return params;
+            }
+
+        };
+
+        //Creating a Request Queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        //Adding request to the queue
+        requestQueue.add(stringRequest);
     }
 
     private void sendRecordToApi(String encodeFile) {
+
         Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
                 Toast.LENGTH_LONG).show();
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        // final ListView listView = (ListView) findViewById(R.id.layoutsList);
-        String afterDecode="";
-
-        try {
-            afterDecode = URLEncoder.encode(encodeFile, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
-        afterDecode="ZkxhQw==";
+
         JSONObject params = new JSONObject();
+        Log.d("ENCODE FILE",encodeFile.toString());
+
         try {
-            params.put("audio",afterDecode);
+
+            params.put("audio",encodeFile);
             params.put("fieldName","date");
             params.put("fieldType","Any");
             params.put("language","en");
             params.put("clientId","68174861");
             params.put("serviceId","58469251");
+            Log.d("on try===", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -499,7 +564,7 @@ public class AudioRecordActivity extends AppCompatActivity
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                // pDialog.hide();
             }
-        }) {
+        }) ;/*{
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -508,7 +573,7 @@ public class AudioRecordActivity extends AppCompatActivity
                 return headers;
             }
 
-        };
+        };*/
         queue.add(jsonObjReq);
     }
 
