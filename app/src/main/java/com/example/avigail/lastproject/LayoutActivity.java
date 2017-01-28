@@ -42,7 +42,12 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-public class LayoutActivity extends Activity {
+import java.util.HashMap;
+import java.util.StringTokenizer;
+import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
+
+public class LayoutActivity extends Activity implements TextToSpeech.OnInitListener,
+        OnUtteranceCompletedListener{
 
     private static final String TAG = "layuot activity";
     private final int SPEECH_RECOGNITION_CODE = 1;
@@ -54,7 +59,76 @@ public class LayoutActivity extends Activity {
     private String currentFiledName;
     private TextToSpeech textToSpeech;
 
+    private int uttCount = 0;
+    private int lastUtterance = -1;
+    private String words;
+    private HashMap<String, String> params = new HashMap<String, String>();
+    private static final int REQ_TTS_STATUS_CHECK = 0;
+    private TextToSpeech mTts;
 
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        if (requestCode == REQ_TTS_STATUS_CHECK) {
+            switch (resultCode) {
+                case TextToSpeech.Engine.CHECK_VOICE_DATA_PASS:
+                    // TTS is up and running
+                    mTts = new TextToSpeech(this, this);
+                    Log.v(TAG, "Pico is installed okay");
+                    break;
+                case TextToSpeech.Engine.CHECK_VOICE_DATA_BAD_DATA:
+                case TextToSpeech.Engine.CHECK_VOICE_DATA_MISSING_DATA:
+                case TextToSpeech.Engine.CHECK_VOICE_DATA_MISSING_VOLUME:
+                    // missing data, install it
+                    Log.v(TAG, "Need language stuff: " + resultCode);
+                    Intent installIntent = new Intent();
+                    installIntent.setAction(
+                            TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                    startActivity(installIntent);
+                    break;
+                case TextToSpeech.Engine.CHECK_VOICE_DATA_FAIL:
+                default:
+                    Log.e(TAG, "Got a failure. TTS not available");
+            }
+        }
+        else {
+            // Got something else
+        }
+    }
+    @Override
+    public void onInit(int status) {
+        if( status == TextToSpeech.SUCCESS) {
+            mTts.setOnUtteranceCompletedListener(this);
+        }
+    }
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        // if we're losing focus, stop talking
+        if( mTts != null)
+            mTts.stop();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        mTts.shutdown();
+    }
+    @Override
+    public void onUtteranceCompleted(String uttId) {
+        Log.v(TAG, "Got completed message for uttId: " + uttId);
+        lastUtterance = Integer.parseInt(uttId);
+    }
+
+    public void doSpeak() {
+        StringTokenizer st = new StringTokenizer(words.toString(),",.");
+        while (st.hasMoreTokens()) {
+            params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+                    String.valueOf(uttCount++));
+            mTts.speak(st.nextToken(), TextToSpeech.QUEUE_ADD, params);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -68,17 +142,39 @@ public class LayoutActivity extends Activity {
         rightMessage = (TextView) findViewById(R.id.rightMessage);
         //getLayoutForUser();
         //callTTSService();
+        words = "hello,.world,.one";
 
-        for(int i=1;i<=5;i++) {
-            try {
+        // Check to be sure that TTS exists and is okay to use
+        Intent checkIntent = new Intent();
+        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(checkIntent, REQ_TTS_STATUS_CHECK);
+       // for(int i=1;i<=5;i++) {
+            /*try {
                 new AsyncCall().execute().get();
                 Log.e("=====","call number "+i);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
+            }*/
+           /* Intent intent = new Intent(Intent.ACTION_SYNC, null, this.getApplicationContext(), SpeechService.class);
+            intent.putExtra("spoken_txt", "hello world");
+            this.getApplicationContext().startService(intent);
+
+        }*/
+        Button speakbtn = (Button) findViewById(R.id.speak);
+        speakbtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                //read field name
+                Log.d(TAG,"on click event");
+
+                doSpeak();
+
             }
-        }
+        });
+
 
 
     }
