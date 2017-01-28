@@ -96,8 +96,17 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     }
     @Override
     public void onInit(int status) {
+        Log.d("oninit--------","on init func");
         if( status == TextToSpeech.SUCCESS) {
             mTts.setOnUtteranceCompletedListener(this);
+            int result = mTts.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                doSpeak();
+            }
         }
     }
     @Override
@@ -122,6 +131,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     }
 
     public void doSpeak() {
+        Log.d("doSpeak----","before while");
         StringTokenizer st = new StringTokenizer(words.toString(),",.");
         while (st.hasMoreTokens()) {
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
@@ -162,7 +172,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             this.getApplicationContext().startService(intent);
 
         }*/
-        Button speakbtn = (Button) findViewById(R.id.speak);
+        /*Button speakbtn = (Button) findViewById(R.id.speak);
         speakbtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -173,7 +183,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                 doSpeak();
 
             }
-        });
+        });*/
 
 
 
