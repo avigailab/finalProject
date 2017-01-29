@@ -165,13 +165,23 @@ public class AudioRecordActivity extends AppCompatActivity
                         Log.i("TAG", "Save audio to file.");
 
                         // Save audio to file.
-                        String filepath = Environment.getExternalStoragePublicDirectory("/audio").getPath();
+                       /* String filepath = Environment.getExternalStoragePublicDirectory("/audio").getPath();
                        //String filepath=getApplicationContext().getFilesDir()+"";
                                 File file = new File(filepath,"AudioRecorder");
                         if( !file.exists() )
                             file.mkdirs();
 
-                        String fn = file.getAbsolutePath() + "/aa.flac";
+                        String fn = file.getAbsolutePath() + "/aa.flac";*/
+                        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+                        File folder = new File(path + "/audioRecord");
+                        if (!folder.exists()) {
+                            folder.mkdir();
+                        }
+                        File file = new File(folder.getPath() + "/aa.wav");
+
+
+                        String fn = file.getAbsolutePath() + "/aa.wav";
                         //String fn = file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".flac";
                         long totalAudioLen  = 0;
                         long totalDataLen   = totalAudioLen + 36;

@@ -17,8 +17,8 @@ public class SpeechService extends Service implements OnInitListener, OnUtteranc
     int ready = 999;
     @Override
     public void onCreate() {
-
-        Log.d("", "TTSService Created!");
+        super.onCreate();
+        Log.d("--------", "TTSService Created!");
         mTTS = new TextToSpeech(getApplicationContext(), this);
 
         new Thread(new Runnable() {
@@ -28,13 +28,14 @@ public class SpeechService extends Service implements OnInitListener, OnUtteranc
                     //wait
                 }
                 if(ready==1){
+                    Log.d("READY","!!!!");
                     HashMap<String, String> myHashStream = new HashMap<String, String>();
                     myHashStream.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_NOTIFICATION));
                     myHashStream.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "1");
 
                     mTTS.setLanguage(Locale.US);
                     //mTTS.setOnUtteranceCompletedListener(this);
-                    mTTS.speak("I'm saying some stuff to you!", TextToSpeech.QUEUE_FLUSH, myHashStream);
+                    mTTS.speak("I'm saying some stuff to you!", TextToSpeech.QUEUE_ADD, myHashStream);
 
                 } else {
                     Log.d("", "not ready");
@@ -80,12 +81,12 @@ public class SpeechService extends Service implements OnInitListener, OnUtteranc
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
       Log.e("","onstatrt ");
-        return Service.START_NOT_STICKY;
+        return Service.START_STICKY;
     }
 
 
-}
-*/
+}*/
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -140,6 +141,7 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
 
     @Override
     public void onInit(int status) {
+        Log.d("SSERVICE oninit","launched");
         if(tts==null)
         {
             tts = new TextToSpeech(getApplicationContext(), this);
@@ -168,7 +170,7 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
         }
         if (tts != null) {
 
-            tts.speak(s, TextToSpeech.QUEUE_ADD, null);
+            tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
 }

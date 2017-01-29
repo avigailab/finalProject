@@ -101,12 +101,12 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             mTts.setOnUtteranceCompletedListener(this);
             int result = mTts.setLanguage(Locale.US);
 
-            if (result == TextToSpeech.LANG_MISSING_DATA
+           /* if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
             } else {
                 doSpeak();
-            }
+            }*/
         }
     }
     @Override
@@ -137,6 +137,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     String.valueOf(uttCount++));
             mTts.speak(st.nextToken(), TextToSpeech.QUEUE_ADD, params);
+            callApi();
         }
     }
     @Override
@@ -172,7 +173,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             this.getApplicationContext().startService(intent);
 
         }*/
-        /*Button speakbtn = (Button) findViewById(R.id.speak);
+        Button speakbtn = (Button) findViewById(R.id.speak);
         speakbtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -183,10 +184,34 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                 doSpeak();
 
             }
-        });*/
+        });
 
 
 
+    }
+    private void callApi(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // final ListView listView = (ListView) findViewById(R.id.layoutsList);
+        Log.d("on callApi func----","on callApi!");
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/GetLayoutsForUser?tukLogin=orayrs@gmail.com&serviceId=58469251&clientId=68174861";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    Log.d("request sucsses!!",response.toString());
+                    }
+
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // mTextView.setText("That didn't work!");
+                Log.e("Error","");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
     private void getLayoutForUser() {
         Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
