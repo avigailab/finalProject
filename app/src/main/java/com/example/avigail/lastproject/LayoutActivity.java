@@ -192,11 +192,11 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
             currentFiledName=currentLayout.fields.get(fieldIndex).filedName;
-            makeLeftMessage(currentFiledName,leftFieldPos);
+            makeLeftMessage(currentFiledName,fieldIndex,leftFieldPos);
             mTts.speak(currentFiledName,TextToSpeech.QUEUE_ADD, params);
             fieldIndex++;
             leftFieldPos+=2;
-            makeRightMessage("...",rightFieldPos);
+            makeRightMessage("...",fieldIndex+100,rightFieldPos);
             rightFieldPos+=2;
 
 
@@ -251,7 +251,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                             for (int j = 0,k=0; j < currentFileds.size() && k< currentFileds.size()*2; j++,k+=2) {
                                 currentFiledName = currentFileds.get(j).filedName;
                                 Toast.makeText(getApplicationContext(), currentFiledName,Toast.LENGTH_SHORT).show();
-                                makeLeftMessage(currentFiledName,k);
+                                //makeLeftMessage(currentFiledName,k);
 
                                 try {
                                     //Create instance for AsyncCallWS ,execute and wait until it done
@@ -311,13 +311,13 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-    public void makeLeftMessage(String body,int id){
+    public void makeLeftMessage(String body,int id,int pos){
         TextView rowTextView = new TextView(getApplicationContext());
         // set some properties of rowTextView or something
         rowTextView.setText(body);
         rowTextView.setId(id);
         rowTextView.setPadding(50, 35, 50, 10);
-        rowTextView.setY(150 * id);
+        rowTextView.setY(150 * pos);
         GradientDrawable gd = new GradientDrawable();
         gd.setCornerRadius(100);
         //gd.setStroke(3, 0xFF000000);
@@ -333,13 +333,13 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         layout.addView(rowTextView,relativeLayoutParams);
 
     }
-    public void makeRightMessage(CharSequence body, int id){
+    public void makeRightMessage(CharSequence body, int id, int pos){
         TextView rowTextView = new TextView(getApplicationContext());
         // set some properties of rowTextView
         rowTextView.setText(body);
         rowTextView.setId(id);
         rowTextView.setPadding(50, 35, 50, 10);
-        rowTextView.setY(150 * id);
+        rowTextView.setY(150 * pos);
         GradientDrawable gd = new GradientDrawable();
         gd.setCornerRadius(100);
         gd.setColor(Color.parseColor("#E7E7E4")); // Changes this drawbale to use a single color instead of a gradient
