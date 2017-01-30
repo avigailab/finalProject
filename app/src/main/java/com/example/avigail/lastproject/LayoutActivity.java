@@ -83,7 +83,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         layout = (RelativeLayout) findViewById(R.id.messages);
         leftMessage = (TextView) findViewById(R.id.leftMessage);
         rightMessage = (TextView) findViewById(R.id.rightMessage);
-        //getLayoutForUser();
         // Check to be sure that TTS exists and is okay to use
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
@@ -100,17 +99,14 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             public void onClick(View view) {
                 //read field name
                 Log.d(TAG,"on click event");
+                view.setVisibility(View.GONE);
                 currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
                 Log.e(TAG, currentLayout.layoutName);
                 doSpeak();
-
             }
         });
 
-
-
     }
-
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         if (requestCode == REQ_TTS_STATUS_CHECK) {
@@ -229,88 +225,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-    private void getLayoutForUser() {
-        Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
-                Toast.LENGTH_LONG).show();
-        RequestQueue queue = Volley.newRequestQueue(this);
 
-        // final ListView listView = (ListView) findViewById(R.id.layoutsList);
-
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/GetLayoutsForUser?tukLogin=orayrs@gmail.com&serviceId=58469251&clientId=68174861";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        ArrayList<Layout> arrayOfLayouts = appAdapter.getObjectsLayoutsForUser(response);
-                        final ArrayList<String> stringArray = new ArrayList<String>();
-                        for (int i = 0; i < 1; i++) {
-                            layoutTitle.setText(arrayOfLayouts.get(i).layoutName);
-                            ArrayList<Field> currentFileds = arrayOfLayouts.get(i).fields;
-                            //display
-                            for (int j = 0,k=0; j < currentFileds.size() && k< currentFileds.size()*2; j++,k+=2) {
-                                currentFiledName = currentFileds.get(j).filedName;
-                                Toast.makeText(getApplicationContext(), currentFiledName,Toast.LENGTH_SHORT).show();
-                                //makeLeftMessage(currentFiledName,k);
-
-                                try {
-                                    //Create instance for AsyncCallWS ,execute and wait until it done
-                                    //Log.e("###","before call");
-                                    new AsyncCall().execute().get();
-                                    //Log.e("###","after call");
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                }
-
-
-                            }
-                        }
-                    }
-
-                       /* ArrayList<String> stringArray = appAdapter.displayFormLayout(arrayOfLayouts);*
-                        // Define a new Adapter
-                        // First parameter - Context
-                        // Second parameter - Layout for the row
-                        // Third parameter - ID of the TextView to which the data is written
-                        // Forth - the Array of data
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_row_layout_even, R.id.text, stringArray);
-                        // Assign adapter to ListView
-                        listView.setAdapter(adapter);
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                                    long id) {
-                               Log.e("View", String.valueOf(view.getTag()));
-                            }
-                        });
-                        }*/
-                       /* mTextView.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View view) {
-                                //read field name
-                                Log.d(TAG,"on click event");
-
-                                //record from user
-                                startSpeechToText();
-
-                            }
-                        });
-
-
-                    }*/
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // mTextView.setText("That didn't work!");
-                Log.e("Error","");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
     public void makeLeftMessage(String body,int id,int pos){
         TextView rowTextView = new TextView(getApplicationContext());
         // set some properties of rowTextView or something
@@ -544,6 +459,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         protected void onProgressUpdate(Void... values) {
             Log.i(TAG, "onProgressUpdate");
         }
+
 
     }
 
