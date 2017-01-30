@@ -140,21 +140,27 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     public void onUtteranceCompleted(String uttId) {
         Log.v(TAG, "Got completed message for uttId: " + uttId);
         lastUtterance = Integer.parseInt(uttId);
-        startRecordAudio();
-        Log.v(TAG, "Start RECORD!!!!" + uttId);
+
+        try {
+           new AsyncCall().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
     }
 
     public void doSpeak() {
         Log.d("doSpeak----","before while");
         StringTokenizer st = new StringTokenizer(words.toString(),",.");
-        while (st.hasMoreTokens()) {
+        //while (st.hasMoreTokens()) {
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
             mTts.speak(st.nextToken(), TextToSpeech.QUEUE_ADD, params);
             //callApi();
-        }
+        //}
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -533,17 +539,16 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         protected Void doInBackground(String... params) {
 
             Log.i(TAG, "doInBackground");
-            Log.e("call tts","==");
-            callTTSService();
-            //callTTS();
-            //convertTextToSpeech(currentFiledName);
-
+            startRecordAudio();
+            Log.v(TAG, "Start RECORD!!!!");
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
+
             Log.i(TAG, "onPostExecute");
+            doSpeak();
         }
 
         @Override
