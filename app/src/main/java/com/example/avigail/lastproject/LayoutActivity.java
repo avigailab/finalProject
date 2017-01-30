@@ -77,6 +77,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private TextToSpeech mTts;
     AudioRecord audioRecorder;
     int bufferSizeInBytes;
+    StringTokenizer st;
+
 
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
@@ -153,14 +155,13 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
     public void doSpeak() {
         Log.d("doSpeak----","before while");
-        StringTokenizer st = new StringTokenizer(words.toString(),",.");
-        //while (st.hasMoreTokens()) {
+        if(st.hasMoreTokens()) {
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
             mTts.speak(st.nextToken(), TextToSpeech.QUEUE_ADD, params);
             //callApi();
-        //}
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +187,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         //getLayoutForUser();
         //callTTSService();
         words = "hello,.world,.one";
+        st = new StringTokenizer(words.toString(),",.");
+
 
         // Check to be sure that TTS exists and is okay to use
         Intent checkIntent = new Intent();
