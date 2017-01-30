@@ -85,8 +85,9 @@ public class ListFragment extends Fragment {
         /*TextView to= (TextView) view. findViewById(R.id.to);
         to.setText("finish the project");*/
         String[] values=new String[]{
-                "form1","form2","form3"
+                "form11","form2111","form3111"
         };
+
         /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,android.R.id.text1,values);
         listView = (ListView) view.findViewById(R.id.form_list);
         listView.setAdapter(adapter);*/
@@ -98,10 +99,13 @@ public class ListFragment extends Fragment {
 // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.money_spinner, android.R.layout.simple_list_item_1);
+        ArrayAdapter<String> adapter1 = new  ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_list_item_1,
+                values);
 // Specify the layout to use when the list of choices appears
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
-        listView.setAdapter(adapter);
+        listView.setAdapter(adapter1);
 
         //********************************
         // Inflate the layout for this fragment
