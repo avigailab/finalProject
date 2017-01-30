@@ -9,14 +9,14 @@ import java.util.ArrayList;
 public class Layout implements Serializable {
     int id;
     String layoutName;
-    ArrayList<Field> fileds;
+    ArrayList<Field> fields;
     public Layout(int id,String layoutName){
         this.id = id;
         this.layoutName = layoutName;
-        this.fileds = new ArrayList<Field>();
+        this.fields = new ArrayList<Field>();
     }
-    public void setFileds(ArrayList<Field> fileds){
-        this.fileds = fileds;
+    public void setFields(ArrayList<Field> fields){
+        this.fields = fields;
     }
 
 }

@@ -1,32 +1,19 @@
 package com.example.avigail.lastproject;
 
 import android.app.*;
-import android.app.ListFragment;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,8 +29,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -76,6 +61,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     AudioRecord audioRecorder;
     int bufferSizeInBytes;
     StringTokenizer st;
+    Layout currentLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -98,28 +84,10 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         leftMessage = (TextView) findViewById(R.id.leftMessage);
         rightMessage = (TextView) findViewById(R.id.rightMessage);
         //getLayoutForUser();
-        //callTTSService();
-        words = "hello,.world,.one";
-        st = new StringTokenizer(words.toString(),",.");
-
-        //get data
-        Layout layout = (Layout) getIntent().getSerializableExtra("LAYOUT");
-        Log.e(TAG, layout.layoutName);
         // Check to be sure that TTS exists and is okay to use
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, REQ_TTS_STATUS_CHECK);
-        //Log.e(TAG, );
-
-        // for(int i=1;i<=5;i++)
-            /*try {
-                new AsyncCall().execute().get();
-                Log.e("=====","call number "+i);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
            /* Intent intent = new Intent(Intent.ACTION_SYNC, null, this.getApplicationContext(), SpeechService.class);
             intent.putExtra("spoken_txt", "hello world");
             this.getApplicationContext().startService(intent);
@@ -132,7 +100,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             public void onClick(View view) {
                 //read field name
                 Log.d(TAG,"on click event");
-
+                setCurrentLayoutFields();
                 doSpeak();
 
             }
@@ -225,6 +193,19 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             //callApi();
         }
     }
+    public void setCurrentLayoutFields() {
+        //get currentLayout name
+        currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
+        String currentFields="";
+        Log.e(TAG, currentLayout.layoutName);
+        //get current Layout fields name
+        for (int i = 0; i < currentLayout.fields.size(); i++) {
+            currentFields += currentLayout.fields.get(i).filedName;
+            currentFields += ".";
+        }
+        st = new StringTokenizer(currentFields.toString(),",.");
+
+    }
 
     private void callApi(){
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -267,7 +248,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                         final ArrayList<String> stringArray = new ArrayList<String>();
                         for (int i = 0; i < 1; i++) {
                             layoutTitle.setText(arrayOfLayouts.get(i).layoutName);
-                            ArrayList<Field> currentFileds = arrayOfLayouts.get(i).fileds;
+                            ArrayList<Field> currentFileds = arrayOfLayouts.get(i).fields;
                             //display
                             for (int j = 0,k=0; j < currentFileds.size() && k< currentFileds.size()*2; j++,k+=2) {
                                 currentFiledName = currentFileds.get(j).filedName;

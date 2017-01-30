@@ -62,12 +62,12 @@ public class AppAdapter {
                     Field field = new Field(j, fieldName, required, order, dataType);
                     fieldsArray.add(j, field);
                 }
-                currentLayout.setFileds(fieldsArray);
+                currentLayout.setFields(fieldsArray);
                 arrayOfLayouts.add(i, currentLayout);
             }
             /*user.setLayouts(arrayOfLayouts);
             Log.e("user name----", user.userEmail);
-            Log.e("field----", user.layouts.get(0).fileds.get(0).filedName);*/
+            Log.e("field----", user.layouts.get(0).fields.get(0).filedName);*/
             //return arrayOfLayoutInfo;
 
         } catch (SAXException e) {
@@ -86,7 +86,7 @@ public class AppAdapter {
     public  ArrayList<String> displayFormLayout( ArrayList<Layout> arrayOfLayouts ){
         final ArrayList<String> stringArray = new ArrayList<String>();
         for (int i=0;i<1;i++){
-            ArrayList<Field> currentFileds =arrayOfLayouts.get(i).fileds;
+            ArrayList<Field> currentFileds =arrayOfLayouts.get(i).fields;
             for (int j=0;j<currentFileds.size();j++) {
                 String currentFiled=currentFileds.get(j).filedName;
                 stringArray.add(currentFiled);
