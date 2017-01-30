@@ -22,8 +22,21 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -36,35 +49,20 @@ import android.widget.TextView;
  */
 public class ListFragment extends Fragment {
     ListView listView;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private AppAdapter appAdapter;
+    final  String TAG="ListFragment";
+    ArrayList<Layout> arrayOfLayouts;
+    String [] layoutsNames;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    //private OnFragmentInteractionListener mListener;
+    private String LAYOUT;
 
     public ListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListFragment newInstance(String param1, String param2) {
+    public static ListFragment newInstance() {
         ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,58 +70,70 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        /*TextView to= (TextView) view. findViewById(R.id.to);
-        to.setText("finish the project");*/
-        String[] values=new String[]{
-                "form11","form2111","form3111"
-        };
-
-        /*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,android.R.id.text1,values);
+        appAdapter=new AppAdapter();
         listView = (ListView) view.findViewById(R.id.form_list);
-        listView.setAdapter(adapter);*/
-
-        //*******************************
-        //Coins Spinner
-        //Spinner spinner = (Spinner) view.findViewById(R.id.coin_spinner);
-        listView = (ListView) view.findViewById(R.id.form_list);
-// Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.money_spinner, android.R.layout.simple_list_item_1);
-        ArrayAdapter<String> adapter1 = new  ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_list_item_1,
-                values);
-// Specify the layout to use when the list of choices appears
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-        listView.setAdapter(adapter1);
-
-        //********************************
-        // Inflate the layout for this fragment
-        //add click
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.e("---","click "+i);
-                Intent layoutIntent= new Intent(getActivity(),LayoutActivity.class);
-                startActivity(layoutIntent);
-                /*Intent layoutIntent= new Intent(getActivity(),AudioRecordActivity.class);
-                startActivity(layoutIntent);*/
-
-
-
-            }
-        });
-
+        getLayoutForUser();
         return view;
     }
+    private void getLayoutForUser() {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        // final ListView listView = (ListView) findViewById(R.id.layoutsList);
+
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/GetLayoutsForUser?tukLogin=orayrs@gmail.com&serviceId=58469251&clientId=68174861";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("response-------------",response.toString());
+                        if(response!=null) {
+                            arrayOfLayouts = appAdapter.getObjectsLayoutsForUser(response);
+                            layoutsNames= new String[arrayOfLayouts.size()];
+                            for (int i = 0; i < arrayOfLayouts.size(); i++) {
+                                Log.e(TAG, "layout number " + i);
+                                layoutsNames[i] = arrayOfLayouts.get(i).layoutName;
+                            }
+
+                            // Create an ArrayAdapter using the string array and a default spinner layout
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                                    android.R.layout.simple_list_item_1,
+                                    layoutsNames);
+                            // Specify the layout to use when the list of choices appears
+                            //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            // Apply the adapter to the spinner
+                            listView.setAdapter(adapter);
+
+                            //********************************
+                            // Inflate the layout for this fragment
+                            //add click
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    Log.e("---", "click " + i);
+                                    Intent layoutIntent = new Intent(getActivity(), LayoutActivity.class);
+                                    layoutIntent.putExtra(LAYOUT, (Serializable) arrayOfLayouts.get(i));
+                                    startActivity(layoutIntent);
+
+                                }
+                            });
+                        }
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // mTextView.setText("That didn't work!");
+                Log.e("Error","");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
 }

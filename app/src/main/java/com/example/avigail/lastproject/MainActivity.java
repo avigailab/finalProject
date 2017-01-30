@@ -69,11 +69,11 @@ public class MainActivity extends AppCompatActivity
 
                 //Log.e("on switch",'position");
                 case 0: // Fragment # 0 - This will show FirstFragment
-                    return ListFragment.newInstance("", "Page # 1");
+                    return ListFragment.newInstance();
                 case 1: // Fragment # 0 - This will show FirstFragment different title
-                    return ListFragment.newInstance("", "Page # 2");
+                    return ListFragment.newInstance();
                 case 2: // Fragment # 1 - This will show SecondFragment
-                    return ListFragment.newInstance("", "Page # 3");
+                    return ListFragment.newInstance();
                 default:
                     return null;
             }

@@ -61,6 +61,11 @@ public class LoginActivity extends AppCompatActivity {
             attemptsLeftTV = (TextView) findViewById(R.id.attemptsLeftTV);
             numberOfRemainingLoginAttemptsTV = (TextView) findViewById(R.id.numberOfRemainingLoginAttemptsTV);
             numberOfRemainingLoginAttemptsTV.setText(Integer.toString(numberOfRemainingLoginAttempts));
+
+            //login!!!!!!
+            username.setText("admin");
+            password.setText("admin");
+            //login!!!!!!
         }
         public String getUserName(){
             return "admin";

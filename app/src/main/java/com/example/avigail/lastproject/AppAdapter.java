@@ -24,6 +24,7 @@ public class AppAdapter {
 
 
     public ArrayList<Layout> getObjectsLayoutsForUser(String arrayOfLayoutInfo) {
+        Log.d("AppAdapter",arrayOfLayoutInfo);
         ArrayList<Layout> arrayOfLayouts = new ArrayList<Layout>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = null;
@@ -39,29 +40,31 @@ public class AppAdapter {
         try {
 
             Document doc = db.parse(is);
-            NodeList layout = doc.getElementsByTagName("LayoutInfo");
-            Element element = (Element) layout.item(0);
-            int id=0;
-            String name="";
-            NodeList layoutName = element.getElementsByTagName("LayoutName");
-            name=layoutName.item(0).getTextContent();
-            Layout currentLayout = new Layout(id,name);
-            ArrayList fieldsArray = new ArrayList<Field>() ;
-            NodeList fields= element.getElementsByTagName("TkUserDialogField_1");
-            String[] stringFields = new String[fields.getLength()];
-            String fieldName="";
-            boolean required=false;
-            int order=-1;
-            String dataType="";
-            for (int i=0;i<fields.getLength();i++){
-                Element fieldElem = (Element)fields.item(i);
-                stringFields[i]=fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
-                fieldName=fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
-                Field field = new Field(i,fieldName,required,order,dataType);
-                fieldsArray.add(i,field);
+            NodeList layouts = doc.getElementsByTagName("LayoutInfo");
+            for (int i=0;i<layouts.getLength();i++) {
+                Element element = (Element) layouts.item(i);
+                int id = 0;
+                String name = "";
+                NodeList layoutName = element.getElementsByTagName("LayoutName");
+                name = layoutName.item(0).getTextContent();
+                Layout currentLayout = new Layout(id, name);
+                ArrayList fieldsArray = new ArrayList<Field>();
+                NodeList fields = element.getElementsByTagName("TkUserDialogField_1");
+                String[] stringFields = new String[fields.getLength()];
+                String fieldName = "";
+                boolean required = false;
+                int order = -1;
+                String dataType = "";
+                for (int j = 0; j < fields.getLength(); j++) {
+                    Element fieldElem = (Element) fields.item(j);
+                    stringFields[j] = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
+                    fieldName = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
+                    Field field = new Field(j, fieldName, required, order, dataType);
+                    fieldsArray.add(j, field);
+                }
+                currentLayout.setFileds(fieldsArray);
+                arrayOfLayouts.add(i, currentLayout);
             }
-            currentLayout.setFileds(fieldsArray);
-            arrayOfLayouts.add(0,currentLayout);
             /*user.setLayouts(arrayOfLayouts);
             Log.e("user name----", user.userEmail);
             Log.e("field----", user.layouts.get(0).fileds.get(0).filedName);*/
