@@ -1,5 +1,7 @@
 package com.example.avigail.lastproject;
 
+import android.app.*;
+import android.app.ListFragment;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -7,10 +9,6 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-//import android.sax.Element;
-
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -78,7 +76,71 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     AudioRecord audioRecorder;
     int bufferSizeInBytes;
     StringTokenizer st;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_layout);
+        bufferSizeInBytes = AudioRecord.getMinBufferSize( RECORDER_SAMPLERATE,
+                RECORDER_CHANNELS,
+                RECORDER_AUDIO_ENCODING
+        );
+        // Initialize Audio Recorder.
+        audioRecorder = new AudioRecord( MediaRecorder.AudioSource.MIC,
+                RECORDER_SAMPLERATE,
+                RECORDER_CHANNELS,
+                RECORDER_AUDIO_ENCODING,
+                bufferSizeInBytes
+        );
+        appAdapter=new AppAdapter();
+        layoutTitle = (TextView) findViewById(R.id.layoutTitle);
+        layout = (RelativeLayout) findViewById(R.id.messages);
+        leftMessage = (TextView) findViewById(R.id.leftMessage);
+        rightMessage = (TextView) findViewById(R.id.rightMessage);
+        //getLayoutForUser();
+        //callTTSService();
+        words = "hello,.world,.one";
+        st = new StringTokenizer(words.toString(),",.");
+
+        //get data
+
+        Log.e(TAG, getIntent().getStringExtra("LAYOUT"));
+        // Check to be sure that TTS exists and is okay to use
+        Intent checkIntent = new Intent();
+        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        //startActivityForResult(checkIntent, REQ_TTS_STATUS_CHECK);
+        //Log.e(TAG, );
+
+        // for(int i=1;i<=5;i++)
+            /*try {
+                new AsyncCall().execute().get();
+                Log.e("=====","call number "+i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }*/
+           /* Intent intent = new Intent(Intent.ACTION_SYNC, null, this.getApplicationContext(), SpeechService.class);
+            intent.putExtra("spoken_txt", "hello world");
+            this.getApplicationContext().startService(intent);
+
+        }*/
+        Button speakbtn = (Button) findViewById(R.id.speak);
+        speakbtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                //read field name
+                Log.d(TAG,"on click event");
+
+                doSpeak();
+
+            }
+        });
+
+
+
+    }
 
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
@@ -163,67 +225,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             //callApi();
         }
     }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_layout);
-        bufferSizeInBytes = AudioRecord.getMinBufferSize( RECORDER_SAMPLERATE,
-                RECORDER_CHANNELS,
-                RECORDER_AUDIO_ENCODING
-        );
-        // Initialize Audio Recorder.
-        audioRecorder = new AudioRecord( MediaRecorder.AudioSource.MIC,
-                RECORDER_SAMPLERATE,
-                RECORDER_CHANNELS,
-                RECORDER_AUDIO_ENCODING,
-                bufferSizeInBytes
-        );
-        appAdapter=new AppAdapter();
-        layoutTitle = (TextView) findViewById(R.id.layoutTitle);
-        layout = (RelativeLayout) findViewById(R.id.messages);
-        leftMessage = (TextView) findViewById(R.id.leftMessage);
-        rightMessage = (TextView) findViewById(R.id.rightMessage);
-        //getLayoutForUser();
-        //callTTSService();
-        words = "hello,.world,.one";
-        st = new StringTokenizer(words.toString(),",.");
-
-
-        // Check to be sure that TTS exists and is okay to use
-        Intent checkIntent = new Intent();
-        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkIntent, REQ_TTS_STATUS_CHECK);
-       // for(int i=1;i<=5;i++) {
-            /*try {
-                new AsyncCall().execute().get();
-                Log.e("=====","call number "+i);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
-           /* Intent intent = new Intent(Intent.ACTION_SYNC, null, this.getApplicationContext(), SpeechService.class);
-            intent.putExtra("spoken_txt", "hello world");
-            this.getApplicationContext().startService(intent);
-
-        }*/
-        Button speakbtn = (Button) findViewById(R.id.speak);
-        speakbtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                //read field name
-                Log.d(TAG,"on click event");
-
-                doSpeak();
-
-            }
-        });
-
-
-
-    }
     private void callApi(){
         RequestQueue queue = Volley.newRequestQueue(this);
 

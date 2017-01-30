@@ -1,5 +1,7 @@
 package com.example.avigail.lastproject;
 
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**

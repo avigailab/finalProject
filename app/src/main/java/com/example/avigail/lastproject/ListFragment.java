@@ -2,6 +2,7 @@ package com.example.avigail.lastproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,12 +34,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -47,15 +43,12 @@ import java.util.concurrent.ExecutionException;
  * Use the {@link ListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment{
     ListView listView;
     private AppAdapter appAdapter;
     final  String TAG="ListFragment";
-    ArrayList<Layout> arrayOfLayouts;
+    static ArrayList<Layout> arrayOfLayouts;
     String [] layoutsNames;
-
-    private String LAYOUT;
-
     public ListFragment() {
         // Required empty public constructor
     }
@@ -117,7 +110,8 @@ public class ListFragment extends Fragment {
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                     Log.e("---", "click " + i);
                                     Intent layoutIntent = new Intent(getActivity(), LayoutActivity.class);
-                                    layoutIntent.putExtra(LAYOUT, (Serializable) arrayOfLayouts.get(i));
+                                    //layoutIntent.putExtra(LAYOUT,i);
+                                    layoutIntent.putExtra("LAYOUT",arrayOfLayouts.get(i).toString());
                                     startActivity(layoutIntent);
 
                                 }
