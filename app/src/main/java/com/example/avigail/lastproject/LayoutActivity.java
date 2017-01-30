@@ -62,6 +62,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     int bufferSizeInBytes;
     StringTokenizer st;
     Layout currentLayout;
+    int fieldIndex=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -100,7 +101,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             public void onClick(View view) {
                 //read field name
                 Log.d(TAG,"on click event");
-                setCurrentLayoutFields();
+                currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
+                Log.e(TAG, currentLayout.layoutName);
                 doSpeak();
 
             }
@@ -185,26 +187,15 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
     public void doSpeak() {
         Log.d("doSpeak----","before while");
-        if(st.hasMoreTokens()) {
+        //read all Layout fields
+        if(fieldIndex < currentLayout.fields.size()) {
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
-            mTts.speak(st.nextToken(), TextToSpeech.QUEUE_ADD, params);
+            mTts.speak(currentLayout.fields.get(fieldIndex).filedName, TextToSpeech.QUEUE_ADD, params);
+            fieldIndex++;
             //callApi();
         }
-    }
-    public void setCurrentLayoutFields() {
-        //get currentLayout name
-        currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
-        String currentFields="";
-        Log.e(TAG, currentLayout.layoutName);
-        //get current Layout fields name
-        for (int i = 0; i < currentLayout.fields.size(); i++) {
-            currentFields += currentLayout.fields.get(i).filedName;
-            currentFields += ".";
-        }
-        st = new StringTokenizer(currentFields.toString(),",.");
-
     }
 
     private void callApi(){
