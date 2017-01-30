@@ -110,8 +110,8 @@ public class ListFragment extends Fragment{
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                     Log.e("---", "click " + i);
                                     Intent layoutIntent = new Intent(getActivity(), LayoutActivity.class);
-                                    //layoutIntent.putExtra(LAYOUT,i);
-                                    layoutIntent.putExtra("LAYOUT",arrayOfLayouts.get(i).toString());
+                                    //pass current layout
+                                    layoutIntent.putExtra("LAYOUT",arrayOfLayouts.get(i));
                                     startActivity(layoutIntent);
 
                                 }

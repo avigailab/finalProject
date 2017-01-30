@@ -1,9 +1,11 @@
 package com.example.avigail.lastproject;
 
+import java.io.Serializable;
+
 /**
  * Created by avigail on 14/11/16.
  */
-public class Field {
+public class Field implements Serializable {
     int id;
     String filedName;
     boolean required;

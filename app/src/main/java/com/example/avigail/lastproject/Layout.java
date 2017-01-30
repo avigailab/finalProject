@@ -1,13 +1,12 @@
 package com.example.avigail.lastproject;
 
-import android.os.Parcelable;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by avigail on 14/11/16.
  */
-public class Layout {
+public class Layout implements Serializable {
     int id;
     String layoutName;
     ArrayList<Field> fileds;

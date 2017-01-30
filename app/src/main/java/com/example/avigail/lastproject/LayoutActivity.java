@@ -103,12 +103,12 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         st = new StringTokenizer(words.toString(),",.");
 
         //get data
-
-        Log.e(TAG, getIntent().getStringExtra("LAYOUT"));
+        Layout layout = (Layout) getIntent().getSerializableExtra("LAYOUT");
+        Log.e(TAG, layout.layoutName);
         // Check to be sure that TTS exists and is okay to use
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        //startActivityForResult(checkIntent, REQ_TTS_STATUS_CHECK);
+        startActivityForResult(checkIntent, REQ_TTS_STATUS_CHECK);
         //Log.e(TAG, );
 
         // for(int i=1;i<=5;i++)
