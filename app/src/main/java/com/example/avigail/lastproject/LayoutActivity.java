@@ -60,9 +60,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private TextToSpeech mTts;
     AudioRecord audioRecorder;
     int bufferSizeInBytes;
-    StringTokenizer st;
     Layout currentLayout;
-    int fieldIndex=0;
+    int leftFieldPos=0,rightFieldPos=1,fieldIndex=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -192,8 +191,16 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
-            mTts.speak(currentLayout.fields.get(fieldIndex).filedName, TextToSpeech.QUEUE_ADD, params);
+            currentFiledName=currentLayout.fields.get(fieldIndex).filedName;
+            makeLeftMessage(currentFiledName,leftFieldPos);
+            mTts.speak(currentFiledName,TextToSpeech.QUEUE_ADD, params);
             fieldIndex++;
+            leftFieldPos+=2;
+            makeRightMessage("...",rightFieldPos);
+            rightFieldPos+=2;
+
+
+
             //callApi();
         }
     }
