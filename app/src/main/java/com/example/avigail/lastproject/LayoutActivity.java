@@ -1,6 +1,9 @@
 package com.example.avigail.lastproject;
 
 import android.app.*;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.ServiceConnection;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -10,12 +13,14 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,15 +33,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
-
 import java.util.HashMap;
 
-import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
+import com.example.avigail.lastproject.BoundService.MyBinder;
 
 public class LayoutActivity extends Activity implements TextToSpeech.OnInitListener,
         OnUtteranceCompletedListener{
+    //bound service variables
+    BoundService mBoundService;
+    boolean mServiceBound = false;
+
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
@@ -52,7 +61,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
     private int uttCount = 0;
     private int lastUtterance = -1;
-    private String words;
     private HashMap<String, String> params = new HashMap<String, String>();
     private static final int REQ_TTS_STATUS_CHECK = 0;
     private TextToSpeech mTts;
@@ -96,12 +104,15 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
             @Override
             public void onClick(View view) {
+                if (mServiceBound) {
+                    Log.d("bound service res-----",mBoundService.getTimestamp());
+                }
                 //read field name
                 Log.d(TAG,"on click event");
                 view.setVisibility(View.GONE);
                 currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
                 Log.e(TAG, currentLayout.layoutName);
-                doSpeak();
+                //doSpeak();
             }
         });
 
@@ -147,8 +158,39 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             } else {
                 doSpeak();
             }*/
+
         }
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, BoundService.class);
+        startService(intent);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mServiceBound) {
+            unbindService(mServiceConnection);
+            mServiceBound = false;
+        }
+    }
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mServiceBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MyBinder myBinder = (MyBinder) service;
+            mBoundService = myBinder.getService();
+            mServiceBound = true;
+        }
+    };
     @Override
     public void onPause()
     {
@@ -403,7 +445,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
                 tempIndex++;
                 //send record to api
-                callApi();
+                //callApi();
                 break;
 
             }

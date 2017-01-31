@@ -27,7 +27,10 @@
         </activity>
         <activity android:name=".LayoutActivity" />
 
-        <service android:enabled="true" android:name=".SpeechService" />
+        <service
+            android:name=".SpeechService"
+            android:enabled="true" />
+
         <activity android:name=".AudioRecordActivity" />
 
         <service
@@ -35,7 +38,12 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".TextToSpeechActivity"></activity>
+        <activity android:name=".TextToSpeechActivity" />
+
+        <service
+            android:name=".BoundService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
