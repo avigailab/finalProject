@@ -29,13 +29,15 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
 
-import com.example.avigail.lastproject.AudioRecordService.MyBinder;
+import com.example.avigail.lastproject.ApisManagerService.MyBinder;
 
 public class LayoutActivity extends Activity implements TextToSpeech.OnInitListener,
         OnUtteranceCompletedListener{
     //bound service variables
-    AudioRecordService mBoundService;
-    boolean mServiceBound = false;
+    /*AudioRecordService mBoundService;
+    boolean mServiceBound = false;*/
+    ApisManagerService apiBoundService;
+    boolean apiServiceBound = false;
 
     private static final String TAG = "layuot activity";
     private final int SPEECH_RECOGNITION_CODE = 1;
@@ -126,31 +128,37 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, AudioRecordService.class);
+        /*Intent intent = new Intent(this, AudioRecordService.class);
         startService(intent);
-        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);*/
+        Intent intent = new Intent(this, ApisManagerService.class);
+        startService(intent);
+        bindService(intent, apiServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mServiceBound) {
-            unbindService(mServiceConnection);
-            mServiceBound = false;
+        if (apiServiceBound) {
+            unbindService(apiServiceConnection);
+            apiServiceBound = false;
         }
     }
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
+    private ServiceConnection apiServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            mServiceBound = false;
+            apiServiceBound = false;
         }
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            MyBinder myBinder = (MyBinder) service;
+            /*RecorderBinder myBinder = (AudioRecordService.RecorderBinder) service;
             mBoundService = myBinder.getService();
-            mServiceBound = true;
+            mServiceBound = true;*/
+            ApisManagerService.MyBinder myBinder = (ApisManagerService.MyBinder) service;
+            apiBoundService = myBinder.getService();
+            apiServiceBound = true;
         }
     };
     @Override
@@ -276,10 +284,11 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         protected Void doInBackground(String... params) {
 
             Log.i(TAG, "doInBackground");
-            if (mServiceBound) {
+            if (apiServiceBound) {
                 Log.d("---------","hiii");
                 Log.v(TAG, "Start RECORD!!!!");
-                mBoundService.startRecordAudio();
+                //mBoundService.startRecordAudio();
+                apiBoundService.callGetLayoutsForUser();
             }
             return null;
         }

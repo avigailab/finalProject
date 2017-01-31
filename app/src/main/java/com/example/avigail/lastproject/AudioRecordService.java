@@ -8,9 +8,7 @@ import android.media.MediaRecorder;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Chronometer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,7 +17,7 @@ import java.io.IOException;
 
 public class AudioRecordService extends Service {
     private static String TAG = "AudioRecordService";
-    private IBinder mBinder = new MyBinder();
+    private IBinder mBinder = new RecorderBinder();
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
@@ -226,7 +224,7 @@ public class AudioRecordService extends Service {
     }
 
 
-    public class MyBinder extends Binder {
+    public class RecorderBinder extends Binder {
         AudioRecordService getService() {
             return AudioRecordService.this;
         }

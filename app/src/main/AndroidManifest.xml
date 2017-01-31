@@ -32,11 +32,14 @@
             android:enabled="true" />
 
         <activity android:name=".AudioRecordActivity" />
-
         <activity android:name=".TextToSpeechActivity" />
 
         <service
             android:name=".AudioRecordService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".ApisManagerService"
             android:enabled="true"
             android:exported="true"></service>
     </application>
