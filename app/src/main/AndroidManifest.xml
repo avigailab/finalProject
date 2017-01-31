@@ -28,7 +28,6 @@
         <activity android:name=".LayoutActivity" />
 
         <service android:enabled="true" android:name=".SpeechService" />
-        <service android:name=".ExampleIntentService" />
         <activity android:name=".AudioRecordActivity" />
 
         <service

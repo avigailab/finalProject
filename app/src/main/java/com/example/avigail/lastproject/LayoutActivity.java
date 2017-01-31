@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,12 +28,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import java.util.HashMap;
-import java.util.StringTokenizer;
+
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 
 public class LayoutActivity extends Activity implements TextToSpeech.OnInitListener,
@@ -61,7 +59,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     AudioRecord audioRecorder;
     int bufferSizeInBytes;
     Layout currentLayout;
-    int leftFieldPos=0,rightFieldPos=1,fieldIndex=0;
+    TextView answerMessage;
+    int leftFieldPos=0,rightFieldPos=1,fieldIndex=0,currentAnswerId=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -169,7 +168,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     public void onUtteranceCompleted(String uttId) {
         Log.v(TAG, "Got completed message for uttId: " + uttId);
         lastUtterance = Integer.parseInt(uttId);
-
         try {
            new AsyncCall().execute().get();
         } catch (InterruptedException e) {
@@ -188,11 +186,11 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
             currentFiledName=currentLayout.fields.get(fieldIndex).filedName;
-            makeLeftMessage(currentFiledName,fieldIndex,leftFieldPos);
+            generateLeftMessage(currentFiledName,fieldIndex,leftFieldPos);
             mTts.speak(currentFiledName,TextToSpeech.QUEUE_ADD, params);
+            generateRightMessage("...",fieldIndex+100,rightFieldPos);
             fieldIndex++;
             leftFieldPos+=2;
-            makeRightMessage("...",fieldIndex+100,rightFieldPos);
             rightFieldPos+=2;
 
 
@@ -226,7 +224,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         queue.add(stringRequest);
     }
 
-    public void makeLeftMessage(String body,int id,int pos){
+    public void generateLeftMessage(String body, int id, int pos){
         TextView rowTextView = new TextView(getApplicationContext());
         // set some properties of rowTextView or something
         rowTextView.setText(body);
@@ -248,7 +246,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         layout.addView(rowTextView,relativeLayoutParams);
 
     }
-    public void makeRightMessage(CharSequence body, int id, int pos){
+    public void generateRightMessage(CharSequence body, int id, int pos){
         TextView rowTextView = new TextView(getApplicationContext());
         // set some properties of rowTextView
         rowTextView.setText(body);
@@ -405,7 +403,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
-
                 //*/
                 tempIndex++;
                 break;
@@ -445,6 +442,11 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
         @Override
         protected void onPostExecute(Void result) {
+            //set answer bubble text
+            answerMessage = (TextView) findViewById(currentAnswerId+100);
+            if(answerMessage !=null)
+                answerMessage.setText("record finish "+currentAnswerId+100);
+            currentAnswerId ++;
 
             Log.i(TAG, "onPostExecute");
             doSpeak();
