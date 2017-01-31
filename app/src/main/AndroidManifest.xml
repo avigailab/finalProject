@@ -33,11 +33,6 @@
 
         <activity android:name=".AudioRecordActivity" />
 
-        <service
-            android:name=".AudioRecordService"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity android:name=".TextToSpeechActivity" />
 
         <service
