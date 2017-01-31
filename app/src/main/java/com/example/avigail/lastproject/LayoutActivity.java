@@ -4,11 +4,7 @@ import android.app.*;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Color;
@@ -29,26 +25,20 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
 
-import com.example.avigail.lastproject.BoundService.MyBinder;
+import com.example.avigail.lastproject.AudioRecordService.MyBinder;
 
 public class LayoutActivity extends Activity implements TextToSpeech.OnInitListener,
         OnUtteranceCompletedListener{
     //bound service variables
-    BoundService mBoundService;
+    AudioRecordService mBoundService;
     boolean mServiceBound = false;
-
-    private static final int RECORDER_SAMPLERATE = 8000;
+    /*private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
-    private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
+    private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;*/
     private static final String TAG = "layuot activity";
     private final int SPEECH_RECOGNITION_CODE = 1;
     private AppAdapter appAdapter;
@@ -64,8 +54,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private HashMap<String, String> params = new HashMap<String, String>();
     private static final int REQ_TTS_STATUS_CHECK = 0;
     private TextToSpeech mTts;
-    AudioRecord audioRecorder;
-    int bufferSizeInBytes;
+    /*AudioRecord audioRecorder;
+    int bufferSizeInBytes;*/
     Layout currentLayout;
     TextView answerMessage;
     int leftFieldPos=0,rightFieldPos=1,fieldIndex=0,currentAnswerId=0;
@@ -74,7 +64,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout);
-        bufferSizeInBytes = AudioRecord.getMinBufferSize( RECORDER_SAMPLERATE,
+        /*bufferSizeInBytes = AudioRecord.getMinBufferSize( RECORDER_SAMPLERATE,
                 RECORDER_CHANNELS,
                 RECORDER_AUDIO_ENCODING
         );
@@ -84,7 +74,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                 RECORDER_CHANNELS,
                 RECORDER_AUDIO_ENCODING,
                 bufferSizeInBytes
-        );
+        );*/
         appAdapter=new AppAdapter();
         layoutTitle = (TextView) findViewById(R.id.layoutTitle);
         layout = (RelativeLayout) findViewById(R.id.messages);
@@ -104,15 +94,12 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
             @Override
             public void onClick(View view) {
-                if (mServiceBound) {
-                    Log.d("bound service res-----",mBoundService.getTimestamp());
-                }
                 //read field name
                 Log.d(TAG,"on click event");
                 view.setVisibility(View.GONE);
                 currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
-                Log.e(TAG, currentLayout.layoutName);
-                //doSpeak();
+                Log.e(TAG, currentLayout.layoutName);   
+                doSpeak();
             }
         });
 
@@ -164,7 +151,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, BoundService.class);
+        Intent intent = new Intent(this, AudioRecordService.class);
         startService(intent);
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -308,7 +295,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
     }
 
-    public void startRecordAudio(){
+   /*public void startRecordAudio(){
         // Start Recording.
         audioRecorder.startRecording();
 
@@ -455,7 +442,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             for( int i=0; i<numberOfReadBytes; i++ )
                 totalByteBuffer[totalReadBytes + i] = audioBuffer[i];
             totalReadBytes += numberOfReadBytes;
-            //*/
+            //
 
             tempIndex++;
 
@@ -464,7 +451,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         //String encodeFile = encodeAudio(getApplicationContext().getFilesDir()+"AudioRecorder/new.flac");
         // Log.i("ENCODE FILE",encodeFile.toString()+"");
         //sendRecordToApi(encodeFile);
-    }
+    }*/
 
 
     class AsyncCall extends AsyncTask<String, Void, Void> {
@@ -474,8 +461,11 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         protected Void doInBackground(String... params) {
 
             Log.i(TAG, "doInBackground");
-            startRecordAudio();
-            Log.v(TAG, "Start RECORD!!!!");
+            if (mServiceBound) {
+                Log.d("---------","hiii");
+                Log.v(TAG, "Start RECORD!!!!");
+                mBoundService.startRecordAudio();
+            }
             return null;
         }
 
