@@ -18,9 +18,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class AudioRecordService extends Service {
-    private static String LOG_TAG = "AudioRecordService";
+    private static String TAG = "AudioRecordService";
     private IBinder mBinder = new MyBinder();
-    private Chronometer mChronometer;
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
@@ -30,7 +29,7 @@ public class AudioRecordService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.v(LOG_TAG, "in onCreate");
+        Log.v(TAG, "in onCreate");
         bufferSizeInBytes = AudioRecord.getMinBufferSize( RECORDER_SAMPLERATE,
                 RECORDER_CHANNELS,
                 RECORDER_AUDIO_ENCODING
@@ -42,44 +41,31 @@ public class AudioRecordService extends Service {
                 RECORDER_AUDIO_ENCODING,
                 bufferSizeInBytes
         );
-        mChronometer = new Chronometer(this);
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-        mChronometer.start();
+
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v(LOG_TAG, "in onBind");
+        Log.v(TAG, "in onBind");
         return mBinder;
     }
 
     @Override
     public void onRebind(Intent intent) {
-        Log.v(LOG_TAG, "in onRebind");
+        Log.v(TAG, "in onRebind");
         super.onRebind(intent);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.v(LOG_TAG, "in onUnbind");
+        Log.v(TAG, "in onUnbind");
         return true;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(LOG_TAG, "in onDestroy");
-        mChronometer.stop();
-    }
-
-    public String getTimestamp() {
-        long elapsedMillis = SystemClock.elapsedRealtime()
-                - mChronometer.getBase();
-        int hours = (int) (elapsedMillis / 3600000);
-        int minutes = (int) (elapsedMillis - hours * 3600000) / 60000;
-        int seconds = (int) (elapsedMillis - hours * 3600000 - minutes * 60000) / 1000;
-        int millis = (int) (elapsedMillis - hours * 3600000 - minutes * 60000 - seconds * 1000);
-        return hours + ":" + minutes + ":" + seconds + ":" + millis;
+        Log.v(TAG, "in onDestroy");
     }
     public void startRecordAudio(){
         // Start Recording.

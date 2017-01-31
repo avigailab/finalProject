@@ -309,7 +309,5 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
     }
 
-
-    
 }
 
