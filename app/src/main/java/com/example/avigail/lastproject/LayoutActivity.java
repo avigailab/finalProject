@@ -193,9 +193,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             leftFieldPos+=2;
             rightFieldPos+=2;
 
-
-
-            //callApi();
         }
     }
 
@@ -403,9 +400,12 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
-                //*/
+
                 tempIndex++;
+                //send record to api
+                callApi();
                 break;
+
             }
 
             // -> Recording sound here.
@@ -424,9 +424,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         //sendRecordToApi(encodeFile);
     }
 
-    public void callTTSService(){
-        this.startService(new Intent(this, SpeechService.class));
-    }
 
     class AsyncCall extends AsyncTask<String, Void, Void> {
         private static final String TAG = "AsyncCall";
