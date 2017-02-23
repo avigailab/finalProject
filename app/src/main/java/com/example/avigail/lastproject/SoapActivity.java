@@ -74,8 +74,8 @@ public class SoapActivity extends AppCompatActivity {
             request.addProperty("language","en");
             request.addProperty("clientId","68174861");
             request.addProperty("serviceId","58469251");
-
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            envelope.dotNet=true;
             envelope.setOutputSoapObject(request);
 
             HttpTransportSE httpTransport = new HttpTransportSE(URL);
@@ -93,7 +93,7 @@ public class SoapActivity extends AppCompatActivity {
             } //send request
             SoapObject result;
             try {
-                result = (SoapObject)envelope.getResponse();
+                //result = (SoapObject)envelope.getResponse();
                 Log.d("App", "" + envelope.getResponse());
                // response = result.getProperty(0).toString();
 

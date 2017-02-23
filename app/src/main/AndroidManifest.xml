@@ -39,14 +39,15 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".SoapActivity"></activity>
-        <activity android:name=".SoundRecording">
+        <activity android:name=".SoapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+        </activity>
+        <activity android:name=".SoundRecording">
         </activity>
     </application>
 

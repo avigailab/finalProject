@@ -63,7 +63,7 @@ public class SoundRecording extends AppCompatActivity {
             file.mkdirs();
         }
 
-        return (file.getAbsolutePath() + "/" + System.currentTimeMillis() + AUDIO_RECORDER_FILE_EXT_WAV);
+        return (file.getAbsolutePath() + "/record" + AUDIO_RECORDER_FILE_EXT_WAV);
     }
 
     private String getTempFilename(){
@@ -198,6 +198,12 @@ public class SoundRecording extends AppCompatActivity {
 
         copyWaveFile(getTempFilename(),getFilename());
         deleteTempFile();
+
+        /*AndroidAudioConverter.with(SoundRecording.this)
+                .setFile(getFilename())
+                .setFormat(AndroidAudioConverter.AudioFormat.MP3)
+                .setCallback(callback)
+                .convert();*/
     }
 
     private void deleteTempFile() {
