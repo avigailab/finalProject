@@ -120,7 +120,7 @@ public class SoundRecording extends AppCompatActivity {
         }
 
         int read = 0;
-
+        int count=0;
         if(null != os){
             while(true) {
                 float totalAbsValue = 0.0f;
@@ -142,8 +142,10 @@ public class SoundRecording extends AppCompatActivity {
                 Log.e("TEMP----", String.valueOf(temp));
                 if ((temp >= 0 && temp <= SLINCE_RANGE) && isRecording == false) {
                     Log.i("TAG", "1");
-                    tempIndex++;
-                    continue;
+                    if(count>2) {
+                        tempIndex++;
+                        continue;
+                    }
                 }
 
                 if (temp > SLINCE_RANGE && isRecording == false) {
@@ -151,11 +153,15 @@ public class SoundRecording extends AppCompatActivity {
                     isRecording = true;
                 }
 
-               // if ((temp >= 0 && temp <= SLINCE_RANGE-100) && isRecording == true) {
-                    if(temp==0){
+                if ((temp >= 0 && temp <= SLINCE_RANGE) && isRecording == true) {
+                   // if(temp==0){
+                    count++;
                     Log.i("TAG", "Save audio to file.");
-                    stopRecording();
-                    break;
+                    isRecording=false;
+                    if(count==2) {
+                        stopRecording();
+                        break;
+                    }
                 }
                 tempIndex++;
                 if (AudioRecord.ERROR_INVALID_OPERATION != read) {
