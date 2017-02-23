@@ -1,4 +1,5 @@
 package com.example.avigail.lastproject;
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -60,8 +61,9 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class AudioRecordActivity extends AppCompatActivity
 {
-    private static final int RECORDER_SAMPLERATE = 8000;
-    private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+    private static final int RECORDER_SAMPLERATE = 44100;
+    private static final int RECORDER_BPP = 16;
+    private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
 
     private static final String WRITE_EXTERNAL_STORAGE = "true";
@@ -113,6 +115,7 @@ public class AudioRecordActivity extends AppCompatActivity
                         RECORDER_AUDIO_ENCODING,
                         bufferSizeInBytes
                 );
+
                 // Start Recording.
                 audioRecorder.startRecording();
 
@@ -172,7 +175,7 @@ public class AudioRecordActivity extends AppCompatActivity
                             file.mkdirs();
 
                         String fn = file.getAbsolutePath() + "/aa.flac";*/
-                        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                       /* String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
                         File folder = new File(path + "/audioRecord");
                         if (!folder.exists()) {
@@ -181,13 +184,13 @@ public class AudioRecordActivity extends AppCompatActivity
                         File file = new File(folder.getPath() + "/aa.wav");
 
 
-                        String fn = file.getAbsolutePath() + "/aa.wav";
+                        String fn = file.getAbsolutePath() + "/aa.wav";*/
                         //String fn = file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".flac";
                         long totalAudioLen  = 0;
                         long totalDataLen   = totalAudioLen + 36;
                         long longSampleRate = RECORDER_SAMPLERATE;
-                        int channels        = 1;
-                        long byteRate       = 4 * RECORDER_SAMPLERATE * channels/8;
+                        int channels        = 2;
+                        long byteRate       = RECORDER_BPP * RECORDER_SAMPLERATE * channels/8;
                         totalAudioLen       = totalReadBytes;
                         totalDataLen        = totalAudioLen + 36;
                         byte finalBuffer[]  = new byte[totalReadBytes + 44];
@@ -240,7 +243,7 @@ public class AudioRecordActivity extends AppCompatActivity
                         for( int i=0; i<totalReadBytes; ++i )
                             finalBuffer[44+i] = totalByteBuffer[i];
 
-                        FileOutputStream out;
+                       /* FileOutputStream out;
                         try {
                             out = new FileOutputStream(fn);
                             try {
@@ -254,11 +257,15 @@ public class AudioRecordActivity extends AppCompatActivity
                         } catch (FileNotFoundException e1) {
                             // TODO Auto-generated catch block
                             e1.printStackTrace();
-                        }
+                        }*/
+                        saveAudioFile(finalBuffer);
 
                         //*/
                         tempIndex++;
                         break;
+
+
+
                     }
 
                     // -> Recording sound here.
@@ -301,9 +308,9 @@ public class AudioRecordActivity extends AppCompatActivity
 
 */
                 //Log.d("----","before call encode audio");
-                String encodeFile = encodeAudio(getApplicationContext().getFilesDir()+"AudioRecorder/new.flac");
+            //    String encodeFile = encodeAudio(getApplicationContext().getFilesDir()+"AudioRecorder/new.flac");
                // Log.i("ENCODE FILE",encodeFile.toString()+"");
-                sendRecordToApi(encodeFile);
+              //  sendRecordToApi(encodeFile);
                 //uploadImage();
 
             }
@@ -333,7 +340,7 @@ public class AudioRecordActivity extends AppCompatActivity
                 buttonStop.setEnabled(false);
                 buttonStart.setEnabled(false);
                 buttonStopPlayingRecording.setEnabled(true);
-
+                AudioSavePathInDevice="/storage/emulated/0/TokuoroRecords/record.wav";
                 mediaPlayer = new MediaPlayer();
                 try {
                     mediaPlayer.setDataSource(AudioSavePathInDevice);
@@ -365,7 +372,45 @@ public class AudioRecordActivity extends AppCompatActivity
         });
 
     }
+    private void saveAudioFile(byte[]finalBuffer){
 
+        // this code for android M + , requesting special permission at runtime
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},23
+            );
+
+        }
+
+        // this code is for saving to file directory
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        File folder = new File(path + "/TokuoroRecords");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+        File file = new File(folder.getPath() + "/record.wav");
+        FileOutputStream ostream;
+        try {
+            Log.d("create record",file.getAbsolutePath());
+            file.createNewFile();
+            ostream = new FileOutputStream(file);
+            ostream.write(finalBuffer);
+            ostream.flush();
+            ostream.close();
+
+            String realPath = file.getAbsolutePath();
+            File f = new File(realPath);
+
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+
+        }
+    }
     public void MediaRecorderReady(){
         mediaRecorder=new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
