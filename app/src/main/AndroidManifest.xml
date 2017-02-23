@@ -18,20 +18,16 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".LoginActivity"></activity>
         <activity android:name=".LayoutActivity" />
 
         <service
             android:name=".SpeechService"
             android:enabled="true" />
 
-        <activity android:name=".AudioRecordActivity" />
+        <activity android:name=".AudioRecordActivity">
+
+        </activity>
         <activity android:name=".TextToSpeechActivity" />
 
         <service
@@ -41,7 +37,17 @@
         <service
             android:name=".ApisManagerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".SoapActivity"></activity>
+        <activity android:name=".SoundRecording">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>
