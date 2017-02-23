@@ -20,6 +20,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHttpResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,6 +32,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import static java.net.Proxy.Type.HTTP;
 
 public class ApisManagerService extends Service {
     private static String TAG = "AudioRecordService";
@@ -264,8 +272,32 @@ public class ApisManagerService extends Service {
         // Log.i("ENCODE FILE",encodeFile.toString()+"");
         //sendRecordToApi(encodeFile);
     }
+    public void sendXml(){
+        HttpPost httppost = new HttpPost("https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx");
+        String SOAPRequestXML="";
+        StringEntity se = null;
+        try {
+            se = new StringEntity(SOAPRequestXML,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
-    private void sendRecordToApi(String encodeFile) {
+        se.setContentType("text/xml");
+        httppost.setHeader("Content-Type","application/soap+xml;charset=UTF-8");
+        httppost.setEntity(se);
+
+        HttpClient httpclient = new DefaultHttpClient();
+        BasicHttpResponse httpResponse =
+                null;
+        try {
+            httpResponse = (BasicHttpResponse) httpclient.execute(httppost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.e("HTTPStatus",httpResponse.getStatusLine().toString());
+    }
+    public void sendRecordToApi(String encodeFile) {
 
         Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
                 Toast.LENGTH_LONG).show();
@@ -274,38 +306,19 @@ public class ApisManagerService extends Service {
         String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
 
         JSONObject params = new JSONObject();
-        Log.d("ENCODE FILE",encodeFile.toString());
 
         try {
 
-            params.put("audio",encodeFile);
+            params.put("audio",String.valueOf(encodeFile));
             params.put("fieldName","date");
             params.put("fieldType","Any");
             params.put("language","en");
             params.put("clientId","68174861");
             params.put("serviceId","58469251");
-            Log.d("on try===", String.valueOf(params));
+            Log.d("on try===", String.valueOf(params.get("audio")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-       /* StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("RESPONSE-----",response);
-
-                    }
-
-
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // mTextView.setText("That didn't work!");
-                Log.e("Error","");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);*/
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 URL, params,
                 new Response.Listener<JSONObject>() {
@@ -322,16 +335,7 @@ public class ApisManagerService extends Service {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 // pDialog.hide();
             }
-        }) ;/*{
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-
-        };*/
+        }) ;
         queue.add(jsonObjReq);
     }
     public class MyBinder extends Binder {
