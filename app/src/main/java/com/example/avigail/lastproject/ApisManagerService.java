@@ -124,7 +124,7 @@ public class ApisManagerService extends Service {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-    public void startRecording(){
+    public void startRecordAudio(){
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING, bufferSize);
 
