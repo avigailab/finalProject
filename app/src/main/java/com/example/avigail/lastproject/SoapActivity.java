@@ -20,10 +20,9 @@ import android.app.Activity;
 
 public class SoapActivity extends AppCompatActivity {
 
-//https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio
     private static final String SOAP_ACTION = "http://www.tukuoro.com/ParseImmidiateSingleFromAudio";
     private static final String METHOD_NAME = "ParseImmidiateSingleFromAudio";
-    private static final String NAMESPACE = "https://wili.tukuoro.com";
+    private static final String NAMESPACE = "http://www.tukuoro.com/";
     private static final String URL = "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx";
     private TextView tv;
     private String response;
