@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.apache.commons.io.FileUtils;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
@@ -22,6 +23,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.TextView;
 import android.app.Activity;
+
 
 public class SoapActivity extends AppCompatActivity {
 
@@ -58,24 +60,12 @@ public class SoapActivity extends AppCompatActivity {
             super.onPreExecute();
         }
         private String encodeAudio() {
-            byte[] audioBytes;
             try {
-
-                String fn = "/storage/emulated/0/AudioRecorder/record.flac";
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                FileInputStream fis = new FileInputStream(new File(fn));
-                byte[] buf = new byte[1024];
-                int n;
-                while (-1 != (n = fis.read(buf)))
-                    baos.write(buf, 0, n);
-                baos.close();
-                audioBytes = baos.toByteArray();
-
-                // Here goes the Base64 string
-                String _audioBase64 = Base64.encodeToString(audioBytes, Base64.DEFAULT);
-                Log.d("ENCODE FILE",_audioBase64);
-                return _audioBase64;
-
+                File file = new File("/storage/emulated/0/AudioRecorder/record.flac");
+                byte[] bytes = FileUtils.readFileToByteArray(file);
+                String encoded = Base64.encodeToString(bytes, 0);
+                Log.i("~~~~~~~~ Encoded: ", encoded);
+                return encoded;
             } catch (Exception e) {
                 Log.e("audio encode execption","");
                 //DiagnosticHelper.writeException(e);
@@ -89,7 +79,7 @@ public class SoapActivity extends AppCompatActivity {
             SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
 
             //------here we read the long string that we get from you-----
-            InputStream inputStream = getResources().openRawResource(R.raw.audio);
+            /*InputStream inputStream = getResources().openRawResource(R.raw.audio);
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line = null;
             try {
@@ -99,11 +89,11 @@ public class SoapActivity extends AppCompatActivity {
             }
             if (line != null) {
                 request.addProperty("audio",line);
-            }
+            }*/
             //----------------------------------------------------------
 
             //-----here we try to send encode audio that we created----
-            //request.addProperty("audio",encodeAudio());
+            request.addProperty("audio",encodeAudio());
             //---------------------------------------------------------
             request.addProperty("fieldName","date");
             request.addProperty("fieldType","Any");
