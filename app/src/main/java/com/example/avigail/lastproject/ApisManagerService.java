@@ -37,6 +37,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import cafe.adriel.androidaudioconverter.AndroidAudioConverter;
+import cafe.adriel.androidaudioconverter.callback.IConvertCallback;
+import cafe.adriel.androidaudioconverter.callback.ILoadCallback;
+
 import static java.net.Proxy.Type.HTTP;
 
 public class ApisManagerService extends Service {
@@ -74,6 +78,17 @@ public class ApisManagerService extends Service {
         // Initialize Audio Recorder.
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING, bufferSize);
+
+        AndroidAudioConverter.load(this, new ILoadCallback() {
+            @Override
+            public void onSuccess() {
+                Log.i(TAG,"Great!");
+            }
+            @Override
+            public void onFailure(Exception error) {
+                Log.i(TAG,"FFmpeg is not supported by device");
+            }
+        });
 
     }
 
@@ -266,11 +281,30 @@ public class ApisManagerService extends Service {
         copyWaveFile(getTempFilename(),getFilename());
         deleteTempFile();
 
-        /*AndroidAudioConverter.with(SoundRecording.this)
-                .setFile(getFilename())
-                .setFormat(AndroidAudioConverter.AudioFormat.MP3)
+
+        File flacFile = new File(getFilename());
+        IConvertCallback callback = new IConvertCallback() {
+            @Override
+            public void onSuccess(File convertedFile) {
+                // So fast? Love it!
+            }
+            @Override
+            public void onFailure(Exception error) {
+                // Oops! Something went wrong
+            }
+        };
+        AndroidAudioConverter.with(this)
+                // Your current audio file
+                .setFile(flacFile)
+
+                // Your desired audio format
+                .setFormat(cafe.adriel.androidaudioconverter.model.AudioFormat.FLAC)
+
+                // An callback to know when conversion is finished
                 .setCallback(callback)
-                .convert();*/
+
+                // Start conversion
+                .convert();
     }
 
     private void deleteTempFile() {
@@ -310,6 +344,7 @@ public class ApisManagerService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private void WriteWaveFileHeader(

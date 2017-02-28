@@ -18,9 +18,10 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".LoginActivity"></activity>
-        <activity android:name=".LayoutActivity" />
+        <activity android:name=".LoginActivity">
 
+        </activity>
+        <activity android:name=".LayoutActivity" ></activity>
         <service
             android:name=".SpeechService"
             android:enabled="true" />
@@ -45,8 +46,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".SoundRecording">
+
         </activity>
     </application>
 
