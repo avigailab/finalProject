@@ -7,13 +7,12 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
@@ -25,11 +24,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
-
-import com.example.avigail.lastproject.ApisManagerService.MyBinder;
 
 public class LayoutActivity extends Activity implements TextToSpeech.OnInitListener,
         OnUtteranceCompletedListener{
@@ -48,7 +48,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private  TextView rightMessage;
     private String currentFiledName;
     private TextToSpeech textToSpeech;
-
     private int uttCount = 0;
     private int lastUtterance = -1;
     private HashMap<String, String> params = new HashMap<String, String>();
@@ -56,13 +55,23 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private TextToSpeech mTts;
 
     Layout currentLayout;
-    TextView answerMessage;
-    int leftFieldPos=0,rightFieldPos=1,fieldIndex=0,currentAnswerId=0;
+    private ListView messagesContainer;private LayoutAdapter adapter;
+    int fieldIndex=0,currentAnswerId=100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout);
+        messagesContainer = (ListView) findViewById(R.id.messagesContainer);
+        adapter = new LayoutAdapter(LayoutActivity.this, new ArrayList<LayoutMessage>());
+        messagesContainer.setAdapter(adapter);
+       /* currentLayout =new Layout(1,"asasas");
+        ArrayList fields = new ArrayList<Field>();
+        for (int j = 0; j < 3; j++) {
+            Field field = new Field(j, "hi   "+j, false, 1, "int");
+            fields.add(j, field);
+        }
+        currentLayout.fields=fields;*/
         appAdapter=new AppAdapter();
         layoutTitle = (TextView) findViewById(R.id.layoutTitle);
         layout = (RelativeLayout) findViewById(R.id.messages);
@@ -81,7 +90,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                 //read field name
                 Log.d(TAG,"on click event");
                 view.setVisibility(View.GONE);
-                currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
+                //currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
                 Log.e(TAG, currentLayout.layoutName);
                 doSpeak();
             }
@@ -198,12 +207,9 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
             currentFiledName=currentLayout.fields.get(fieldIndex).filedName;
-            generateLeftMessage(currentFiledName,fieldIndex,leftFieldPos);
+            generateLeftMessage(currentFiledName,fieldIndex);
             mTts.speak(currentFiledName,TextToSpeech.QUEUE_ADD, params);
-            generateRightMessage("...",fieldIndex+100,rightFieldPos);
             fieldIndex++;
-            leftFieldPos+=2;
-            rightFieldPos+=2;
 
         }
     }
@@ -230,52 +236,31 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         queue.add(stringRequest);
     }
 
-    public void generateLeftMessage(String body, int id, int pos){
-        TextView rowTextView = new TextView(getApplicationContext());
-        // set some properties of rowTextView or something
-        rowTextView.setText(body);
-        rowTextView.setId(id);
-        rowTextView.setPadding(50, 15, 50, 15);
-        rowTextView.setY(150 * pos);
-        GradientDrawable gd = new GradientDrawable();
-        gd.setCornerRadius(100);
-        //gd.setStroke(3, 0xFF000000);
-        // Changes this drawbale to use a single color instead of a gradient
-        gd.setColor(Color.parseColor("#39B57B"));
-        rowTextView.setBackgroundDrawable(gd);
-        rowTextView.setTextSize(22);
-        rowTextView.setMinimumWidth(300);
-        //add wrap content property and align to text view
-        RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        relativeLayoutParams.setMargins(30,0,0,0);
-        layout.addView(rowTextView,relativeLayoutParams);
+    public void generateLeftMessage(String body, int id){
+        LayoutMessage layoutMessage = new LayoutMessage();
+        layoutMessage.setId(id);//dummy
+        layoutMessage.setMessage(body);
+        layoutMessage.setDate(DateFormat.getDateTimeInstance().format(new Date()));
+        layoutMessage.setMe(true);
+        displayMessage(layoutMessage);
 
     }
-    public void generateRightMessage(CharSequence body, int id, int pos){
-        TextView rowTextView = new TextView(getApplicationContext());
-        // set some properties of rowTextView
-        rowTextView.setText(body);
-        rowTextView.setId(id);
-        rowTextView.setPadding(50, 15, 50, 15);
-        rowTextView.setY(150 * pos);
-        rowTextView.setTextColor(Color.parseColor("#000000"));
-        // Changes this drawbale to use a single color instead of a gradient
-        GradientDrawable gd = new GradientDrawable();
-        gd.setCornerRadius(100);
-        gd.setColor(Color.parseColor("#E7E7E4"));
-        rowTextView.setBackgroundDrawable(gd);
-        rowTextView.setTextSize(22);
-        //rowTextView.setGravity(Gravity.LEFT);
-        //add wrap content property and align to text view
-        RelativeLayout.LayoutParams relativeLayoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        relativeLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        relativeLayoutParams.setMargins(0,0,30,0);
-        layout.addView(rowTextView,relativeLayoutParams);
+    public void generateRightMessage(String body, int id){
+        LayoutMessage layoutMessage = new LayoutMessage();
+        layoutMessage.setId(id);
+        layoutMessage.setMe(false);
+        layoutMessage.setMessage(body);
+        layoutMessage.setDate(DateFormat.getDateTimeInstance().format(new Date()));
+        displayMessage(layoutMessage);
 
+    }
+    public void displayMessage(LayoutMessage message) {
+        adapter.add(message);
+        adapter.notifyDataSetChanged();
+        scroll();
+    }
+    private void scroll() {
+        messagesContainer.setSelection(messagesContainer.getCount() - 1);
     }
     class AsyncCall extends AsyncTask<String, Void, Void> {
         private static final String TAG = "AsyncCall";
@@ -285,9 +270,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
             Log.i(TAG, "doInBackground");
             if (apiServiceBound) {
-                Log.d("---------","hiii");
                 Log.v(TAG, "Start RECORD!!!!");
-                //mBoundService.startRecordAudio();
                 apiBoundService.startRecordAudio();
                 apiBoundService.callGetLayoutsForUser();
             }
@@ -297,11 +280,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         @Override
         protected void onPostExecute(Void result) {
             //set answer bubble text
-            answerMessage = (TextView) findViewById(currentAnswerId+100);
-            if(answerMessage !=null)
-                answerMessage.setText("record finish "+currentAnswerId+100);
-            currentAnswerId ++;
-
+            generateRightMessage("result",currentAnswerId);
+            currentAnswerId++;
             Log.i(TAG, "onPostExecute");
             doSpeak();
         }
