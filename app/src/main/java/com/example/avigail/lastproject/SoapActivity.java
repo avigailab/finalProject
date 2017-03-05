@@ -61,9 +61,10 @@ public class SoapActivity extends AppCompatActivity {
         }
         private String encodeAudio() {
             try {
-                File file = new File("/storage/emulated/0/AudioRecorder/record.flac");
+
+                File file = new File("/storage/emulated/0/AudioRecorder/no.flac");
                 byte[] bytes = FileUtils.readFileToByteArray(file);
-                String encoded = Base64.encodeToString(bytes, 0);
+                String encoded = Base64.encodeToString(bytes, Base64.NO_WRAP).trim();
                 Log.i("~~~~~~~~ Encoded: ", encoded);
                 return encoded;
             } catch (Exception e) {
