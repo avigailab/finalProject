@@ -9,8 +9,6 @@ import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -22,11 +20,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHttpResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,13 +28,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import cafe.adriel.androidaudioconverter.AndroidAudioConverter;
 import cafe.adriel.androidaudioconverter.callback.IConvertCallback;
 import cafe.adriel.androidaudioconverter.callback.ILoadCallback;
-
-import static java.net.Proxy.Type.HTTP;
 
 public class ApisManagerService extends Service {
     private static String TAG = "AudioRecordService";
@@ -280,22 +270,24 @@ public class ApisManagerService extends Service {
 
         copyWaveFile(getTempFilename(),getFilename());
         deleteTempFile();
+        convertWAVToFLAC();
 
-
-        File flacFile = new File(getFilename());
+    }
+    private void convertWAVToFLAC(){
+        File wavFile = new File(getFilename());
         IConvertCallback callback = new IConvertCallback() {
             @Override
             public void onSuccess(File convertedFile) {
-                // So fast? Love it!
+                Log.i(TAG,"So fast? Love it!");
             }
             @Override
             public void onFailure(Exception error) {
-                // Oops! Something went wrong
+                Log.i(TAG,"Oops! Something went wrong");
             }
         };
         AndroidAudioConverter.with(this)
                 // Your current audio file
-                .setFile(flacFile)
+                .setFile(wavFile)
 
                 // Your desired audio format
                 .setFormat(cafe.adriel.androidaudioconverter.model.AudioFormat.FLAC)
@@ -305,6 +297,7 @@ public class ApisManagerService extends Service {
 
                 // Start conversion
                 .convert();
+
     }
 
     private void deleteTempFile() {
