@@ -60,6 +60,8 @@ public class ApisManagerService extends Service {
     private Thread recordingThread = null;
     private boolean isRecording = false;
 
+    private Long currentTime=null;
+
     AudioRecord audioRecorder;
     int bufferSizeInBytes;
     public ApisManagerService() {
@@ -179,6 +181,7 @@ public class ApisManagerService extends Service {
         int read = 0;
         int count=0;
         if(null != os){
+
             while(true) {
                 float totalAbsValue = 0.0f;
                 short sample        = 0;
@@ -199,26 +202,45 @@ public class ApisManagerService extends Service {
                 Log.e("TEMP----", String.valueOf(temp));
                 if ((temp >= 0 && temp <= SLINCE_RANGE) && isRecording == false) {
                     Log.i("TAG", "1");
-                    if(count>2) {
-                        tempIndex++;
-                        continue;
+                    if(currentTime==null) {
+                        Log.d("currentTime is null","set current time");
+                        currentTime = System.currentTimeMillis();
                     }
+                    else{
+                        long distance = System.currentTimeMillis()-currentTime;
+                        Log.d("distance is",distance + "!!");
+                        if(distance>2000){
+                            currentTime = System.currentTimeMillis();
+                            stopRecording();
+                            Log.d("very long time","stop recording!!");
+                            break;
+                        }
+                    }
+                   //if(count>2) {
+                      //  tempIndex++;
+                      //  continue;
+                    //}
                 }
 
                 if (temp > SLINCE_RANGE && isRecording == false) {
                     Log.i("TAG", "2");
+                    currentTime = System.currentTimeMillis();
+                    Log.d("TAG 2","set current time");
                     isRecording = true;
                 }
 
                 if ((temp >= 0 && temp <= SLINCE_RANGE) && isRecording == true) {
-                    // if(temp==0){
+
                     count++;
-                    Log.i("TAG", "Save audio to file.");
+
+                   // currentTime = null;
+                   Log.d("number of words",count+"");
                     isRecording=false;
-                    if(count==2) {
+                    /*if(count==2) {
                         stopRecording();
+                        Log.i("TAG", "Save audio to file.");
                         break;
-                    }
+                    }*/
                 }
                 tempIndex++;
                 if (AudioRecord.ERROR_INVALID_OPERATION != read) {
