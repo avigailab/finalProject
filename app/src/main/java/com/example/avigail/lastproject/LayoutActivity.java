@@ -43,19 +43,17 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private final int SPEECH_RECOGNITION_CODE = 1;
     private AppAdapter appAdapter;
     private TextView layoutTitle;
-    private RelativeLayout layout;
-    private TextView leftMessage;
-    private  TextView rightMessage;
     private String currentFiledName;
     private TextToSpeech textToSpeech;
+
     private int uttCount = 0;
     private int lastUtterance = -1;
     private HashMap<String, String> params = new HashMap<String, String>();
     private static final int REQ_TTS_STATUS_CHECK = 0;
     private TextToSpeech mTts;
-
     Layout currentLayout;
-    private ListView messagesContainer;private LayoutAdapter adapter;
+    private ListView messagesContainer;
+    private LayoutAdapter adapter;
     int fieldIndex=0,currentAnswerId=100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +72,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         currentLayout.fields=fields;*/
         appAdapter=new AppAdapter();
         layoutTitle = (TextView) findViewById(R.id.layoutTitle);
-        layout = (RelativeLayout) findViewById(R.id.messages);
-        leftMessage = (TextView) findViewById(R.id.leftMessage);
-        rightMessage = (TextView) findViewById(R.id.rightMessage);
         // Check to be sure that TTS exists and is okay to use
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
@@ -90,7 +85,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                 //read field name
                 Log.d(TAG,"on click event");
                 view.setVisibility(View.GONE);
-                //currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
+                currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
                 Log.e(TAG, currentLayout.layoutName);
                 doSpeak();
             }

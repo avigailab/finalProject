@@ -42,49 +42,6 @@ tools:context="com.example.avigail.lastproject.LayoutActivity"
         android:transcriptMode="alwaysScroll"
         android:divider="@null" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/messages"
-
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="10dp"
-                android:padding="15dp"
-                android:textSize="18dp"
-                android:text="hiii my name is"
-                android:textColor="#000"
-                android:background="#39B57B"
-                android:id="@+id/leftMessage"
-                android:visibility="invisible"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="10dp"
-                android:layout_alignParentRight="true"
-                android:textSize="18dp"
-                android:padding="15dp"
-                android:shadowRadius="5"
-                android:text="avigail!!!!!!!!1"
-                android:textColor="#000"
-                android:background="#E7E7E4"
-                android:id="@+id/rightMessage"
-                android:visibility="invisible"/>
-
-
-        </RelativeLayout>
-    </ScrollView>
-
 </LinearLayout>
 
 
