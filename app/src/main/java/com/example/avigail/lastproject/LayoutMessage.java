@@ -3,7 +3,7 @@ package com.example.avigail.lastproject;
 /**
  * Created by avigail on 26/09/16.
  */
-public class ChatMessage {
+public class LayoutMessage {
 
         private long id;
         private boolean isMe;
