@@ -276,10 +276,17 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         protected void onPostExecute(Void result) {
 
             SendSoap myRequest = new SendSoap();
-            myRequest.execute();
-            Log.d("after","post execute");
-            //set answer bubble text
-            generateRightMessage("result",currentAnswerId);
+            try {
+                myRequest.execute().get();
+                Log.d("after","post execute");
+                //set answer bubble text
+                generateRightMessage("result",currentAnswerId);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
             currentAnswerId++;
             Log.i(TAG, "onPostExecute");
             doSpeak();
