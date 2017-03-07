@@ -25,9 +25,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".LayoutActivity" >
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <service
             android:name=".SpeechService"
