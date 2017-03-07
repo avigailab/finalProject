@@ -289,13 +289,17 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                 Log.v(TAG, "Start RECORD!!!!");
                 //mBoundService.startRecordAudio();
                 apiBoundService.startRecordAudio();
-                apiBoundService.callGetLayoutsForUser();
+                //apiBoundService.callGetLayoutsForUser();
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
+
+            SendSoap myRequest = new SendSoap();
+            myRequest.execute();
+            Log.d("after","post execute");
             //set answer bubble text
             answerMessage = (TextView) findViewById(currentAnswerId+100);
             if(answerMessage !=null)
