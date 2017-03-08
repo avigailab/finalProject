@@ -199,8 +199,8 @@ public class ApisManagerService extends Service {
                     else{
                         long distance = System.currentTimeMillis()-currentTime;
                         Log.d("distance is",distance + "!!");
-                        if(distance>2000){
-                            currentTime = System.currentTimeMillis();
+                        if(distance>1200){
+                            currentTime = null;
                             stopRecording();
                             Log.d("very long time","stop recording!!");
                             break;
