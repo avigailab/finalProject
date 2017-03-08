@@ -66,6 +66,7 @@ public class SoapActivity extends AppCompatActivity {
                 byte[] bytes = FileUtils.readFileToByteArray(file);
                 String encoded = Base64.encodeToString(bytes, Base64.NO_WRAP).trim();
                 Log.i("~~~~~~~~ Encoded: ", encoded);
+                Log.d("is exist",file.exists()+"");
                 return encoded;
             } catch (Exception e) {
                 Log.e("audio encode execption","");
