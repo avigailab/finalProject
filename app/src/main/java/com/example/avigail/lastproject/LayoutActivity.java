@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 
@@ -23,6 +22,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.ksoap2.serialization.SoapObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private ListView messagesContainer;
     private LayoutAdapter adapter;
     int fieldIndex=0,currentAnswerId=100;
+    String finalRespone="Defult Respone";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -277,10 +279,17 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
             SendSoap myRequest = new SendSoap();
             try {
-                myRequest.execute().get();
+
+                SoapObject respone = (SoapObject) myRequest.execute().get();
+                if(respone!=null) {
+                    SoapObject respone_1 = (SoapObject) respone.getProperty(1);
+                    SoapObject respone_2 = (SoapObject) respone_1.getProperty(0);
+                    finalRespone=String.valueOf(respone_2.getProperty(0));
+                    //Log.i(TAG, String.valueOf(respone_2.getProperty(0)));
+                }
                 Log.d("after","post execute");
                 //set answer bubble text
-                generateRightMessage("result",currentAnswerId);
+                generateRightMessage(finalRespone,currentAnswerId);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
