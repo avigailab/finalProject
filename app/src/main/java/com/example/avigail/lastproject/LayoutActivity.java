@@ -56,6 +56,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private ListView messagesContainer;
     private LayoutAdapter adapter;
     int fieldIndex=0,currentAnswerId=100;
+    String currentFiledType="";
     String finalRespone="Defult Respone";
     Activity activity=this;
     @Override
@@ -278,7 +279,10 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         @Override
         protected void onPostExecute(Void result) {
             ProgressDialog progDailog = ProgressDialog.show(activity, "Process ", "please wait....", true, true);
-            SendSoap myRequest = new SendSoap();
+            currentFiledName = currentLayout.fields.get(fieldIndex-1).filedName;
+            currentFiledType = currentLayout.fields.get(fieldIndex-1).dataType;
+
+            SendSoap myRequest = new SendSoap(currentFiledName,currentFiledType,"en");
             try {
 
                 SoapObject respone = (SoapObject) myRequest.execute().get();

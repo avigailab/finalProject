@@ -25,6 +25,14 @@ public class SendSoap extends AsyncTask<Object, Object, Object> {
     private static final String NAMESPACE = "http://www.tukuoro.com/";
     private static final String URL = "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx";
     private String response;
+    private String fieldName="";
+    private String fieldType="";
+    private String language="";
+    public SendSoap(String fieldName,String fieldType,String language){
+        this.fieldName = fieldName;
+        this.fieldType = fieldType.length() > 0 ? fieldType :"Any";
+        this.language = language;
+    }
     @Override
     protected void onPostExecute(Object result) {
         super.onPostExecute(result);
@@ -67,13 +75,18 @@ public class SendSoap extends AsyncTask<Object, Object, Object> {
                 request.addProperty("audio",line);
             }*/
         //----------------------------------------------------------
-
+        Log.d("field name",this.fieldName);
+        Log.d("field type",this.fieldType);
+        Log.d("language",this.language);
         //-----here we try to send encode audio that we created----
         request.addProperty("audio",encodeAudio());
         //---------------------------------------------------------
-        request.addProperty("fieldName","date");
+        /*request.addProperty("fieldName",this.fieldName);
+        request.addProperty("fieldType",this.fieldType);
+        request.addProperty("language",this.language);*/
+        request.addProperty("fieldName",this.fieldName.toLowerCase());
         request.addProperty("fieldType","Any");
-        request.addProperty("language","en");
+        request.addProperty("language",this.language);
         request.addProperty("clientId","68174861");
         request.addProperty("serviceId","58469251");
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
