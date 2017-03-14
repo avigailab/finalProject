@@ -41,11 +41,7 @@ public class ApisManagerService extends Service {
     private static final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
     private static final String AUDIO_RECORDER_TEMP_FILE = "record_temp.raw";
     private static final int RECORDER_SAMPLERATE = 16000;
-<<<<<<< HEAD
-    private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
-=======
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
->>>>>>> 43c32554898ab2cd52ab71791e364a16ef7317e0
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int SLINCE_RANGE = 350;
 
