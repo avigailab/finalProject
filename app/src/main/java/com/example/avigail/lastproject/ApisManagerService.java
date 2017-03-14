@@ -423,47 +423,6 @@ public class ApisManagerService extends Service {
 
         out.write(header, 0, 44);
     }
-    public void sendRecordToApi(String encodeFile) {
-
-        Toast.makeText(this.getApplicationContext(), "on getArOb func =)",
-                Toast.LENGTH_LONG).show();
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/ParseImmidiateSingleFromAudio";
-
-        JSONObject params = new JSONObject();
-
-        try {
-
-            params.put("audio",String.valueOf(encodeFile));
-            params.put("fieldName","date");
-            params.put("fieldType","Any");
-            params.put("language","en");
-            params.put("clientId","68174861");
-            params.put("serviceId","58469251");
-            Log.d("on try===", String.valueOf(params.get("audio")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                URL, params,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        //pDialog.hide();
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                // pDialog.hide();
-            }
-        }) ;
-        queue.add(jsonObjReq);
-    }
     public class MyBinder extends Binder {
         ApisManagerService getService() {
             return ApisManagerService.this;
