@@ -40,7 +40,7 @@ public class ApisManagerService extends Service {
     private static final String AUDIO_RECORDER_FILE_EXT_WAV = ".wav";
     private static final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
     private static final String AUDIO_RECORDER_TEMP_FILE = "record_temp.raw";
-    private static final int RECORDER_SAMPLERATE = 44100;
+    private static final int RECORDER_SAMPLERATE = 16000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int SLINCE_RANGE = 350;
@@ -199,12 +199,17 @@ public class ApisManagerService extends Service {
                     else{
                         long distance = System.currentTimeMillis()-currentTime;
                         Log.d("distance is",distance + "!!");
+
                         if(distance>2000){
                             currentTime = System.currentTimeMillis();
                             stopRecording();
                             Log.d("very long time","stop recording!!");
                             break;
                         }
+                        /*if(distance>500){
+                            tempIndex++;
+                            continue;
+                        }*/
                     }
                    //if(count>2) {
                       //  tempIndex++;
