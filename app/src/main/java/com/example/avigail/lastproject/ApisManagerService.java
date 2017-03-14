@@ -44,6 +44,7 @@ public class ApisManagerService extends Service {
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int SLINCE_RANGE = 350;
+    int silienceLimit = 0;
 
     private AudioRecord recorder = null;
     private int bufferSize = 0;
@@ -199,19 +200,25 @@ public class ApisManagerService extends Service {
                     else{
                         long distance = System.currentTimeMillis()-currentTime;
                         Log.d("distance is",distance + "!!");
+                        if(count>0) {
+                            silienceLimit = 1200;
+                        }
+                        else{
+                            silienceLimit = 2000;
+                        }
 /*
                         if(distance>2000){
                             currentTime = System.currentTimeMillis();*/
-                        if(distance>1200){
+                        if(count>0 && distance>silienceLimit){
                             currentTime = null;
                             stopRecording();
                             Log.d("very long time","stop recording!!");
                             break;
                         }
-                        /*if(distance>500){
+                        if(distance>500){
                             tempIndex++;
                             continue;
-                        }*/
+                        }
                     }
                    //if(count>2) {
                       //  tempIndex++;
