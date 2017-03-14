@@ -37,7 +37,7 @@ public class SendSoap extends AsyncTask<Object, Object, Object> {
     private String encodeAudio() {
         try {
 
-            File file = new File("/storage/emulated/0/AudioRecorder/no.flac");
+            File file = new File("/storage/emulated/0/AudioRecorder/record.flac");
             byte[] bytes = FileUtils.readFileToByteArray(file);
             String encoded = Base64.encodeToString(bytes, Base64.NO_WRAP).trim();
             Log.i("~~~~~~~~ Encoded: ", encoded);

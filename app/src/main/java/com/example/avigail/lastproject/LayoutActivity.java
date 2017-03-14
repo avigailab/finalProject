@@ -57,6 +57,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private LayoutAdapter adapter;
     int fieldIndex=0,currentAnswerId=100;
     String finalRespone="Defult Respone";
+    Activity activity=this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -276,11 +277,12 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
 
         @Override
         protected void onPostExecute(Void result) {
-
+            ProgressDialog progDailog = ProgressDialog.show(activity, "Process ", "please wait....", true, true);
             SendSoap myRequest = new SendSoap();
             try {
 
                 SoapObject respone = (SoapObject) myRequest.execute().get();
+                progDailog.dismiss();
                 if(respone!=null) {
                     SoapObject respone_1 = (SoapObject) respone.getProperty(1);
                     SoapObject respone_2 = (SoapObject) respone_1.getProperty(0);
