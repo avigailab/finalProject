@@ -292,6 +292,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                 Log.d("after","post execute");
                 //set answer bubble text
                 generateRightMessage(finalRespone,currentAnswerId);
+                currentLayout.fields.get(fieldIndex).setFiledAnswer(finalRespone);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
