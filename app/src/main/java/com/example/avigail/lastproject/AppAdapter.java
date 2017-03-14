@@ -57,8 +57,8 @@ public class AppAdapter {
                 boolean required = false;
                 int order = -1;
                 String dataType = "";
-                //for (int j = 0; j < fields.getLength(); j++) {
-                for (int j = 0; j < 1; j++) {
+                for (int j = 0; j < fields.getLength(); j++) {
+                //for (int j = 0; j < 1; j++) {
                     Element fieldElem = (Element) fields.item(j);
                     stringFields[j] = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
                     fieldName = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();

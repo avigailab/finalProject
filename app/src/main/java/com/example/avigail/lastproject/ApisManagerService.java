@@ -41,7 +41,11 @@ public class ApisManagerService extends Service {
     private static final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
     private static final String AUDIO_RECORDER_TEMP_FILE = "record_temp.raw";
     private static final int RECORDER_SAMPLERATE = 16000;
+<<<<<<< HEAD
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
+=======
+    private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+>>>>>>> 43c32554898ab2cd52ab71791e364a16ef7317e0
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int SLINCE_RANGE = 350;
 
@@ -67,7 +71,7 @@ public class ApisManagerService extends Service {
         bufferSize = AudioRecord.getMinBufferSize(8000,
                 AudioFormat.CHANNEL_CONFIGURATION_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
-        // Initialize Audio Recorder.
+        // Initialize Audirder.
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING, bufferSize);
 
@@ -199,9 +203,11 @@ public class ApisManagerService extends Service {
                     else{
                         long distance = System.currentTimeMillis()-currentTime;
                         Log.d("distance is",distance + "!!");
-
+/*
                         if(distance>2000){
-                            currentTime = System.currentTimeMillis();
+                            currentTime = System.currentTimeMillis();*/
+                        if(distance>1200){
+                            currentTime = null;
                             stopRecording();
                             Log.d("very long time","stop recording!!");
                             break;
@@ -339,7 +345,7 @@ public class ApisManagerService extends Service {
         long totalAudioLen = 0;
         long totalDataLen = totalAudioLen + 36;
         long longSampleRate = RECORDER_SAMPLERATE;
-        int channels = 2;
+        int channels = 1;
         long byteRate = RECORDER_BPP * RECORDER_SAMPLERATE * channels/8;
 
         byte[] data = new byte[bufferSize];

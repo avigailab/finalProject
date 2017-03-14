@@ -19,14 +19,14 @@ import java.io.IOException;
  * Created by avigail on 05/03/17.
  */
 
-public class SendSoap extends AsyncTask<Void, Void, Void> {
+public class SendSoap extends AsyncTask<Object, Object, Object> {
     private static final String SOAP_ACTION = "http://www.tukuoro.com/ParseImmidiateSingleFromAudio";
     private static final String METHOD_NAME = "ParseImmidiateSingleFromAudio";
     private static final String NAMESPACE = "http://www.tukuoro.com/";
     private static final String URL = "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx";
     private String response;
     @Override
-    protected void onPostExecute(Void result) {
+    protected void onPostExecute(Object result) {
         super.onPostExecute(result);
     }
 
@@ -37,7 +37,7 @@ public class SendSoap extends AsyncTask<Void, Void, Void> {
     private String encodeAudio() {
         try {
 
-            File file = new File("/storage/emulated/0/AudioRecorder/no.flac");
+            File file = new File("/storage/emulated/0/AudioRecorder/record.flac");
             byte[] bytes = FileUtils.readFileToByteArray(file);
             String encoded = Base64.encodeToString(bytes, Base64.NO_WRAP).trim();
             Log.i("~~~~~~~~ Encoded: ", encoded);
@@ -50,7 +50,7 @@ public class SendSoap extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... arg0) {
+    protected Object doInBackground(Object... arg0) {
 
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
 
@@ -96,9 +96,8 @@ public class SendSoap extends AsyncTask<Void, Void, Void> {
         SoapObject result;
         try {
             result = (SoapObject)envelope.getResponse();
-            Object obj = envelope.bodyIn;
             Log.d("App", "" + envelope.getResponse());
-            Log.d("obj--",obj.toString());
+            return result;
             // response = result.getProperty(0).toString();
 
 

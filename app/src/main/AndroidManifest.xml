@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LayoutActivity" >
+        <activity android:name=".LayoutActivity" android:screenOrientation="portrait" >
         </activity>
         <service
             android:name=".SpeechService"
@@ -47,7 +47,6 @@
             android:exported="true" />
 
         <activity android:name=".SoapActivity"  android:screenOrientation="portrait">
-
         </activity>
         <activity android:name=".SoundRecording"  android:screenOrientation="portrait">
 
