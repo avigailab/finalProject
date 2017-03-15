@@ -41,6 +41,21 @@ tools:context="com.example.avigail.lastproject.LayoutActivity"
         android:listSelector="@android:color/transparent"
         android:transcriptMode="alwaysScroll"
         android:divider="@null" />
+    <Button android:id="@+id/send"
+        android:text="Send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+    <Button android:id="@+id/save"
+        android:text="Save in waitigs forms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+
 
 </LinearLayout>
 
