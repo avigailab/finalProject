@@ -47,6 +47,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private String currentFiledName;
     private TextToSpeech textToSpeech;
 
+    Button saveForm, sendForm;
+
     private int uttCount = 0;
     private int lastUtterance = -1;
     private HashMap<String, String> params = new HashMap<String, String>();
@@ -67,6 +69,8 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         adapter = new LayoutAdapter(LayoutActivity.this, new ArrayList<LayoutMessage>());
         messagesContainer.setAdapter(adapter);
+        saveForm =(Button)findViewById(R.id.save);
+        sendForm =(Button)findViewById(R.id.send);
        /* currentLayout =new Layout(1,"asasas");
         ArrayList fields = new ArrayList<Field>();
         for (int j = 0; j < 3; j++) {
@@ -211,6 +215,16 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             fieldIndex++;
 
         }
+        else{
+
+            saveForm.setVisibility(View.VISIBLE);
+            sendForm.setVisibility(View.VISIBLE);
+            WaitingForms waitingForms=new WaitingForms();
+            Log.i(TAG, String.valueOf(currentLayout.fields.get(0).filedAnswer));
+            //waitingForms.addForm(currentLayout);
+            Log.i(TAG, waitingForms.getWaitingForms().get(0).layoutName);
+
+        }
     }
 
     private void callApi(){
@@ -296,7 +310,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                 Log.d("after","post execute");
                 //set answer bubble text
                 generateRightMessage(finalRespone,currentAnswerId);
-                currentLayout.fields.get(fieldIndex).setFiledAnswer(finalRespone);
+                currentLayout.fields.get(fieldIndex-1).setFiledAnswer(finalRespone);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
