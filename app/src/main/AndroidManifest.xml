@@ -42,10 +42,6 @@
             android:name=".AudioRecordService"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".ApisManagerService"
-            android:enabled="true"
-            android:exported="true" />
 
         <activity android:name=".SoapActivity"  android:screenOrientation="portrait">
         </activity>

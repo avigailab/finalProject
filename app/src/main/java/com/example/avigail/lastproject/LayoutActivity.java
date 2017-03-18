@@ -37,7 +37,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     //bound service variables
     /*AudioRecordService mBoundService;
     boolean mServiceBound = false;*/
-    ApisManagerService apiBoundService;
+    AudioRecordService apiBoundService;
     boolean apiServiceBound = false;
 
     private static final String TAG = "layuot activity";
@@ -139,7 +139,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         /*Intent intent = new Intent(this, AudioRecordService.class);
         startService(intent);
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);*/
-        Intent intent = new Intent(this, ApisManagerService.class);
+        Intent intent = new Intent(this, AudioRecordService.class);
         startService(intent);
         bindService(intent, apiServiceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -164,7 +164,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             /*RecorderBinder myBinder = (AudioRecordService.RecorderBinder) service;
             mBoundService = myBinder.getService();
             mServiceBound = true;*/
-            ApisManagerService.MyBinder myBinder = (ApisManagerService.MyBinder) service;
+            AudioRecordService.MyBinder myBinder = (AudioRecordService.MyBinder) service;
             apiBoundService = myBinder.getService();
             apiServiceBound = true;
         }
