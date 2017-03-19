@@ -10,7 +10,7 @@ android:paddingTop="@dimen/activity_vertical_margin"
 android:id="@+id/myLayout"
 android:orientation="vertical"
 
-tools:context="com.example.avigail.lastproject.LayoutActivity"
+tools:context="com.example.avigail.lastproject.FormActivity"
 
     >
 

@@ -44,7 +44,7 @@ public class WaitingFormsActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.e("---", "click " + i);
-                Intent layoutIntent = new Intent(getApplication(), LayoutActivity.class);
+                Intent layoutIntent = new Intent(getApplication(), FormActivity.class);
                 //pass current layout
                 layoutIntent.putExtra("LAYOUT",arrayOfLayouts.get(i));
                 startActivity(layoutIntent);

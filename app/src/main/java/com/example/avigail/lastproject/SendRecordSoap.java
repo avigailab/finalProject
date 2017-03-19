@@ -19,7 +19,7 @@ import java.io.IOException;
  * Created by avigail on 05/03/17.
  */
 
-public class SendSoap extends AsyncTask<Object, Object, Object> {
+public class SendRecordSoap extends AsyncTask<Object, Object, Object> {
     private static final String SOAP_ACTION = "http://www.tukuoro.com/ParseImmidiateSingleFromAudio";
     private static final String METHOD_NAME = "ParseImmidiateSingleFromAudio";
     private static final String NAMESPACE = "http://www.tukuoro.com/";
@@ -28,7 +28,7 @@ public class SendSoap extends AsyncTask<Object, Object, Object> {
     private String fieldName="";
     private String fieldType="";
     private String language="";
-    public SendSoap(String fieldName,String fieldType,String language){
+    public SendRecordSoap(String fieldName, String fieldType, String language){
         this.fieldName = fieldName;
         this.fieldType = fieldType.length() > 0 ? fieldType :"Any";
         this.language = language;

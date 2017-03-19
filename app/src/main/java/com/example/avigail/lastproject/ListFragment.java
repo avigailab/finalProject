@@ -2,31 +2,15 @@ package com.example.avigail.lastproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -109,7 +93,7 @@ public class ListFragment extends Fragment{
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                     Log.e("---", "click " + i);
-                                    Intent layoutIntent = new Intent(getActivity(), LayoutActivity.class);
+                                    Intent layoutIntent = new Intent(getActivity(), FormActivity.class);
                                     //pass current layout
                                     layoutIntent.putExtra("LAYOUT",arrayOfLayouts.get(i));
                                     startActivity(layoutIntent);

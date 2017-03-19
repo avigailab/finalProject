@@ -16,13 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
 import org.ksoap2.serialization.SoapObject;
 
 import java.text.DateFormat;
@@ -32,19 +25,19 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
 
-public class LayoutActivity extends Activity implements TextToSpeech.OnInitListener,
+public class FormActivity extends Activity implements TextToSpeech.OnInitListener,
         OnUtteranceCompletedListener{
     //bound service variables
     /*AudioRecordService mBoundService;
     boolean mServiceBound = false;*/
     AudioRecordService apiBoundService;
-    boolean apiServiceBound = false;
+    boolean recordServiceBound = false;
 
     private static final String TAG = "layuot activity";
     private final int SPEECH_RECOGNITION_CODE = 1;
     private AppAdapter appAdapter;
     private TextView layoutTitle;
-    private String currentFiledName;
+    private String currentFieldName;
     private TextToSpeech textToSpeech;
 
     Button saveForm, sendForm;
@@ -56,9 +49,9 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
     private TextToSpeech mTts;
     Layout currentLayout;
     private ListView messagesContainer;
-    private LayoutAdapter adapter;
+    private FormAdapter adapter;
     int fieldIndex=0,currentAnswerId=100;
-    String currentFiledType="";
+    String currentFieldType ="";
     String finalRespone="Defult Respone";
     Activity activity=this;
     @Override
@@ -67,17 +60,11 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout);
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
-        adapter = new LayoutAdapter(LayoutActivity.this, new ArrayList<LayoutMessage>());
+        adapter = new FormAdapter(FormActivity.this, new ArrayList<FormMessage>());
         messagesContainer.setAdapter(adapter);
         saveForm =(Button)findViewById(R.id.save);
         sendForm =(Button)findViewById(R.id.send);
-       /* currentLayout =new Layout(1,"asasas");
-        ArrayList fields = new ArrayList<Field>();
-        for (int j = 0; j < 3; j++) {
-            Field field = new Field(j, "hi   "+j, false, 1, "int");
-            fields.add(j, field);
-        }
-        currentLayout.fields=fields;*/
+
         appAdapter=new AppAdapter();
         layoutTitle = (TextView) findViewById(R.id.layoutTitle);
         // Check to be sure that TTS exists and is okay to use
@@ -91,7 +78,6 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             @Override
             public void onClick(View view) {
                 //read field name
-                Log.d(TAG,"on click event");
                 view.setVisibility(View.GONE);
                 currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
                 Log.e(TAG, currentLayout.layoutName);
@@ -124,13 +110,11 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
                     Log.e(TAG, "Got a failure. TTS not available");
             }
         }
-        else {
-            // Got something else
-        }
+
     }
     @Override
     public void onInit(int status) {
-        Log.d("oninit--------","on init func");
+
         if( status == TextToSpeech.SUCCESS) {
             mTts.setOnUtteranceCompletedListener(this);
             int result = mTts.setLanguage(Locale.US);
@@ -145,22 +129,22 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);*/
         Intent intent = new Intent(this, AudioRecordService.class);
         startService(intent);
-        bindService(intent, apiServiceConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, recordServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (apiServiceBound) {
-            unbindService(apiServiceConnection);
-            apiServiceBound = false;
+        if (recordServiceBound) {
+            unbindService(recordServiceConnection);
+            recordServiceBound = false;
         }
     }
-    private ServiceConnection apiServiceConnection = new ServiceConnection() {
+    private ServiceConnection recordServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            apiServiceBound = false;
+            recordServiceBound = false;
         }
 
         @Override
@@ -170,7 +154,7 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             mServiceBound = true;*/
             AudioRecordService.MyBinder myBinder = (AudioRecordService.MyBinder) service;
             apiBoundService = myBinder.getService();
-            apiServiceBound = true;
+            recordServiceBound = true;
         }
     };
     @Override
@@ -209,9 +193,9 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
-            currentFiledName=currentLayout.fields.get(fieldIndex).filedName;
-            generateLeftMessage(currentFiledName,fieldIndex);
-            mTts.speak(currentFiledName,TextToSpeech.QUEUE_ADD, params);
+            currentFieldName =currentLayout.fields.get(fieldIndex).filedName;
+            generateLeftMessage(currentFieldName,fieldIndex);
+            mTts.speak(currentFieldName,TextToSpeech.QUEUE_ADD, params);
             fieldIndex++;
 
         }
@@ -227,47 +211,26 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         }
     }
 
-    private void callApi(){
-        RequestQueue queue = Volley.newRequestQueue(this);
-        Log.d("on callApi func----","on callApi!");
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/GetLayoutsForUser?tukLogin=orayrs@gmail.com&serviceId=58469251&clientId=68174861";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                    Log.d("request sucsses!!",response.toString());
-                    }
-
-
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Error","");
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
 
     public void generateLeftMessage(String body, int id){
-        LayoutMessage layoutMessage = new LayoutMessage();
-        layoutMessage.setId(id);//dummy
-        layoutMessage.setMessage(body);
-        layoutMessage.setDate(DateFormat.getDateTimeInstance().format(new Date()));
-        layoutMessage.setMe(true);
-        displayMessage(layoutMessage);
+        FormMessage formMessage = new FormMessage();
+        formMessage.setId(id);//dummy
+        formMessage.setMessage(body);
+        formMessage.setDate(DateFormat.getDateTimeInstance().format(new Date()));
+        formMessage.setMe(true);
+        displayMessage(formMessage);
 
     }
     public void generateRightMessage(String body, int id){
-        LayoutMessage layoutMessage = new LayoutMessage();
-        layoutMessage.setId(id);
-        layoutMessage.setMe(false);
-        layoutMessage.setMessage(body);
-        layoutMessage.setDate(DateFormat.getDateTimeInstance().format(new Date()));
-        displayMessage(layoutMessage);
+        FormMessage formMessage = new FormMessage();
+        formMessage.setId(id);
+        formMessage.setMe(false);
+        formMessage.setMessage(body);
+        formMessage.setDate(DateFormat.getDateTimeInstance().format(new Date()));
+        displayMessage(formMessage);
 
     }
-    public void displayMessage(LayoutMessage message) {
+    public void displayMessage(FormMessage message) {
         adapter.add(message);
         adapter.notifyDataSetChanged();
         scroll();
@@ -282,10 +245,9 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         protected Void doInBackground(String... params) {
 
             Log.i(TAG, "doInBackground");
-            if (apiServiceBound) {
+            if (recordServiceBound) {
                 Log.v(TAG, "Start RECORD!!!!");
                 apiBoundService.startRecordAudio();
-                //apiBoundService.callGetLayoutsForUser();
             }
             return null;
         }
@@ -293,10 +255,10 @@ public class LayoutActivity extends Activity implements TextToSpeech.OnInitListe
         @Override
         protected void onPostExecute(Void result) {
             ProgressDialog progDailog = ProgressDialog.show(activity, "Process ", "please wait....", true, true);
-            currentFiledName = currentLayout.fields.get(fieldIndex-1).filedName;
-            currentFiledType = currentLayout.fields.get(fieldIndex-1).dataType;
+            currentFieldName = currentLayout.fields.get(fieldIndex-1).filedName;
+            currentFieldType = currentLayout.fields.get(fieldIndex-1).dataType;
 
-            SendSoap myRequest = new SendSoap(currentFiledName,currentFiledType,"en");
+            SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"en");
             try {
 
                 SoapObject respone = (SoapObject) myRequest.execute().get();

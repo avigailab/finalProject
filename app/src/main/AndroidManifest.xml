@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LayoutActivity"
+            android:name=".FormActivity"
             android:screenOrientation="portrait"></activity>
 
         <service
