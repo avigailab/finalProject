@@ -81,11 +81,7 @@ public class AppAdapter {
         return arrayOfLayouts;
 
     }
-    public String bestFive(String text){
 
-
-        return text+"!!!!!!";
-    }
     public  ArrayList<String> displayFormLayout( ArrayList<Layout> arrayOfLayouts ){
         final ArrayList<String> stringArray = new ArrayList<String>();
         for (int i=0;i<1;i++){
