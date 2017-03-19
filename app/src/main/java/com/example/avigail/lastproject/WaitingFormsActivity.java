@@ -2,6 +2,7 @@ package com.example.avigail.lastproject;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,19 +11,39 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 public class WaitingFormsActivity extends ListActivity {
 
     TextView content;
     ListView listView;
-
+    public static final String MY_PREFS_NAME = "MyPrefs";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_forms);
-        listView = (ListView) findViewById(android.R.id.list);
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        Map<String,?> keys = prefs.getAll();
+        for(Map.Entry<String,?> entry : keys.entrySet()){
+            Log.d("map values",entry.getKey() + ": " + entry.getValue().toString());
+        }
+       /* Gson gson = new Gson();
+        String json = prefs.getString("MyObject", "");
+        Layout obj = gson.fromJson(json, Layout.class);*/
+
+       /* SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String restoredText = prefs.getString("text", null);
+        if (restoredText != null) {
+            String name = prefs.getString("name", "No name defined");//"No name defined" is the default value.
+            int idName = prefs.getInt("idName", 0); //0 is the default value.
+        }*/
+
+        /*listView = (ListView) findViewById(android.R.id.list);
         content = (TextView)findViewById(R.id.output);
         WaitingForms waitingForms=new WaitingForms();
         final ArrayList<Layout> arrayOfLayouts=waitingForms.getWaitingForms();
@@ -50,7 +71,7 @@ public class WaitingFormsActivity extends ListActivity {
                 startActivity(layoutIntent);
 
             }
-        });
+        });*/
     }
 
 

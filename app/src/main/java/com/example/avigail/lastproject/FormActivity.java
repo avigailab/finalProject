@@ -4,6 +4,7 @@ import android.app.*;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Intent;
@@ -15,6 +16,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
+
+import com.google.gson.Gson;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -39,7 +42,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     private TextView layoutTitle;
     private String currentFieldName;
     private TextToSpeech textToSpeech;
-
+    public static final String MY_PREFS_NAME = "MyPrefs";
     Button saveForm, sendForm;
 
     private int uttCount = 0;
@@ -203,6 +206,11 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
             saveForm.setVisibility(View.VISIBLE);
             sendForm.setVisibility(View.VISIBLE);
+            Gson gson = new Gson();
+            String jsonLayout = gson.toJson(currentLayout);
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+            editor.putString(currentLayout.layoutName, jsonLayout);
+            editor.commit();
           /*  WaitingForms waitingForms=new WaitingForms();
             Log.i(TAG, String.valueOf(currentLayout.fields.get(0).filedAnswer));
             //waitingForms.addForm(currentLayout);
