@@ -203,10 +203,10 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
             saveForm.setVisibility(View.VISIBLE);
             sendForm.setVisibility(View.VISIBLE);
-            WaitingForms waitingForms=new WaitingForms();
+          /*  WaitingForms waitingForms=new WaitingForms();
             Log.i(TAG, String.valueOf(currentLayout.fields.get(0).filedAnswer));
             //waitingForms.addForm(currentLayout);
-            Log.i(TAG, waitingForms.getWaitingForms().get(0).layoutName);
+            Log.i(TAG, waitingForms.getWaitingForms().get(0).layoutName);*/
 
         }
     }
@@ -265,14 +265,19 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                 progDailog.dismiss();
                 if(respone!=null) {
                     SoapObject respone_1 = (SoapObject) respone.getProperty(1);
-                    SoapObject respone_2 = (SoapObject) respone_1.getProperty(0);
-                    finalRespone=String.valueOf(respone_2.getProperty(0));
+                    Log.d("response_1===",respone_1.toString());
+                    if(respone_1.getPropertyCount()>0) {
+                        SoapObject respone_2 = (SoapObject) respone_1.getProperty(0);
+                        finalRespone=String.valueOf(respone_2.getProperty(0));
+                    }
+
                     //Log.i(TAG, String.valueOf(respone_2.getProperty(0)));
                 }
                 Log.d("after","post execute");
                 //set answer bubble text
                 generateRightMessage(finalRespone,currentAnswerId);
                 currentLayout.fields.get(fieldIndex-1).setFiledAnswer(finalRespone);
+                Log.d("after",";;");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
