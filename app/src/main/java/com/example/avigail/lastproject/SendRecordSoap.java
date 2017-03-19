@@ -62,30 +62,10 @@ public class SendRecordSoap extends AsyncTask<Object, Object, Object> {
 
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
 
-        //------here we read the long string that we get from you-----
-            /*InputStream inputStream = getResources().openRawResource(R.raw.audio);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = null;
-            try {
-                line = reader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (line != null) {
-                request.addProperty("audio",line);
-            }*/
-        //----------------------------------------------------------
-        Log.d("field name",this.fieldName);
-        Log.d("field type",this.fieldType);
-        Log.d("language",this.language);
-        //-----here we try to send encode audio that we created----
+        //init property of request
         request.addProperty("audio",encodeAudio());
-        //---------------------------------------------------------
-        /*request.addProperty("fieldName",this.fieldName);
-        request.addProperty("fieldType",this.fieldType);
-        request.addProperty("language",this.language);*/
         request.addProperty("fieldName",this.fieldName.toLowerCase());
-        request.addProperty("fieldType","Any");
+        request.addProperty("fieldType",this.fieldType);
         request.addProperty("language",this.language);
         request.addProperty("clientId","68174861");
         request.addProperty("serviceId","58469251");

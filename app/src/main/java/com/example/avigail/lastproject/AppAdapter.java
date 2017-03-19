@@ -62,6 +62,8 @@ public class AppAdapter {
                     Element fieldElem = (Element) fields.item(j);
                     stringFields[j] = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
                     fieldName = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
+                    dataType = fieldElem.getElementsByTagName("DataType").item(0).getTextContent();
+                    required = Boolean.parseBoolean(fieldElem.getElementsByTagName("Required").item(0).getTextContent());
                     Field field = new Field(j, fieldName, required, order, dataType);
                     fieldsArray.add(j, field);
                 }
