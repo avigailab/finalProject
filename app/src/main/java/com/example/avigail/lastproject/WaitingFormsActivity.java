@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class WaitingFormsActivity extends ListActivity {
-
-    TextView content;
     ListView listView;
     public static final String MY_PREFS_NAME = "MyPrefs";
 
@@ -38,13 +36,11 @@ public class WaitingFormsActivity extends ListActivity {
             i++;
         }
         listView = (ListView) findViewById(android.R.id.list);
-        content = (TextView)findViewById(R.id.output);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 values);
         // Specify the layout to use when the list of choices appears
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         listView.setAdapter(adapter);
         //********************************
@@ -54,7 +50,10 @@ public class WaitingFormsActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.e("---", "click " + i);
-            }
+                Intent singelWaitingFormIntent = new Intent(getApplicationContext(), SingelWaitingForm.class);
+                //pass current waiting form
+                singelWaitingFormIntent.putExtra("WAITING_FORM_INDEX",i);
+                startActivity(singelWaitingFormIntent);            }
         });
     }
 
@@ -70,7 +69,7 @@ public class WaitingFormsActivity extends ListActivity {
         // ListView Clicked item value
         String  itemValue    = (String) l.getItemAtPosition(position);
 
-        content.setText("Click : \n  Position :"+itemPosition+"  \n  ListItem : " +itemValue);
+        //content.setText("Click : \n  Position :"+itemPosition+"  \n  ListItem : " +itemValue);
 
     }
 }

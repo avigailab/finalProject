@@ -9,12 +9,6 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.avigail.lastproject.WaitingFormsActivity">
-    <TextView android:id="@+id/output"
-        android:background="#758AA7"
-        android:layout_height="wrap_content"
-        android:padding="1px"
-        android:textColor="#ffffff"
-        android:text="Click : " android:layout_width="fill_parent" />
 
     <ListView
         android:id="@android:id/list"

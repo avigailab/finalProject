@@ -93,10 +93,10 @@ public class ListFragment extends Fragment{
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                     Log.e("---", "click " + i);
-                                    Intent layoutIntent = new Intent(getActivity(), FormActivity.class);
+                                    Intent formIntent = new Intent(getActivity(), FormActivity.class);
                                     //pass current layout
-                                    layoutIntent.putExtra("LAYOUT",arrayOfLayouts.get(i));
-                                    startActivity(layoutIntent);
+                                    formIntent.putExtra("LAYOUT",arrayOfLayouts.get(i));
+                                    startActivity(formIntent);
 
                                 }
                             });
