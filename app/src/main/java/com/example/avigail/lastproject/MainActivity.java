@@ -153,11 +153,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_watings_forms) {
             vpPager.setCurrentItem(1);
 
-        } else if (id == R.id.nav_profile){
-
         }
         else if (id == R.id.nav_settings){
-
+            vpPager.setCurrentItem(4);
         }
 
 
