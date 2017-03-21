@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
@@ -138,19 +139,19 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
+        adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
+        vpPager.setAdapter(adapterViewPager);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-            // Handle the camera action
+            vpPager.setCurrentItem(3);
         } else if (id == R.id.nav_forms) {
-            ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
-            adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
-            vpPager.setAdapter(adapterViewPager);
+            vpPager.setCurrentItem(2);
+
         } else if (id == R.id.nav_watings_forms) {
-            Fragment fragment = WaitingForms.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.vpPager, fragment).commit();
+            vpPager.setCurrentItem(1);
 
         } else if (id == R.id.nav_profile){
 

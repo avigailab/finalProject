@@ -3,7 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.avigail.lastproject.WaitingForms">
+    tools:context="com.example.avigail.lastproject.WaitingForms"
+    android:id="@+id/FC">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_form_label"
+        android:textSize="30dp"
+        android:layout_gravity="center"
+        android:text="@string/no_form_label"
+        android:visibility="gone"/>
 
     <ListView
         android:id="@android:id/list"
