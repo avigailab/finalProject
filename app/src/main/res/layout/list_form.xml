@@ -4,19 +4,31 @@
     android:layout_height="match_parent"
     tools:context="com.example.avigail.lastproject.FormList">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="20dp"
-        android:text="Your forms "
-        android:textColor="#000"
-       />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="25dp"
+            android:text="@string/form_heading"
+            android:textAlignment="center"
+            android:textColor="#000"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15dp"
+            android:layout_marginTop="25dp"
+            android:textAlignment="center"
+            android:text="@string/form_sub_heading"
+            android:textColor="#000"
+
+            />
+
+
     <ListView
         android:id="@+id/form_list"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="70dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:listSelector="@android:color/transparent"
