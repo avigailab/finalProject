@@ -31,8 +31,8 @@ public class AudioRecordService extends Service {
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int SLINCE_RANGE = 350;
-    int silienceLimit = 0;
-
+    double silenceLimit = 1200;
+    long distance;
     private AudioRecord recorder = null;
     private int bufferSize = 0;
     private Thread recordingThread = null;
@@ -46,7 +46,7 @@ public class AudioRecordService extends Service {
     }
 
     private static String LOG_TAG = "BoundService";
-    private IBinder mBinder = new AudioRecordService.MyBinder();
+    private IBinder mBinder = new MyBinder();
 
     @Override
     public void onCreate() {
@@ -142,7 +142,8 @@ public class AudioRecordService extends Service {
                 float temp = 0.0f;
                 for (int i = 0; i < 3; ++i)
                     temp += tempFloatBuffer[i];
-                Log.e("TEMP----", String.valueOf(temp));
+
+                //Silence detect
                 if ((temp >= 0 && temp <= SLINCE_RANGE) && isRecording == false) {
                     Log.i("TAG", "1");
                     if(currentTime==null) {
@@ -150,18 +151,15 @@ public class AudioRecordService extends Service {
                         currentTime = System.currentTimeMillis();
                     }
                     else{
-                        long distance = System.currentTimeMillis()-currentTime;
+                        //Set seconds of silence
+                        distance = System.currentTimeMillis()-currentTime;
                         Log.d("distance is",distance + "!!");
-                        if(count>0) {
-                            silienceLimit = 1200;
-                        }
-                        else{
-                            silienceLimit = 2000;
-                        }
 /*
                         if(distance>2000){
                             currentTime = System.currentTimeMillis();*/
-                        if(count>0 && distance>silienceLimit){
+                        Log.d("silenceLimit",silenceLimit+"??");
+                        //if their is one word at least and the silence is too long -stop recording
+                        if(count>0 && distance> silenceLimit){
                             currentTime = null;
                             stopRecording();
                             Log.d("very long time","stop recording!!");
@@ -172,19 +170,16 @@ public class AudioRecordService extends Service {
                             continue;
                         }*/
                     }
-                   //if(count>2) {
-                      //  tempIndex++;
-                      //  continue;
-                    //}
                 }
-
+                //Speech detect and we start recording
                 if (temp > SLINCE_RANGE && isRecording == false) {
+                    silenceLimit = silenceLimit*0.8 + (System.currentTimeMillis() - currentTime)*0.2;
                     Log.i("TAG", "2");
                     currentTime = System.currentTimeMillis();
                     Log.d("TAG 2","set current time");
                     isRecording = true;
                 }
-
+                //Silence detect - after say word and maybe before say next word
                 if ((temp >= 0 && temp <= SLINCE_RANGE) && isRecording == true) {
 
                     count++;
