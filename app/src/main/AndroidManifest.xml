@@ -58,8 +58,6 @@
             android:name=".SoundRecording"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".WaitingFormsActivity"
-            android:screenOrientation="portrait"/>
 
         <activity android:name=".SingelWaitingForm"
             android:screenOrientation="portrait">

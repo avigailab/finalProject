@@ -22,23 +22,23 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ListFragment} interface
+ * {@link FormList} interface
  * to handle interaction events.
- * Use the {@link ListFragment#newInstance} factory method to
+ * Use the {@link FormList#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListFragment extends Fragment{
+public class FormList extends Fragment{
     ListView listView;
     private AppAdapter appAdapter;
-    final  String TAG="ListFragment";
+    final  String TAG="FormList";
     static ArrayList<Layout> arrayOfLayouts;
     String [] layoutsNames;
-    public ListFragment() {
+    public FormList() {
         // Required empty public constructor
     }
 
-    public static ListFragment newInstance() {
-        ListFragment fragment = new ListFragment();
+    public static FormList newInstance() {
+        FormList fragment = new FormList();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -52,7 +52,7 @@ public class ListFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.list_form, container, false);
         appAdapter=new AppAdapter();
         listView = (ListView) view.findViewById(R.id.form_list);
         getLayoutForUser();
