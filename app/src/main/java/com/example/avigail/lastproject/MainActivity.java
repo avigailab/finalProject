@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 3;
+        private static int NUM_ITEMS = 4;
 
         public MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity
                     return WaitingForms.newInstance();
                 case 2: // Fragment # 1 - This will show SecondFragment
                     return FormList.newInstance();
+                case 3: // Fragment # 1 - This will show SecondFragment
+                    return WaitingForms.newInstance();
                 default:
                     return null;
             }
@@ -144,17 +146,15 @@ public class MainActivity extends AppCompatActivity
         vpPager.setAdapter(adapterViewPager);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_profile) {
-            vpPager.setCurrentItem(3);
+            vpPager.setCurrentItem(3,true);
         } else if (id == R.id.nav_forms) {
-            vpPager.setCurrentItem(2);
-
+            vpPager.setCurrentItem(2,true);
         } else if (id == R.id.nav_watings_forms) {
-            vpPager.setCurrentItem(1);
-
-        } 
-
+            vpPager.setCurrentItem(1,true);
+        }else if (id == R.id.nav_settings) {
+            vpPager.setCurrentItem(4,true);
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
