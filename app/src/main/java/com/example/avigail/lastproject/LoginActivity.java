@@ -1,6 +1,7 @@
 package com.example.avigail.lastproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         private TextView attemptsLeftTV;
         private TextView numberOfRemainingLoginAttemptsTV;
         int numberOfRemainingLoginAttempts = 3;
-
+        public static final String MY_PREFS_NAME = "MyPrefs";
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -78,6 +79,9 @@ public class LoginActivity extends AppCompatActivity {
                                 if (result.trim().equals("Success")) {
                                     Toast.makeText(getApplicationContext(), "Hello admin!",
                                             Toast.LENGTH_SHORT).show();
+                                    /*SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                                    editor.putString("UserName", username.getText().toString());
+                                    editor.commit();*/
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                 } else {
