@@ -206,15 +206,17 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
             saveForm.setVisibility(View.VISIBLE);
             sendForm.setVisibility(View.VISIBLE);
-            Gson gson = new Gson();
-            String jsonLayout = gson.toJson(currentLayout);
-            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-            editor.putString(currentLayout.layoutName, jsonLayout);
-            editor.commit();
-          /*  WaitingForms waitingForms=new WaitingForms();
-            Log.i(TAG, String.valueOf(currentLayout.fields.get(0).filedAnswer));
-            //waitingForms.addForm(currentLayout);
-            Log.i(TAG, waitingForms.getWaitingForms().get(0).layoutName);*/
+            saveForm.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    Gson gson = new Gson();
+                    String jsonLayout = gson.toJson(currentLayout);
+                    SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                    editor.putString(currentLayout.layoutName, jsonLayout);
+                    editor.commit();
+                }
+            });
 
         }
     }
