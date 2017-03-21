@@ -17,7 +17,9 @@ import java.util.Map;
 import static android.content.Context.MODE_PRIVATE;
 
 public class WaitingForms extends Fragment {
+    private static final String TAG = "WaitingForms";
     ListView listView;
+
     public static final String MY_PREFS_NAME = "MyPrefs";
 
     public WaitingForms() {
@@ -31,14 +33,12 @@ public class WaitingForms extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG,"in waiting form");
         View view = inflater.inflate(R.layout.waiting_forms, container, false);
 
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
@@ -50,10 +50,16 @@ public class WaitingForms extends Fragment {
             values[i] = entry.getKey();
             i++;
         }
+        //no waiting forms
+        if(i==0) {
+            view.findViewById(R.id.no_form_label).setVisibility(View.VISIBLE);
+        }
+
+
         listView = (ListView) view.findViewById(android.R.id.list);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1,
+               R.layout.list_item_form,
                 values);
         // Specify the layout to use when the list of choices appears
         // Apply the adapter to the spinner
