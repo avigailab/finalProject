@@ -59,7 +59,7 @@ public class WaitingForms extends Fragment {
         listView = (ListView) view.findViewById(android.R.id.list);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-               R.layout.list_item_form,
+               android.R.layout.simple_list_item_1,
                 values);
         // Specify the layout to use when the list of choices appears
         // Apply the adapter to the spinner

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,6 +120,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
         if( status == TextToSpeech.SUCCESS) {
             mTts.setOnUtteranceCompletedListener(this);
+
             int result = mTts.setLanguage(Locale.US);
 
         }
