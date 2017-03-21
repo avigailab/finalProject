@@ -1,5 +1,6 @@
 package com.example.avigail.lastproject;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +17,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class WaitingFormsActivity extends ListActivity {
+public class WaitingFormsActivity extends Activity {
     ListView listView;
     public static final String MY_PREFS_NAME = "MyPrefs";
 
@@ -57,19 +58,4 @@ public class WaitingFormsActivity extends ListActivity {
         });
     }
 
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-
-        super.onListItemClick(l, v, position, id);
-
-        // ListView Clicked item index
-        int itemPosition     = position;
-
-        // ListView Clicked item value
-        String  itemValue    = (String) l.getItemAtPosition(position);
-
-        //content.setText("Click : \n  Position :"+itemPosition+"  \n  ListItem : " +itemValue);
-
-    }
 }
