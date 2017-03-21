@@ -35,7 +35,9 @@
                 android:maxWidth="240dp"
                 android:textSize="30dp"/>
 
+
         </LinearLayout>
 
     </LinearLayout>
+
 </RelativeLayout>

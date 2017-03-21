@@ -53,11 +53,15 @@
         <activity
             android:name=".SoapActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".SoundRecording"
             android:screenOrientation="portrait" />
-        <activity android:name=".WaitingFormsActivity" />
-        <activity android:name=".SingelWaitingForm"></activity>
+
+
+        <activity android:name=".SingelWaitingForm"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
