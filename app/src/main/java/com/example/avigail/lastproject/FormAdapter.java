@@ -101,10 +101,8 @@ public class FormAdapter extends BaseAdapter {
             layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
             layoutParams.gravity = Gravity.RIGHT;
             holder.txtInfo.setLayoutParams(layoutParams);
-            holder.progressDialog.setVisibility(View.GONE);
 
         } else {
-            holder.progressDialog.setVisibility(View.VISIBLE);
             holder.contentWithBG.setBackgroundResource(R.drawable.out_message_bg);
 
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
@@ -131,7 +129,6 @@ public class FormAdapter extends BaseAdapter {
         holder.content = (LinearLayout) v.findViewById(R.id.content);
         holder.contentWithBG = (LinearLayout) v.findViewById(R.id.contentWithBackground);
         holder.txtInfo = (TextView) v.findViewById(R.id.txtInfo);
-        holder.progressDialog = (ProgressBar) v.findViewById(R.id.loading);
 
         return holder;
     }
@@ -141,7 +138,6 @@ public class FormAdapter extends BaseAdapter {
         public TextView txtMessage;
         public TextView txtInfo;
         public LinearLayout content;
-        public ProgressBar progressDialog;
         public LinearLayout contentWithBG;
     }
 }

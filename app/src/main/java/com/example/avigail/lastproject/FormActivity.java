@@ -45,7 +45,6 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     private TextToSpeech textToSpeech;
     public static final String MY_PREFS_NAME = "MyPrefs";
     Button saveForm, sendForm;
-
     private int uttCount = 0;
     private int lastUtterance = -1;
     private HashMap<String, String> params = new HashMap<String, String>();
@@ -251,10 +250,10 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     }
     class AsyncCall extends AsyncTask<String, Void, Void> {
         private static final String TAG = "AsyncCall";
+        ProgressDialog loadingdialog;
 
         @Override
         protected Void doInBackground(String... params) {
-
             Log.i(TAG, "doInBackground");
             if (recordServiceBound) {
                 Log.v(TAG, "Start RECORD!!!!");
@@ -265,15 +264,16 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
         @Override
         protected void onPostExecute(Void result) {
-            final LayoutInflater factory = getLayoutInflater();
-            final View view = factory.inflate(R.layout.list_item_chat_message, null);
-            view.findViewById(R.id.loading).setVisibility(View.GONE);
+
+            //loadingdialog = ProgressDialog.show(activity,
+            //        "", "Scanning Please Wait", true);
             currentFieldName = currentLayout.fields.get(fieldIndex-1).filedName;
             currentFieldType = currentLayout.fields.get(fieldIndex-1).dataType;
-            SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"en");
+            SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"he_IL");
             try {
                 SoapObject respone = (SoapObject) myRequest.execute().get();
                 if(respone!=null) {
+                    //loadingdialog.dismiss();
                     SoapObject respone_1 = (SoapObject) respone.getProperty(1);
                     Log.d("response_1===",respone_1.toString());
                     if(respone_1.getPropertyCount()>0) {
