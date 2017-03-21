@@ -61,7 +61,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_layout);
+        setContentView(R.layout.activity_form);
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         adapter = new FormAdapter(FormActivity.this, new ArrayList<FormMessage>());
         messagesContainer.setAdapter(adapter);
