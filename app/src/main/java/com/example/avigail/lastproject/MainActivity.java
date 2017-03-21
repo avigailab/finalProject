@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,15 +26,18 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     FragmentPagerAdapter adapterViewPager;
-    public static final String MY_PREFS_NAME = "MyPrefs";
+    public static final String MY_PREFS = "MyPrefs";
+    public static final String MY_PREFS_NAME = "UserProfile";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS, MODE_PRIVATE);
         final int waitingFormsNum = prefs.getAll().size();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +61,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerLayout = navigationView.getHeaderView(0);
+        SharedPreferences userProfilePref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String user_name = userProfilePref.getString("UserName","admin");
+        TextView userName = (TextView) headerLayout.findViewById(R.id.textView);
+        userName.setText(user_name);
     }
 
 
