@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -264,15 +265,14 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
         @Override
         protected void onPostExecute(Void result) {
-            ProgressDialog progDailog = ProgressDialog.show(activity, "Process ", "please wait....", true, true);
+            final LayoutInflater factory = getLayoutInflater();
+            final View view = factory.inflate(R.layout.list_item_chat_message, null);
+            view.findViewById(R.id.loading).setVisibility(View.GONE);
             currentFieldName = currentLayout.fields.get(fieldIndex-1).filedName;
             currentFieldType = currentLayout.fields.get(fieldIndex-1).dataType;
-
             SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"en");
             try {
-
                 SoapObject respone = (SoapObject) myRequest.execute().get();
-                progDailog.dismiss();
                 if(respone!=null) {
                     SoapObject respone_1 = (SoapObject) respone.getProperty(1);
                     Log.d("response_1===",respone_1.toString());
