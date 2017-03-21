@@ -31,7 +31,7 @@
         </activity>
         <activity
             android:name=".FormActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".SpeechService"
@@ -40,7 +40,7 @@
 
         <activity
             android:name=".AudioRecordActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".TextToSpeechActivity"
             android:screenOrientation="portrait" />
@@ -52,11 +52,12 @@
 
         <activity
             android:name=".SoapActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SoundRecording"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".WaitingFormsActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".WaitingFormsActivity" />
+        <activity android:name=".SingelWaitingForm"></activity>
     </application>
 
 </manifest>
