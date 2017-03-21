@@ -40,22 +40,31 @@ tools:context="com.example.avigail.lastproject.FormActivity"
         android:layout_marginTop="10dp"
         android:listSelector="@android:color/transparent"
         android:transcriptMode="alwaysScroll"
+        android:layout_weight="1"
         android:divider="@null" />
-    <Button android:id="@+id/send"
-        android:text="Send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        />
-    <Button android:id="@+id/save"
-        android:text="Save in waitigs forms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="-50dp"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+        <Button android:id="@+id/send"
+            android:text="Send now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="50"
+            android:visibility="gone"
+            />
+        <Button android:id="@+id/save"
+            android:text="Save in waitigs forms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="50"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
 
 
 </LinearLayout>

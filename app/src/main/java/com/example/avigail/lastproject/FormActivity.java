@@ -69,7 +69,6 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
         sendForm =(Button)findViewById(R.id.send);
 
         appAdapter=new AppAdapter();
-        layoutTitle = (TextView) findViewById(R.id.layoutTitle);
         // Check to be sure that TTS exists and is okay to use
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
@@ -215,6 +214,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                     SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                     editor.putString(currentLayout.layoutName, jsonLayout);
                     editor.commit();
+                    finish();
                 }
             });
 
