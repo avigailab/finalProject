@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Seems like you 're not admin!",
+                                    Toast.makeText(getApplicationContext(), "Seems like yous're not admin!",
                                             Toast.LENGTH_SHORT).show();
                                     numberOfRemainingLoginAttempts--;
                                     attemptsLeftTV.setVisibility(View.VISIBLE);

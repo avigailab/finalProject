@@ -151,10 +151,14 @@ public class MainActivity extends AppCompatActivity
             Fragment fragment = WaitingForms.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.vpPager, fragment).commit();
-           // Intent watingsIntent = new Intent(this,WaitingForms.class);
-            //startActivity(watingsIntent);
 
-        } 
+        } else if (id == R.id.nav_profile){
+
+        }
+        else if (id == R.id.nav_settings){
+
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -17,9 +17,9 @@ import java.text.Normalizer;
 import java.util.Iterator;
 import java.util.Map;
 
-public class SingelWaitingForm extends AppCompatActivity {
+public class SingleWaitingForm extends AppCompatActivity {
     public static final String MY_PREFS_NAME = "MyPrefs";
-    private static final String TAG ="SingelWaitingForm";
+    private static final String TAG ="SingleWaitingForm";
     Button saveForm, sendForm;
     int currentFormIndex=-1;
     Layout currentForm;

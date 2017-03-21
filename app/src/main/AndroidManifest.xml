@@ -59,7 +59,7 @@
             android:screenOrientation="portrait" />
 
 
-        <activity android:name=".SingelWaitingForm"
+        <activity android:name=".SingleWaitingForm"
             android:screenOrientation="portrait">
         </activity>
     </application>
