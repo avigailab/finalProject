@@ -45,10 +45,12 @@ public class AppAdapter {
             //for (int i=0;i<1;i++) {
 
                 Element element = (Element) layouts.item(i);
-                int id = 0;
                 String name = "";
+                int id=0;
                 NodeList layoutName = element.getElementsByTagName("LayoutName");
                 name = layoutName.item(0).getTextContent();
+                NodeList layoutId = element.getElementsByTagName("LayoutId");
+                id = Integer.parseInt(layoutId.item(0).getTextContent());
                 Layout currentLayout = new Layout(id, name);
                 ArrayList fieldsArray = new ArrayList<Field>();
                 NodeList fields = element.getElementsByTagName("TkUserDialogField_1");
