@@ -154,12 +154,14 @@ public class AudioRecordService extends Service {
                         //Set seconds of silence
                         distance = System.currentTimeMillis()-currentTime;
                         Log.d("distance is",distance + "!!");
-/*
-                        if(distance>2000){
-                            currentTime = System.currentTimeMillis();*/
+
+                        //if there no word - add more time for silence
+                        if(count==0){
+                            silenceLimit = 1400;
+                        }
                         Log.d("silenceLimit",silenceLimit+"??");
-                        //if their is one word at least and the silence is too long -stop recording
-                        if(count>0 && distance> silenceLimit){
+                        //if the silence is too long -stop recording
+                        if(distance> silenceLimit){
                             currentTime = null;
                             stopRecording();
                             Log.d("very long time","stop recording!!");
