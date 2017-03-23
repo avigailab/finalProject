@@ -1,5 +1,6 @@
 package com.example.avigail.lastproject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -76,6 +77,7 @@ public class SingleWaitingForm extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                ProgressDialog progressDialog = ProgressDialog.show(SingleWaitingForm.this,"Please Wait", "Loading Date", true);
                 //iterate all fields in current form
                 for(int j=0;j<currentForm.fields.size();j++){
                     EditText etf = (EditText) findViewById(j);
@@ -88,6 +90,8 @@ public class SingleWaitingForm extends AppCompatActivity {
                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putString(currentForm.layoutName, jsonLayout);
                 editor.commit();
+                //remove dialog
+                progressDialog.dismiss();
                 //finish activity
                 finish();
 
@@ -97,6 +101,7 @@ public class SingleWaitingForm extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                ProgressDialog progressDialog = ProgressDialog.show(SingleWaitingForm.this,"Please Wait", "Loading Date");
                 AppAdapter appAdapter = new AppAdapter();
                if(appAdapter.submitLayoutForUser(currentForm)){
                    Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),
@@ -105,18 +110,18 @@ public class SingleWaitingForm extends AppCompatActivity {
                    SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                    editor.remove(currentForm.layoutName);
                    editor.apply();
+                   //remove dialog
+                   progressDialog.dismiss();
                    //go to main activity to apply changes
                    Intent i = new Intent(getApplication(),MainActivity.class);
                    startActivity(i);
-                   //finish();
                }
                 else {
                    Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormFaild),
                            Toast.LENGTH_SHORT).show();
-                   //finish activity
+                   //go to main activity to apply changes
                    Intent i = new Intent(getApplication(),MainActivity.class);
                    startActivity(i);
-                   finish();
                }
 
 

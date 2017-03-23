@@ -10,14 +10,13 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -51,9 +50,9 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     private HashMap<String, String> params = new HashMap<String, String>();
     private static final int REQ_TTS_STATUS_CHECK = 0;
     private TextToSpeech mTts;
-    Layout currentLayout;
+    Layout currentForm;
     private ListView messagesContainer;
-    private FormAdapter adapter;
+    private FormMessagesAdapter adapter;
     int fieldIndex=0,currentAnswerId=100;
     String currentFieldType ="";
     String finalRespone="Defult";
@@ -64,7 +63,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
-        adapter = new FormAdapter(FormActivity.this, new ArrayList<FormMessage>());
+        adapter = new FormMessagesAdapter(FormActivity.this, new ArrayList<FormMessage>());
         messagesContainer.setAdapter(adapter);
         saveForm =(Button)findViewById(R.id.save);
         sendForm =(Button)findViewById(R.id.send);
@@ -82,8 +81,8 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
             public void onClick(View view) {
                 //read field name
                 view.setVisibility(View.GONE);
-                currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
-                Log.e(TAG, currentLayout.layoutName);
+                currentForm = (Layout) getIntent().getSerializableExtra("LAYOUT");
+                Log.e(TAG, currentForm.layoutName);
                 doSpeak();
             }
         });
@@ -193,29 +192,35 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     public void doSpeak() {
         Log.d("doSpeak----","before while");
         //read all Layout fields
-        if(fieldIndex < currentLayout.fields.size()) {
+        if(fieldIndex < currentForm.fields.size()) {
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     String.valueOf(uttCount++));
             Log.d("doSpeak","before tts.speak");
-            currentFieldName =currentLayout.fields.get(fieldIndex).filedName;
+            currentFieldName = currentForm.fields.get(fieldIndex).filedName;
             generateLeftMessage(currentFieldName,fieldIndex);
             mTts.speak(currentFieldName,TextToSpeech.QUEUE_ADD, params);
             fieldIndex++;
 
         }
         else{
-
+            //add save and save buttons functionally
             saveForm.setVisibility(View.VISIBLE);
             sendForm.setVisibility(View.VISIBLE);
+
             saveForm.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
+                    ProgressDialog progressDialog = ProgressDialog.show(FormActivity.this,"Please Wait", "Loading Date", true);
                     Gson gson = new Gson();
-                    String jsonLayout = gson.toJson(currentLayout);
+                    String jsonLayout = gson.toJson(currentForm);
                     SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                    editor.putString(currentLayout.layoutName, jsonLayout);
+                    editor.putString(currentForm.layoutName, jsonLayout);
                     editor.commit();
+                    //remove dialog
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(),  getResources().getString(R.string.sharedPreferencesSave),
+                            Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });
@@ -223,7 +228,27 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
                 @Override
                 public void onClick(View view) {
-                    appAdapter.submitLayoutForUser(currentLayout);
+                    ProgressDialog progressDialog = ProgressDialog.show(FormActivity.this,"Please Wait", "Loading Date", true);
+                    appAdapter.submitLayoutForUser(currentForm);
+                    if(appAdapter.submitLayoutForUser(currentForm)){
+                        Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),
+                                Toast.LENGTH_SHORT).show();
+                        //delete from shared preferences
+                        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                        editor.remove(currentForm.layoutName);
+                        editor.apply();
+                        //remove dialog
+                        progressDialog.dismiss();
+                        //go calling activity
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormFaild),
+                                Toast.LENGTH_SHORT).show();
+                        //go calling activity
+                        finish();
+
+                    }
                 }
             });
 
@@ -276,8 +301,8 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
             //loadingdialog = ProgressDialog.show(activity,
             //        "", "Scanning Please Wait", true);
-            currentFieldName = currentLayout.fields.get(fieldIndex-1).filedName;
-            currentFieldType = currentLayout.fields.get(fieldIndex-1).dataType;
+            currentFieldName = currentForm.fields.get(fieldIndex-1).filedName;
+            currentFieldType = currentForm.fields.get(fieldIndex-1).dataType;
             SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"he_IL");
             try {
                 SoapObject respone = (SoapObject) myRequest.execute().get();
@@ -299,7 +324,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                 Log.d("after","post execute");
                 //set answer bubble text
                 generateRightMessage(finalRespone,currentAnswerId);
-                currentLayout.fields.get(fieldIndex-1).setFiledAnswer(finalRespone);
+                currentForm.fields.get(fieldIndex-1).setFiledAnswer(finalRespone);
                 Log.d("after",";;");
             } catch (InterruptedException e) {
                 e.printStackTrace();
