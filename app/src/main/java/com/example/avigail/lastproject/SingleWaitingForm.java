@@ -86,6 +86,14 @@ public class SingleWaitingForm extends AppCompatActivity {
 
             }
         });
+        sendForm.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                AppAdapter appAdapter = new AppAdapter();
+                appAdapter.submitLayoutForUser(currentForm);
+            }
+        });
 
     }
 }
