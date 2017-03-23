@@ -93,8 +93,8 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                 //read field name
                 RelativeLayout wraper = (RelativeLayout) findViewById(R.id.btn_wrapper);
                 wraper.setVisibility(View.GONE);
-                currentLayout = (Layout) getIntent().getSerializableExtra("LAYOUT");
-                Log.e(TAG, currentLayout.layoutName);
+                currentForm = (Layout) getIntent().getSerializableExtra("LAYOUT");
+                Log.e(TAG, currentForm.layoutName);
                 doSpeak();
             }
         });
