@@ -219,6 +219,13 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                     finish();
                 }
             });
+            sendForm.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    appAdapter.submitLayoutForUser(currentLayout);
+                }
+            });
 
         }
     }

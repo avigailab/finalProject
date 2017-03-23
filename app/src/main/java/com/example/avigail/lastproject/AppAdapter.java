@@ -2,15 +2,24 @@ package com.example.avigail.lastproject;
 
 import android.util.Log;
 
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.SoapFault;
+import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,7 +30,10 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class AppAdapter {
     private static final String TAG = "app adapter";
-
+    private static final String SOAP_ACTION = "http://www.tukuoro.com/SubmitUserInputForLayout";
+    private static final String METHOD_NAME = "SubmitUserInputForLayout";
+    private static final String NAMESPACE = "http://www.tukuoro.com/";
+    private static final String URL = "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx";
 
     public ArrayList<Layout> getObjectsLayoutsForUser(String arrayOfLayoutInfo) {
         Log.d("AppAdapter",arrayOfLayoutInfo);
@@ -95,5 +107,56 @@ public class AppAdapter {
         }
         return stringArray;
 
+    }
+    public boolean submitLayoutForUser(Layout layout){
+        SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
+
+        //init property of request
+        request.addProperty("sfLogin","avigailavraham7@gmail.com");
+        request.addProperty("LayoutId",layout.id);
+
+
+        PropertyInfo item = new PropertyInfo();
+        item.setType(Object.class);
+        item.setName("UserInputItem");
+
+        SoapObject object1 = new SoapObject(NAMESPACE, METHOD_NAME);
+        object1.addProperty("Key",layout.fields.get(0).filedName);
+        object1.addProperty("Values",layout.fields.get(0).filedAnswer);
+
+        request.addProperty("input",object1);
+        request.addProperty("language","en_US");
+        request.addProperty("clientId","68174861");
+        request.addProperty("serviceId","58469251");
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.dotNet=true;
+        envelope.setOutputSoapObject(request);
+
+        HttpTransportSE httpTransport = new HttpTransportSE(URL);
+
+        httpTransport.debug = true;
+        try {
+            httpTransport.call(SOAP_ACTION, envelope);
+            // TODO Auto-generated catch block
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } //send request
+        SoapObject result;
+        try {
+            result = (SoapObject)envelope.getResponse();
+            Log.d("App", "" + envelope.getResponse());
+            return (boolean) result.getProperty(0);
+            // response = result.getProperty(0).toString();
+
+
+        } catch (SoapFault e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
     }
 }
