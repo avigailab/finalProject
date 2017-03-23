@@ -5,17 +5,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.avigail.lastproject.WaitingForms"
     android:id="@+id/FC">
+
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/no_form_label"
-        android:textSize="30dp"
-        android:layout_gravity="center"
-        android:text="@string/no_form_label"
-        android:visibility="gone"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="2"
         android:textSize="25dp"
         android:text="@string/waiting_form_heading"
         android:textAlignment="center"
@@ -23,14 +17,30 @@
         />
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
         android:textSize="15dp"
         android:layout_marginTop="30dp"
         android:textAlignment="center"
         android:text="@string/waiting_form_sub_heading"
         android:textColor="@color/darkGray"
         />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:id="@+id/no_form_label"
+        android:textSize="23dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="60dp"
+        android:gravity="center"
+        android:padding="20dp"
+        android:background="@color/transparentGreen"
+        android:layout_gravity="center"
+        android:text="@string/no_form_label"
+        android:visibility="gone"/>
 
     <ListView
         android:id="@android:id/list"
