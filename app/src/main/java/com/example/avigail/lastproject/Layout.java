@@ -7,10 +7,10 @@ import java.util.ArrayList;
  * Created by avigail on 14/11/16.
  */
 public class Layout implements Serializable {
-    int id;
+    String id;
     String layoutName;
     ArrayList<Field> fields;
-    public Layout(int id,String layoutName){
+    public Layout(String id,String layoutName){
         this.id = id;
         this.layoutName = layoutName;
         this.fields = new ArrayList<Field>();
