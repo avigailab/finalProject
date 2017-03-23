@@ -1,5 +1,6 @@
 package com.example.avigail.lastproject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -52,13 +53,16 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         public void authenticateLogin(View view) {
-
+            final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show(LoginActivity.this,"Please Wait", "Loading user data");
             RequestQueue queue = Volley.newRequestQueue(this);
             String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/Login?UserName="+username.getText()+"&Password="+password.getText()+"&AppVersionNumber=1&OS=Android&DeviceType=phone&serviceId=58469251&clientId=68174861";
             StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
+                            progressDialog.dismiss();
                             Log.d("request sucsses!!",response.toString());
                             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                             DocumentBuilder db = null;
