@@ -1,5 +1,6 @@
 package com.example.avigail.lastproject;
 
+import android.animation.ValueAnimator;
 import android.app.*;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,11 +11,16 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.RelativeLayout;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.widget.Toast;
 
@@ -75,12 +81,18 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
         startActivityForResult(checkIntent, REQ_TTS_STATUS_CHECK);
 
         Button speakbtn = (Button) findViewById(R.id.speak);
+        final Animation myAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce);
+        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
+        myAnim.setInterpolator(interpolator);
+        speakbtn.startAnimation(myAnim);
+
         speakbtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 //read field name
-                view.setVisibility(View.GONE);
+                RelativeLayout wraper = (RelativeLayout) findViewById(R.id.btn_wrapper);
+                wraper.setVisibility(View.GONE);
                 currentForm = (Layout) getIntent().getSerializableExtra("LAYOUT");
                 Log.e(TAG, currentForm.layoutName);
                 doSpeak();
