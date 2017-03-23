@@ -9,4 +9,8 @@
     <string name="form_sub_heading">Just choose one and start filling</string>
     <string name="waiting_form_heading">Waiting Forms </string>
     <string name="waiting_form_sub_heading">Just select one fix and submit</string>
+    <string name="submitFormSucsess">nice! Your form was submitted successfully</string>
+    <string name="submitFormFaild">Oops... There was a problem, please try again later</string>
+    <string name="sharedPreferencesSave"> Hey, your form has been saved!</string>
+
 </resources>

@@ -18,12 +18,12 @@ import java.util.List;
 /**
  * Created by Avigail.
  */
-public class FormAdapter extends BaseAdapter {
+public class FormMessagesAdapter extends BaseAdapter {
 
     private final List<FormMessage> formMessages;
     private Activity context;
 
-    public FormAdapter(Activity context, List<FormMessage> formMessages) {
+    public FormMessagesAdapter(Activity context, List<FormMessage> formMessages) {
         this.context = context;
         this.formMessages = formMessages;
     }

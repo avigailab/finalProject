@@ -1,5 +1,6 @@
 package com.example.avigail.lastproject;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.support.design.widget.NavigationView;
@@ -148,6 +150,7 @@ public class MainActivity extends AppCompatActivity
         ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_profile) {
@@ -163,5 +166,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if ((keyCode == KeyEvent.KEYCODE_BACK))
+        {
+            Intent i = new Intent(getApplication(),MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
