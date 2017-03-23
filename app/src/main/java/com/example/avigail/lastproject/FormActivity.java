@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.RelativeLayout;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
@@ -63,11 +64,13 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     String currentFieldType ="";
     String finalRespone="Defult";
     Activity activity=this;
+    ProgressBar bar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
+        bar = (ProgressBar) this.findViewById(R.id.progressBar);
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         adapter = new FormMessagesAdapter(FormActivity.this, new ArrayList<FormMessage>());
         messagesContainer.setAdapter(adapter);
@@ -223,14 +226,13 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
                 @Override
                 public void onClick(View view) {
-                    ProgressDialog progressDialog = ProgressDialog.show(FormActivity.this,"Please Wait", "Loading Date", true);
+                    //show dialog
+                    bar.setVisibility(View.VISIBLE);
                     Gson gson = new Gson();
                     String jsonLayout = gson.toJson(currentForm);
                     SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                     editor.putString(currentForm.layoutName, jsonLayout);
                     editor.commit();
-                    //remove dialog
-                    progressDialog.dismiss();
                     Toast.makeText(getApplicationContext(),  getResources().getString(R.string.sharedPreferencesSave),
                             Toast.LENGTH_SHORT).show();
                     finish();
@@ -240,7 +242,8 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
                 @Override
                 public void onClick(View view) {
-                    ProgressDialog progressDialog = ProgressDialog.show(FormActivity.this,"Please Wait", "Loading Date", true);
+                    //show dialog
+                    bar.setVisibility(View.VISIBLE);
                     appAdapter.submitLayoutForUser(currentForm);
                     if(appAdapter.submitLayoutForUser(currentForm)){
                         Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),
@@ -249,8 +252,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                         editor.remove(currentForm.layoutName);
                         editor.apply();
-                        //remove dialog
-                        progressDialog.dismiss();
+
                         //go calling activity
                         finish();
                     }

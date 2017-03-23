@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,11 +29,13 @@ public class SingleWaitingForm extends AppCompatActivity {
     int currentFormIndex=-1;
     Layout currentForm;
     Gson gson;
+    ProgressBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singel_waiting_form);
+        bar = (ProgressBar) this.findViewById(R.id.progressBar);
         saveForm =(Button)findViewById(R.id.save);
         sendForm =(Button)findViewById(R.id.send);
         gson = new Gson();
@@ -77,7 +80,9 @@ public class SingleWaitingForm extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                ProgressDialog progressDialog = ProgressDialog.show(SingleWaitingForm.this,"Please Wait", "Loading Date", true);
+                //show dialog
+                bar.setVisibility(View.VISIBLE);
+
                 //iterate all fields in current form
                 for(int j=0;j<currentForm.fields.size();j++){
                     EditText etf = (EditText) findViewById(j);
@@ -90,8 +95,6 @@ public class SingleWaitingForm extends AppCompatActivity {
                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putString(currentForm.layoutName, jsonLayout);
                 editor.commit();
-                //remove dialog
-                progressDialog.dismiss();
                 //finish activity
                 finish();
 
@@ -101,7 +104,8 @@ public class SingleWaitingForm extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                ProgressDialog progressDialog = ProgressDialog.show(SingleWaitingForm.this,"Please Wait", "Loading Date");
+                //show dialog
+                bar.setVisibility(View.VISIBLE);
                 AppAdapter appAdapter = new AppAdapter();
                if(appAdapter.submitLayoutForUser(currentForm)){
                    Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),
@@ -110,8 +114,6 @@ public class SingleWaitingForm extends AppCompatActivity {
                    SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                    editor.remove(currentForm.layoutName);
                    editor.apply();
-                   //remove dialog
-                   progressDialog.dismiss();
                    //go to main activity to apply changes
                    Intent i = new Intent(getApplication(),MainActivity.class);
                    startActivity(i);
