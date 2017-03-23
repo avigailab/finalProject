@@ -118,20 +118,13 @@ public class AppAdapter {
 
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
 
+        SoapObject object1 = new SoapObject(NAMESPACE, "Values");
+        object1.addProperty("string",layout.fields.get(0).filedAnswer);
         //init property of request
         request.addProperty("sfLogin","avigailavraham7@gmail.com");
         request.addProperty("LayoutId",layout.id);
-
-
-       /* PropertyInfo item = new PropertyInfo();
-        item.setType(Object.class);
-        item.setName("UserInputItem");
-
-        SoapObject object1 = new SoapObject(NAMESPACE, METHOD_NAME);
-        object1.addProperty("Key",layout.fields.get(0).filedName);
-        object1.addProperty("Values",layout.fields.get(0).filedAnswer);*/
-
-        request.addProperty("input","");
+        request.addProperty("input",new SoapObject(NAMESPACE, "UserInputItem").addProperty("Key",layout.fields.get(0).filedName)
+        .addProperty("Values",new SoapObject(NAMESPACE, "Values").addProperty("string",layout.fields.get(0).filedAnswer)));
         request.addProperty("language","en_US");
         request.addProperty("clientId","68174861");
         request.addProperty("serviceId","58469251");
