@@ -154,7 +154,8 @@ public class AppAdapter {
         try {
             result = envelope.getResponse();
             Log.d("App", "" + envelope.getResponse());
-            return (boolean) envelope.getResponse();
+
+            return envelope.getResponse().toString().equals("true");
             // response = result.getProperty(0).toString();
 
 
