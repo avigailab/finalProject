@@ -13,11 +13,40 @@
         android:layout_gravity="center"
         android:text="@string/no_form_label"
         android:visibility="gone"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="25dp"
+        android:text="@string/waiting_form_heading"
+        android:textAlignment="center"
+        android:textColor="@color/darkGray"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="15dp"
+        android:layout_marginTop="30dp"
+        android:textAlignment="center"
+        android:text="@string/waiting_form_sub_heading"
+        android:textColor="@color/darkGray"
+        />
+
 
     <ListView
         android:id="@android:id/list"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_marginTop="70dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:listSelector="@android:color/transparent"
+        android:transcriptMode="alwaysScroll"
+        android:background="@color/transparentGreen"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="30dp"
+        android:textColor="@color/darkGray"
+        >
     </ListView>
 
 </FrameLayout>
