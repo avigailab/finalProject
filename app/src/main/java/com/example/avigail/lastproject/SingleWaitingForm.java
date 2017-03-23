@@ -1,15 +1,18 @@
 package com.example.avigail.lastproject;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -32,15 +35,17 @@ public class SingleWaitingForm extends AppCompatActivity {
         saveForm =(Button)findViewById(R.id.save);
         sendForm =(Button)findViewById(R.id.send);
         gson = new Gson();
-        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_singel_waiting_form); // linearMain //is your linearlayout in XML file
-        // create the layout params that will be used to define how your
-        // button will be displayed
+
+        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_singel_waiting_form);
+        // create the layout params that will be used to define layout
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
-
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        //get current index of form
         currentFormIndex= getIntent().getIntExtra("WAITING_FORM_INDEX",-1);
+
+        //iterate forms to get current form details
         Map<String,?> keys = prefs.getAll();
         int i=0;
         for(Map.Entry<String,?> entry : keys.entrySet()){
@@ -71,17 +76,19 @@ public class SingleWaitingForm extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                //iterate all fields in current form
                 for(int j=0;j<currentForm.fields.size();j++){
                     EditText etf = (EditText) findViewById(j);
                     String st = etf.getText().toString();
                     currentForm.fields.get(j).filedAnswer = st;
                     Log.i(TAG,st);
                 }
-
+                //delete from shared preferences
                 String jsonLayout = gson.toJson(currentForm);
                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putString(currentForm.layoutName, jsonLayout);
                 editor.commit();
+                //finish activity
                 finish();
 
             }
@@ -91,9 +98,31 @@ public class SingleWaitingForm extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AppAdapter appAdapter = new AppAdapter();
-                appAdapter.submitLayoutForUser(currentForm);
+               if(appAdapter.submitLayoutForUser(currentForm)){
+                   Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),
+                           Toast.LENGTH_SHORT).show();
+                   //delete from shared preferences
+                   SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                   editor.remove(currentForm.layoutName);
+                   editor.apply();
+                   //go to main activity to apply changes
+                   Intent i = new Intent(getApplication(),MainActivity.class);
+                   startActivity(i);
+                   //finish();
+               }
+                else {
+                   Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormFaild),
+                           Toast.LENGTH_SHORT).show();
+                   //finish activity
+                   Intent i = new Intent(getApplication(),MainActivity.class);
+                   startActivity(i);
+                   finish();
+               }
+
+
             }
         });
 
     }
+
 }

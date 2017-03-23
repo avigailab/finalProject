@@ -72,6 +72,7 @@ public class WaitingForms extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.e("---", "click " + i);
                 Intent singelWaitingFormIntent = new Intent(getActivity(), SingleWaitingForm.class);
+                singelWaitingFormIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 //pass current waiting form
                 singelWaitingFormIntent.putExtra("WAITING_FORM_INDEX", i);
                 startActivity(singelWaitingFormIntent);
