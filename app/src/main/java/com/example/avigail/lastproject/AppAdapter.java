@@ -1,5 +1,6 @@
 package com.example.avigail.lastproject;
 
+import android.os.StrictMode;
 import android.util.Log;
 
 import org.ksoap2.SoapEnvelope;
@@ -58,11 +59,11 @@ public class AppAdapter {
 
                 Element element = (Element) layouts.item(i);
                 String name = "";
-                int id=0;
+                String id="a";
                 NodeList layoutName = element.getElementsByTagName("LayoutName");
                 name = layoutName.item(0).getTextContent();
                 NodeList layoutId = element.getElementsByTagName("LayoutId");
-                id = Integer.parseInt(layoutId.item(0).getTextContent());
+                id = layoutId.item(0).getTextContent();
                 Layout currentLayout = new Layout(id, name);
                 ArrayList fieldsArray = new ArrayList<Field>();
                 NodeList fields = element.getElementsByTagName("TkUserDialogField_1");
@@ -111,6 +112,10 @@ public class AppAdapter {
 
     }
     public boolean submitLayoutForUser(Layout layout){
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
 
         //init property of request
@@ -118,15 +123,15 @@ public class AppAdapter {
         request.addProperty("LayoutId",layout.id);
 
 
-        PropertyInfo item = new PropertyInfo();
+       /* PropertyInfo item = new PropertyInfo();
         item.setType(Object.class);
         item.setName("UserInputItem");
 
         SoapObject object1 = new SoapObject(NAMESPACE, METHOD_NAME);
         object1.addProperty("Key",layout.fields.get(0).filedName);
-        object1.addProperty("Values",layout.fields.get(0).filedAnswer);
+        object1.addProperty("Values",layout.fields.get(0).filedAnswer);*/
 
-        request.addProperty("input",object1);
+        request.addProperty("input","");
         request.addProperty("language","en_US");
         request.addProperty("clientId","68174861");
         request.addProperty("serviceId","58469251");
