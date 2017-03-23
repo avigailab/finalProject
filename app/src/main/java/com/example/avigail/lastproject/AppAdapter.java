@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -121,10 +122,14 @@ public class AppAdapter {
         SoapObject object1 = new SoapObject(NAMESPACE, "Values");
         object1.addProperty("string",layout.fields.get(0).filedAnswer);
         //init property of request
-        request.addProperty("sfLogin","avigailavraham7@gmail.com");
+        request.addProperty("sfLogin","orayrs@gmail.com");
         request.addProperty("LayoutId",layout.id);
-        request.addProperty("input",new SoapObject(NAMESPACE, "UserInputItem").addProperty("Key",layout.fields.get(0).filedName)
-        .addProperty("Values",new SoapObject(NAMESPACE, "Values").addProperty("string",layout.fields.get(0).filedAnswer)));
+        PropertyInfo pi = new PropertyInfo();
+        pi.setName("Values");
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("string",layout.fields.get(0).filedAnswer);
+        pi.setValue(map);
+        request.addProperty("input",new SoapObject(NAMESPACE, "UserInputItem").addProperty("Value",layout.fields.get(0).filedName).addProperty("Values","<string>"+layout.fields.get(0).filedAnswer+"</string>"));
         request.addProperty("language","en_US");
         request.addProperty("clientId","68174861");
         request.addProperty("serviceId","58469251");
@@ -145,11 +150,11 @@ public class AppAdapter {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } //send request
-        SoapObject result;
+        Object result;
         try {
-            result = (SoapObject)envelope.getResponse();
+            result = envelope.getResponse();
             Log.d("App", "" + envelope.getResponse());
-            return (boolean) result.getProperty(0);
+            return (boolean) envelope.getResponse();
             // response = result.getProperty(0).toString();
 
 
