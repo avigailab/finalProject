@@ -10,29 +10,32 @@
             android:textSize="25dp"
             android:text="@string/form_heading"
             android:textAlignment="center"
-            android:textColor="#000"
+            android:textColor="@color/darkGray"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="15dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="30dp"
             android:textAlignment="center"
             android:text="@string/form_sub_heading"
-            android:textColor="#000"
-
+            android:textColor="@color/darkGray"
             />
 
 
     <ListView
         android:id="@+id/form_list"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         android:listSelector="@android:color/transparent"
         android:transcriptMode="alwaysScroll"
+        android:background="@color/transparentGreen"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="30dp"
         ></ListView>
     <!--Spinner
         android:id="@+id/coin_spinner"

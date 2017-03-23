@@ -5,9 +5,9 @@
     <string name="action_settings">Settings</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_form_label">Note! You currently have no forms</string>
-    <string name="form_heading">These are your forms</string>
+    <string name="form_heading">Your Forms</string>
     <string name="form_sub_heading">Just choose one and start filling</string>
-    <string name="waiting_form_heading">You have forms waiting to be sent </string>
+    <string name="waiting_form_heading">Waiting Forms </string>
     <string name="waiting_form_sub_heading">Just select one fix and submit</string>
     <string name="submitFormSucsess">nice! Your form was submitted successfully</string>
     <string name="submitFormFaild">Oops... There was a problem, please try again later</string>

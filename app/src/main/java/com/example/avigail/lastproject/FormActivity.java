@@ -56,7 +56,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     private FormAdapter adapter;
     int fieldIndex=0,currentAnswerId=100;
     String currentFieldType ="";
-    String finalRespone="Defult Respone";
+    String finalRespone="Defult";
     Activity activity=this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,9 +289,13 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                         SoapObject respone_2 = (SoapObject) respone_1.getProperty(0);
                         finalRespone=String.valueOf(respone_2.getProperty(0));
                     }
+                    else {
+                        finalRespone="Default";
+                    }
 
                     //Log.i(TAG, String.valueOf(respone_2.getProperty(0)));
                 }
+
                 Log.d("after","post execute");
                 //set answer bubble text
                 generateRightMessage(finalRespone,currentAnswerId);
