@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">JusTalk</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_form_label">Note! You currently have no forms</string>
+    <string name="form_heading">These are your forms</string>
+    <string name="form_sub_heading">Just choose one and start filling</string>
+    <string name="waiting_form_heading">You have forms waiting to be sent </string>
+    <string name="waiting_form_sub_heading">Just select one fix and submit</string>
 </resources>
