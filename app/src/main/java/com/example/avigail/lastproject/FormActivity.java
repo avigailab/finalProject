@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Intent;
@@ -24,7 +25,8 @@ import android.widget.TextView;
 import android.widget.RelativeLayout;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.widget.Toast;
-
+import android.media.RingtoneManager;
+import android.media.Ringtone;
 import com.google.gson.Gson;
 
 import org.ksoap2.serialization.SoapObject;
@@ -233,6 +235,13 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                     SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                     editor.putString(currentForm.layoutName, jsonLayout);
                     editor.commit();
+                    try {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                        r.play();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     Toast.makeText(getApplicationContext(),  getResources().getString(R.string.sharedPreferencesSave),
                             Toast.LENGTH_SHORT).show();
                     finish();
