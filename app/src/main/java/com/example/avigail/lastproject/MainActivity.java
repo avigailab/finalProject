@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity
                 case 1: // Fragment # 0 - This will show FirstFragment different title
                     return WaitingForms.newInstance();
                 case 2: // Fragment # 1 - This will show SecondFragment
-                    return FormList.newInstance();
+                    return ProfilePage.newInstance();
                 case 3: // Fragment # 1 - This will show SecondFragment
                     return WaitingForms.newInstance();
                 default:
@@ -154,13 +154,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_profile) {
-            vpPager.setCurrentItem(3,true);
-        } else if (id == R.id.nav_forms) {
             vpPager.setCurrentItem(2,true);
+        } else if (id == R.id.nav_forms) {
+            vpPager.setCurrentItem(0,true);
         } else if (id == R.id.nav_watings_forms) {
             vpPager.setCurrentItem(1,true);
         }else if (id == R.id.nav_settings) {
-            vpPager.setCurrentItem(4,true);
+            vpPager.setCurrentItem(3,true);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
