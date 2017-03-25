@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,6 +36,7 @@ public class SingleWaitingForm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singel_waiting_form);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bar = (ProgressBar) this.findViewById(R.id.progressBar);
         saveForm =(Button)findViewById(R.id.save);
         sendForm =(Button)findViewById(R.id.send);
@@ -73,6 +75,14 @@ public class SingleWaitingForm extends AppCompatActivity {
             EditText et= new EditText(this);
             et.setText(currentForm.fields.get(j).filedAnswer);
             et.setId(j);
+            /*et.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                  LinearLayout linearLayout = (LinearLayout) findViewById(R.id.single_waiting_form_btns);
+                  linearLayout.setVisibility(View.GONE);
+                }
+            });
+*/
             ll.addView(et);
 
         }
@@ -131,5 +141,7 @@ public class SingleWaitingForm extends AppCompatActivity {
         });
 
     }
+
+
 
 }
