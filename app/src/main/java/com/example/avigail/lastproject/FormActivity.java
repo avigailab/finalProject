@@ -1,6 +1,5 @@
 package com.example.avigail.lastproject;
 
-import android.animation.ValueAnimator;
 import android.app.*;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,8 +11,6 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -28,6 +25,7 @@ import android.widget.Toast;
 import android.media.RingtoneManager;
 import android.media.Ringtone;
 import com.google.gson.Gson;
+import com.trncic.library.DottedProgressBar;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -66,13 +64,15 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     String currentFieldType ="";
     String finalRespone="Defult";
     Activity activity=this;
-    ProgressBar bar;
+    ProgressBar progressBar;
+    DottedProgressBar dottedProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
-        bar = (ProgressBar) this.findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        dottedProgressBar = (DottedProgressBar) findViewById(R.id.dottedProgressBar);
         messagesContainer = (ListView) findViewById(R.id.messagesContainer);
         adapter = new FormMessagesAdapter(FormActivity.this, new ArrayList<FormMessage>());
         messagesContainer.setAdapter(adapter);
@@ -229,7 +229,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                 @Override
                 public void onClick(View view) {
                     //show dialog
-                    bar.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
                     Gson gson = new Gson();
                     String jsonLayout = gson.toJson(currentForm);
                     SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
@@ -252,7 +252,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                 @Override
                 public void onClick(View view) {
                     //show dialog
-                    bar.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
                     appAdapter.submitLayoutForUser(currentForm);
                     if(appAdapter.submitLayoutForUser(currentForm)){
                         Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),
@@ -307,7 +307,6 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     }
     class AsyncCall extends AsyncTask<String, Void, Void> {
         private static final String TAG = "AsyncCall";
-        ProgressDialog loadingdialog;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -321,16 +320,13 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
         @Override
         protected void onPostExecute(Void result) {
-
-            //loadingdialog = ProgressDialog.show(activity,
-            //        "", "Scanning Please Wait", true);
+            hideProgressBar();
             currentFieldName = currentForm.fields.get(fieldIndex-1).filedName;
             currentFieldType = currentForm.fields.get(fieldIndex-1).dataType;
             SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"he_IL");
             try {
                 SoapObject respone = (SoapObject) myRequest.execute().get();
                 if(respone!=null) {
-                    //loadingdialog.dismiss();
                     SoapObject respone_1 = (SoapObject) respone.getProperty(1);
                     Log.d("response_1===",respone_1.toString());
                     if(respone_1.getPropertyCount()>0) {
@@ -363,6 +359,8 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
         @Override
         protected void onPreExecute() {
             Log.i(TAG, "onPreExecute");
+            showProgressBar();
+
         }
 
         @Override
@@ -370,6 +368,28 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
             Log.i(TAG, "onProgressUpdate");
         }
 
+
+    }
+    public void showProgressBar(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dottedProgressBar.setVisibility(View.VISIBLE);
+                dottedProgressBar.startProgress();
+
+            }
+        });
+
+    }
+    public void hideProgressBar(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dottedProgressBar.setVisibility(View.GONE);
+                dottedProgressBar.stopProgress();
+
+            }
+        });
 
     }
 
