@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if(waitingFormsNum>0) {
-                    Snackbar.make(view, "You have " + waitingFormsNum + " form to confirm!!", Snackbar.LENGTH_LONG)
+                    Snackbar.make(view, "You have " + waitingFormsNum + " form to confirm!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
                 else{
