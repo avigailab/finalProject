@@ -1,12 +1,10 @@
 package com.example.avigail.lastproject;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -19,8 +17,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.text.Normalizer;
-import java.util.Iterator;
 import java.util.Map;
 
 public class SingleWaitingForm extends AppCompatActivity {
@@ -30,14 +26,14 @@ public class SingleWaitingForm extends AppCompatActivity {
     int currentFormIndex=-1;
     Layout currentForm;
     Gson gson;
-    ProgressBar bar;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_singel_waiting_form);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        bar = (ProgressBar) this.findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
         saveForm =(Button)findViewById(R.id.save);
         sendForm =(Button)findViewById(R.id.send);
         gson = new Gson();
@@ -91,7 +87,7 @@ public class SingleWaitingForm extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //show dialog
-                bar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
 
                 //iterate all fields in current form
                 for(int j=0;j<currentForm.fields.size();j++){
@@ -115,7 +111,7 @@ public class SingleWaitingForm extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //show dialog
-                bar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 AppAdapter appAdapter = new AppAdapter();
                if(appAdapter.submitLayoutForUser(currentForm)){
                    Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),

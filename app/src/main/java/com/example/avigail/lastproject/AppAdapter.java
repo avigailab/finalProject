@@ -56,7 +56,7 @@ public class AppAdapter {
             Document doc = db.parse(is);
             NodeList layouts = doc.getElementsByTagName("LayoutInfo");
             for (int i=0;i<layouts.getLength();i++) {
-            //for (int i=0;i<1;i++) {
+                //for (int i=0;i<1;i++) {
 
                 Element element = (Element) layouts.item(i);
                 String name = "";
@@ -74,7 +74,7 @@ public class AppAdapter {
                 int order = -1;
                 String dataType = "";
                 for (int j = 0; j < fields.getLength(); j++) {
-                //for (int j = 0; j < 1; j++) {
+                    //for (int j = 0; j < 1; j++) {
                     Element fieldElem = (Element) fields.item(j);
                     stringFields[j] = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
                     fieldName = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
@@ -126,11 +126,14 @@ public class AppAdapter {
         request.addProperty("LayoutId",layout.id);
         PropertyInfo pi = new PropertyInfo();
         pi.setName("Values");
+        PropertyInfo p1 =new PropertyInfo();
+        p1.setName("string");
+        p1.setValue(layout.fields.get(0).filedAnswer.toString());
         Map<String, String> map = new HashMap<String, String>();
         map.put("string",layout.fields.get(0).filedAnswer);
-        pi.setValue(map);
-        request.addProperty("input",new SoapObject(NAMESPACE, "UserInputItem").addProperty("Value",layout.fields.get(0).filedName).addProperty("Values","<string>"+layout.fields.get(0).filedAnswer+"</string>"));
-        request.addProperty("language","en_US");
+        pi.setValue(p1);
+        request.addProperty("input",new SoapObject(NAMESPACE, "UserInputItem").addProperty("Key",layout.fields.get(0).filedName).addProperty(p1));
+        request.addProperty("Lang","en_US");
         request.addProperty("clientId","68174861");
         request.addProperty("serviceId","58469251");
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
