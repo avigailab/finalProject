@@ -14,10 +14,6 @@
     tools:context="com.example.avigail.lastproject.FormActivity">
 
 
-
-
-
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -58,7 +54,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="5dp"
         android:layout_above="@+id/messageEdit"
         android:layout_below="@+id/meLbl"
         android:layout_marginTop="10dp"

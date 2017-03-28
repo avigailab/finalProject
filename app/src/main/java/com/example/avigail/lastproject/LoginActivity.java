@@ -37,7 +37,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 
 public class LoginActivity extends AppCompatActivity {
-        private EditText username;
+    private static final String TAG = "LoginActivity";
+    private EditText username;
         private EditText password;
         private Button login;
         private TextView loginLockedTV;
@@ -58,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.setProgressStyle(R.style.CustomAlertDialogStyle);
             progressDialog.show(LoginActivity.this,"Please Wait", "Loading user data");
             RequestQueue queue = Volley.newRequestQueue(this);
+            Log.e(TAG,username.getText().toString());
             String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/Login?UserName="+username.getText()+"&Password="+password.getText()+"&AppVersionNumber=1&OS=Android&DeviceType=phone&serviceId=58469251&clientId=68174861";
             StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                     new Response.Listener<String>() {
@@ -88,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                                     SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                                     editor.putString("UserName", username.getText().toString());
                                     editor.commit();
+                                    Log.e(TAG,username.getText().toString());
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                 } else {
@@ -133,10 +136,9 @@ public class LoginActivity extends AppCompatActivity {
             attemptsLeftTV = (TextView) findViewById(R.id.attemptsLeftTV);
             numberOfRemainingLoginAttemptsTV = (TextView) findViewById(R.id.numberOfRemainingLoginAttemptsTV);
             numberOfRemainingLoginAttemptsTV.setText(Integer.toString(numberOfRemainingLoginAttempts));
-
             //login!!!!!!
-            username.setText("avigailavraham7@gmail.com");
-            password.setText("ogd9abzu");
+            username.setText("orayrs@gmail.com");
+            password.setText("0palNET");
             //login!!!!!!
         }
         public String getUserName(){

@@ -1,6 +1,7 @@
 package com.example.avigail.lastproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -19,6 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
+
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -33,6 +38,7 @@ public class FormList extends Fragment{
     final  String TAG="FormList";
     static ArrayList<Layout> arrayOfLayouts;
     String [] layoutsNames;
+    public static final String MY_PREFS_NAME = "UserProfile";
     public FormList() {
         // Required empty public constructor
     }
@@ -61,9 +67,10 @@ public class FormList extends Fragment{
     private void getLayoutForUser() {
         RequestQueue queue = Volley.newRequestQueue(getContext());
 
-        // final ListView listView = (ListView) findViewById(R.id.layoutsList);
-
-        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/GetLayoutsForUser?tukLogin=orayrs@gmail.com&serviceId=58469251&clientId=68174861";
+        SharedPreferences userProfilePref = this.getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String userName = userProfilePref.getString("UserName","");
+        Log.e(TAG,userName);
+        String URL= "https://wili.tukuoro.com/tukwebservice/tukwebservice_app.asmx/GetLayoutsForUser?tukLogin="+userName+"&serviceId=58469251&clientId=68174861";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
                     @Override
