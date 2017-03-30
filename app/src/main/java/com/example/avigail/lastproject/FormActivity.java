@@ -144,9 +144,6 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onStart() {
         super.onStart();
-        /*Intent intent = new Intent(this, AudioRecordService.class);
-        startService(intent);
-        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);*/
         Intent intent = new Intent(this, AudioRecordService.class);
         startService(intent);
         bindService(intent, recordServiceConnection, Context.BIND_AUTO_CREATE);
@@ -169,9 +166,6 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            /*RecorderBinder myBinder = (AudioRecordService.RecorderBinder) service;
-            mBoundService = myBinder.getService();
-            mServiceBound = true;*/
             AudioRecordService.MyBinder myBinder = (AudioRecordService.MyBinder) service;
             apiBoundService = myBinder.getService();
             recordServiceBound = true;
@@ -305,6 +299,28 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     private void scroll() {
         messagesContainer.setSelection(messagesContainer.getCount() - 1);
     }
+    public void showProgressBar(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dottedProgressBar.setVisibility(View.VISIBLE);
+                dottedProgressBar.startProgress();
+
+            }
+        });
+
+    }
+    public void hideProgressBar(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dottedProgressBar.setVisibility(View.GONE);
+                dottedProgressBar.stopProgress();
+
+            }
+        });
+
+    }
     class AsyncCall extends AsyncTask<String, Void, Void> {
         private static final String TAG = "AsyncCall";
 
@@ -323,7 +339,9 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
             hideProgressBar();
             currentFieldName = currentForm.fields.get(fieldIndex-1).filedName;
             currentFieldType = currentForm.fields.get(fieldIndex-1).dataType;
-            SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"he_IL");
+            //SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"he_IL");
+            SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"en_US");
+
             try {
                 SoapObject respone = (SoapObject) myRequest.execute().get();
                 if(respone!=null) {
@@ -370,28 +388,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
 
     }
-    public void showProgressBar(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                dottedProgressBar.setVisibility(View.VISIBLE);
-                dottedProgressBar.startProgress();
 
-            }
-        });
-
-    }
-    public void hideProgressBar(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                dottedProgressBar.setVisibility(View.GONE);
-                dottedProgressBar.stopProgress();
-
-            }
-        });
-
-    }
 
 }
 
