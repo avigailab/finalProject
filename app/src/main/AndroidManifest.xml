@@ -35,26 +35,9 @@
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".SpeechService"
-            android:enabled="true"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".TextToSpeechActivity"
-            android:screenOrientation="portrait" />
-
-        <service
             android:name=".AudioRecordService"
             android:enabled="true"
             android:exported="true" />
-
-        <activity
-            android:name=".SoapActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".SoundRecording"
-            android:screenOrientation="portrait" />
 
 
         <activity android:name=".SingleWaitingForm"
