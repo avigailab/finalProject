@@ -100,18 +100,6 @@ public class AppAdapter {
 
     }
 
-    public  ArrayList<String> displayFormLayout( ArrayList<Layout> arrayOfLayouts ){
-        final ArrayList<String> stringArray = new ArrayList<String>();
-        for (int i=0;i<1;i++){
-            ArrayList<Field> currentFileds =arrayOfLayouts.get(i).fields;
-            for (int j=0;j<currentFileds.size();j++) {
-                String currentFiled=currentFileds.get(j).filedName;
-                stringArray.add(currentFiled);
-            }
-        }
-        return stringArray;
-
-    }
     public boolean submitLayoutForUser(Layout layout){
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
