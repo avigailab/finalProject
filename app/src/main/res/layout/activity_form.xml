@@ -68,7 +68,7 @@
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-100dp"
+            android:layout_marginTop="-260dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:visibility="gone"
@@ -84,7 +84,7 @@
         app:jumpingSpeed="670"
         app:dotSize="15dp"
         app:spacing="15dp"
-        android:layout_marginTop="-100dp"
+        android:layout_marginTop="-260dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
@@ -95,7 +95,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2">
+        android:layout_weight="6"
+        android:visibility="gone"
+        android:id="@+id/btns_wrapper">
 
         <Button android:id="@+id/send"
             android:text="Send now"
