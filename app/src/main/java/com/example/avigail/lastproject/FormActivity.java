@@ -38,16 +38,12 @@ import java.util.HashMap;
 
 public class FormActivity extends Activity implements TextToSpeech.OnInitListener,
         OnUtteranceCompletedListener{
-    //bound service variables
-    /*AudioRecordService mBoundService;
-    boolean mServiceBound = false;*/
+
     AudioRecordService apiBoundService;
     boolean recordServiceBound = false;
 
     private static final String TAG = "layuot activity";
-    private final int SPEECH_RECOGNITION_CODE = 1;
     private AppAdapter appAdapter;
-    private TextView layoutTitle;
     private String currentFieldName;
     private TextToSpeech textToSpeech;
     public static final String MY_PREFS_NAME = "MyPrefs";
@@ -214,7 +210,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
         }
         else{
-            //add save and save buttons functionally
+            //add save and send buttons functionally
             saveForm.setVisibility(View.VISIBLE);
             sendForm.setVisibility(View.VISIBLE);
 
@@ -222,57 +218,64 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
                 @Override
                 public void onClick(View view) {
-                    //show dialog
-                    progressBar.setVisibility(View.VISIBLE);
-                    Gson gson = new Gson();
-                    String jsonLayout = gson.toJson(currentForm);
-                    SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                    editor.putString(currentForm.layoutName, jsonLayout);
-                    editor.commit();
-                    try {
-                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                        r.play();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(getApplicationContext(),  getResources().getString(R.string.sharedPreferencesSave),
-                            Toast.LENGTH_SHORT).show();
-                    finish();
+                    saveForm();
                 }
             });
             sendForm.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
-                    //show dialog
-                    progressBar.setVisibility(View.VISIBLE);
-                    appAdapter.submitLayoutForUser(currentForm);
-                    if(appAdapter.submitLayoutForUser(currentForm)){
-                        Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),
-                                Toast.LENGTH_SHORT).show();
-                        //delete from shared preferences
-                        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                        editor.remove(currentForm.layoutName);
-                        editor.apply();
-
-                        //go calling activity
-                        finish();
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormFaild),
-                                Toast.LENGTH_SHORT).show();
-                        //go calling activity
-                        finish();
-
-                    }
+                    sendForm();
                 }
             });
 
         }
     }
+    //This function save the form on waiting form list
+    public void saveForm(){
+        //show dialog
+        progressBar.setVisibility(View.VISIBLE);
+        Gson gson = new Gson();
+        String jsonLayout = gson.toJson(currentForm);
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString(currentForm.layoutName, jsonLayout);
+        editor.commit();
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(getApplicationContext(),  getResources().getString(R.string.sharedPreferencesSave),
+                Toast.LENGTH_SHORT).show();
+        finish();
+    }
+    //This function send form to email
+    public void sendForm(){
+        //show dialog
+        progressBar.setVisibility(View.VISIBLE);
+        appAdapter.submitLayoutForUser(currentForm);
+        if(appAdapter.submitLayoutForUser(currentForm)){
+            Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormSucsess),
+                    Toast.LENGTH_SHORT).show();
+            //delete from shared preferences
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+            editor.remove(currentForm.layoutName);
+            editor.apply();
 
+            //go calling activity
+            finish();
+        }
+        else {
+            Toast.makeText(getApplicationContext(),  getResources().getString(R.string.submitFormFaild),
+                    Toast.LENGTH_SHORT).show();
+            //go calling activity
+            finish();
 
+        }
+
+    }
     public void generateLeftMessage(String body, int id){
         FormMessage formMessage = new FormMessage();
         formMessage.setId(id);//dummy
