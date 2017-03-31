@@ -31,7 +31,7 @@ public class AudioRecordService extends Service {
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private static final int SLINCE_RANGE = 350;
-    double silenceLimit = 1200;
+    double silenceLimit = 1300;
     long distance;
     private AudioRecord recorder = null;
     private int bufferSize = 0;
@@ -40,12 +40,10 @@ public class AudioRecordService extends Service {
 
     private Long currentTime=null;
 
-    AudioRecord audioRecorder;
-    int bufferSizeInBytes;
     public AudioRecordService() {
     }
 
-    private static String LOG_TAG = "BoundService";
+    private static String LOG_TAG = "AudioRecordService";
     private IBinder mBinder = new MyBinder();
 
     @Override
@@ -55,7 +53,7 @@ public class AudioRecordService extends Service {
         bufferSize = AudioRecord.getMinBufferSize(8000,
                 AudioFormat.CHANNEL_CONFIGURATION_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
-        // Initialize Audirder.
+        // Initialize AudioRecorder.
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING, bufferSize);
 
@@ -139,12 +137,12 @@ public class AudioRecordService extends Service {
                 // Analyze temp buffer.
                 tempFloatBuffer[tempIndex % 3] = totalAbsValue;
 
-                float temp = 0.0f;
+                float amplitude = 0.0f;
                 for (int i = 0; i < 3; ++i)
-                    temp += tempFloatBuffer[i];
+                    amplitude += tempFloatBuffer[i];
 
                 //Silence detect
-                if ((temp >= 0 && temp <= SLINCE_RANGE) && isRecording == false) {
+                if ((amplitude >= 0 && amplitude <= SLINCE_RANGE) && isRecording == false) {
                     Log.i("TAG", "1");
                     if(currentTime==null) {
                         Log.d("currentTime is null","set current time");
@@ -174,7 +172,7 @@ public class AudioRecordService extends Service {
                     }
                 }
                 //Speech detect and we start recording
-                if (temp > SLINCE_RANGE && isRecording == false) {
+                if (amplitude > SLINCE_RANGE && isRecording == false) {
                     silenceLimit = silenceLimit*0.8 + (System.currentTimeMillis() - currentTime)*0.2;
                     Log.i("TAG", "2");
                     currentTime = System.currentTimeMillis();
@@ -182,18 +180,13 @@ public class AudioRecordService extends Service {
                     isRecording = true;
                 }
                 //Silence detect - after say word and maybe before say next word
-                if ((temp >= 0 && temp <= SLINCE_RANGE) && isRecording == true) {
+                if ((amplitude >= 0 && amplitude <= SLINCE_RANGE) && isRecording == true) {
 
                     count++;
 
                    // currentTime = null;
                    Log.d("number of words",count+"");
-                    isRecording=false;
-                    /*if(count==2) {
-                        stopRecording();
-                        Log.i("TAG", "Save audio to file.");
-                        break;
-                    }*/
+                   isRecording=false;
                 }
                 tempIndex++;
                 if (AudioRecord.ERROR_INVALID_OPERATION != read) {
