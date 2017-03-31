@@ -37,7 +37,7 @@
         android:layout_marginBottom="60dp"
         android:gravity="center"
         android:padding="20dp"
-        android:background="@color/transparentGreen"
+        android:background="@drawable/curve_shap"
         android:layout_gravity="center"
         android:text="@string/no_form_label"
         android:visibility="gone"/>
@@ -51,7 +51,7 @@
         android:paddingRight="12dp"
         android:listSelector="@android:color/transparent"
         android:transcriptMode="alwaysScroll"
-        android:background="@color/transparentGreen"
+        android:background="@drawable/curve_shap"
         android:layout_marginRight="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginBottom="30dp"
