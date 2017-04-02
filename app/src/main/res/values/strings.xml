@@ -13,5 +13,8 @@
     <string name="submitFormSucsess">nice! Your form was submitted successfully</string>
     <string name="submitFormFaild">Oops... There was a problem, please try again later</string>
     <string name="sharedPreferencesSave"> Hey, your form has been saved!</string>
+    <string name="answerNotRecognize">Oops... answer not recognize</string>
+    <string name="answerNotRecognize2">Oops... answer not recognize</string>
+
 
 </resources>
