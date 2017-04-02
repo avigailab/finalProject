@@ -122,6 +122,7 @@ public class SingleWaitingForm extends AppCompatActivity {
                    editor.apply();
                    //go to main activity to apply changes
                    Intent i = new Intent(getApplication(),MainActivity.class);
+                   i.putExtra("currentItem",1);
                    startActivity(i);
                }
                 else {

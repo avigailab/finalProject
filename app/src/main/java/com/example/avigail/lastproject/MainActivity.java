@@ -36,7 +36,12 @@ public class MainActivity extends AppCompatActivity
         ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
-        vpPager.setCurrentItem(2,true);
+        int currentItem =0;
+        if(getIntent().getExtras()!=null) {
+            currentItem = (int) getIntent().getExtras().get("currentItem");
+        }
+
+        vpPager.setCurrentItem(currentItem,true);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -102,7 +107,7 @@ public class MainActivity extends AppCompatActivity
                 case 3: // Fragment # 1 - This will show SecondFragment
                     return WaitingForms.newInstance();
                 default:
-                    return null;
+                    return FormList.newInstance();
             }
         }
 
