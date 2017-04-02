@@ -70,6 +70,7 @@ public class AppAdapter {
                 NodeList fields = element.getElementsByTagName("TkUserDialogField_1");
                 String[] stringFields = new String[fields.getLength()];
                 String fieldName = "";
+                String lang = "";
                 boolean required = false;
                 int order = -1;
                 String dataType = "";
@@ -79,8 +80,9 @@ public class AppAdapter {
                     stringFields[j] = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
                     fieldName = fieldElem.getElementsByTagName("FieldName").item(0).getTextContent();
                     dataType = fieldElem.getElementsByTagName("DataType").item(0).getTextContent();
+                    lang = fieldElem.getElementsByTagName("LabelCultureString").item(0).getTextContent();
                     required = Boolean.parseBoolean(fieldElem.getElementsByTagName("Required").item(0).getTextContent());
-                    Field field = new Field(j, fieldName, required, order, dataType);
+                    Field field = new Field(j, fieldName, required, order, dataType, lang);
                     fieldsArray.add(j, field);
                 }
                 currentLayout.setFields(fieldsArray);

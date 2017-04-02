@@ -12,13 +12,15 @@ public class Field implements Serializable {
     int order;
     String dataType;
     String filedAnswer;
-    Field(int id,String fieldName, boolean required,int order, String dataType){
+    String language;
+    Field(int id,String fieldName, boolean required,int order, String dataType, String lang){
         this.id = id;
         this.filedName = fieldName;
         this.required = required;
         this.order = order;
         this.dataType = dataType;
         this.filedAnswer="";
+        this.language = lang;
     }
     public void setFiledAnswer(String filedAnswer){
         this.filedAnswer=filedAnswer;

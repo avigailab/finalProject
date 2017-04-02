@@ -133,7 +133,6 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
         if( status == TextToSpeech.SUCCESS) {
             mTts.setOnUtteranceCompletedListener(this);
-
             int result = mTts.setLanguage(Locale.US);
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -350,8 +349,9 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
             hideProgressBar();
             currentFieldName = currentForm.fields.get(fieldIndex-1).filedName;
             currentFieldType = currentForm.fields.get(fieldIndex-1).dataType;
+            String lang = currentForm.fields.get(fieldIndex-1).language;
             //SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"he_IL");
-            SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,"en_US");
+            SendRecordSoap myRequest = new SendRecordSoap(currentFieldName, currentFieldType,lang);
 
             try {
                 SoapObject respone = (SoapObject) myRequest.execute().get();
