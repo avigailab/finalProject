@@ -18,7 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.widget.Toast;
@@ -48,6 +48,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     private TextToSpeech textToSpeech;
     public static final String MY_PREFS_NAME = "MyPrefs";
     Button saveForm, sendForm;
+    LinearLayout btnsWrapper;
     private int uttCount = 0;
     private int lastUtterance = -1;
     private HashMap<String, String> params = new HashMap<String, String>();
@@ -74,7 +75,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
         messagesContainer.setAdapter(adapter);
         saveForm =(Button)findViewById(R.id.save);
         sendForm =(Button)findViewById(R.id.send);
-
+        btnsWrapper=(LinearLayout)findViewById(R.id.btns_wrapper);
         appAdapter=new AppAdapter();
         // Check to be sure that TTS exists and is okay to use
         Intent checkIntent = new Intent();
@@ -134,6 +135,13 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
             mTts.setOnUtteranceCompletedListener(this);
 
             int result = mTts.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not available, attempting download");
+                Intent installIntent = new Intent();
+                installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(installIntent);
+            }
 
         }
     }
@@ -197,7 +205,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     public void doSpeak() {
-        Log.d("doSpeak----","before while");
+
         //read all Layout fields
         if(fieldIndex < currentForm.fields.size()) {
             params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
@@ -213,7 +221,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
             //add save and send buttons functionally
             saveForm.setVisibility(View.VISIBLE);
             sendForm.setVisibility(View.VISIBLE);
-
+            btnsWrapper.setVisibility(View.VISIBLE);
             saveForm.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -347,6 +355,7 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
 
             try {
                 SoapObject respone = (SoapObject) myRequest.execute().get();
+                Log.d(TAG,respone+"!!!!");
                 if(respone!=null) {
                     SoapObject respone_1 = (SoapObject) respone.getProperty(1);
                     Log.d("response_1===",respone_1.toString());
@@ -355,17 +364,23 @@ public class FormActivity extends Activity implements TextToSpeech.OnInitListene
                         finalRespone=String.valueOf(respone_2.getProperty(0));
                     }
                     else {
+                        Toast.makeText(getApplicationContext(),  getResources().getString(R.string.answerNotRecognize),
+                                Toast.LENGTH_SHORT).show();
                         finalRespone="Default";
                     }
 
                     //Log.i(TAG, String.valueOf(respone_2.getProperty(0)));
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),  getResources().getString(R.string.answerNotRecognize2),
+                            Toast.LENGTH_SHORT).show();
+                    finalRespone="Default";
                 }
 
                 Log.d("after","post execute");
                 //set answer bubble text
                 generateRightMessage(finalRespone,currentAnswerId);
                 currentForm.fields.get(fieldIndex-1).setFiledAnswer(finalRespone);
-                Log.d("after",";;");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
